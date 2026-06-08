@@ -217,9 +217,13 @@
 
         function deleteFromDb(dbId) {
             if(confirm("Delete this food from database?")) {
-                db = db.filter(item => item.id !== dbId);
-                saveState();
-                if(ghToken) syncWithGitHub(true);
+                const foodIndex = db.findIndex(item => item.id === dbId);
+                if(foodIndex !== -1) {
+                    db[foodIndex].deleted = true;
+                    db[foodIndex].lastUsed = Date.now();
+                    saveState();
+                    if(ghToken) syncWithGitHub(true);
+                }
             }
         }
 
@@ -303,6 +307,7 @@
 
             // 2. Filter based on universal search
             const filtered = sortedDb.filter(f => {
+                if (f.deleted) return false; // This prevents zombies from showing up
                 const searchStr = `${f.brand || ''} ${f.name} ${f.customName || ''}`.toLowerCase();
                 return searchStr.includes(search);
             });
