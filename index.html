@@ -343,7 +343,7 @@
             const input = document.getElementById('weight-input');
             input.value = '';
             document.getElementById('weight-modal').classList.remove('hidden');
-            setTimeout(() => input.focus(), 50);
+            input.focus();
         }
 
         function closeWeightModal() {
