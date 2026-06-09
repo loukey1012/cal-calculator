@@ -46,16 +46,6 @@
 
         <hr class="border-gray-700">
 
-        <!-- Add Custom Value -->
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 class="font-bold text-gray-300 mb-3">Add Custom Value</h3>
-            <div class="flex gap-2">
-                <input type="number" id="custom-cal" inputmode="numeric" pattern="[0-9]*" placeholder="Kcal" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                <input type="number" id="custom-prot" inputmode="numeric" pattern="[0-9]*" placeholder="Protein" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
-            </div>
-        </div>
-
         <!-- Product Database -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div class="flex justify-between items-center mb-3">
@@ -85,6 +75,16 @@
             </div>
             
             <div id="db-list" class="space-y-2 max-h-72 overflow-y-auto pr-2"></div>
+        </div>
+
+        <!-- Add Custom Value -->
+        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+            <h3 class="font-bold text-gray-300 mb-3">Add Custom Value</h3>
+            <div class="flex gap-2">
+                <input type="number" id="custom-cal" inputmode="numeric" pattern="[0-9]*" placeholder="Kcal" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                <input type="number" id="custom-prot" inputmode="numeric" pattern="[0-9]*" placeholder="Protein" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
+            </div>
         </div>
 
         <!-- Add New Product to DB -->
