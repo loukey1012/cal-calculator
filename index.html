@@ -659,6 +659,7 @@
                 protPer100: !isNaN(prot) ? prot : null,
                 calPerUnit: !isNaN(calUnit) ? calUnit : null,
                 protPerUnit: !isNaN(protUnit) ? protUnit : null,
+                lastUsed: Date.now(),
             };
             closeEditModal();
             saveState();
