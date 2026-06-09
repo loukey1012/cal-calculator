@@ -14,6 +14,38 @@
         /* Hide scrollbar for category tabs but allow swiping */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── Light Theme ── */
+        body[data-theme="light"] { background-color: #f3f4f6; }
+        body[data-theme="light"] .bg-gray-900 { background-color: #f3f4f6 !important; }
+        body[data-theme="light"] .bg-gray-800 { background-color: #ffffff !important; }
+        body[data-theme="light"] .bg-gray-700 { background-color: #e5e7eb !important; }
+        body[data-theme="light"] .hover\:bg-gray-600:hover { background-color: #d1d5db !important; }
+        body[data-theme="light"] .text-white { color: #111827 !important; }
+        body[data-theme="light"] .text-gray-200 { color: #1f2937 !important; }
+        body[data-theme="light"] .text-gray-300 { color: #374151 !important; }
+        body[data-theme="light"] .text-gray-400 { color: #6b7280 !important; }
+        body[data-theme="light"] .text-gray-500 { color: #9ca3af !important; }
+        body[data-theme="light"] .text-gray-600 { color: #b0b9c5 !important; }
+        body[data-theme="light"] .text-gray-700 { color: #d1d5db !important; }
+        body[data-theme="light"] .border-gray-700 { border-color: #e5e7eb !important; }
+        body[data-theme="light"] .border-gray-600 { border-color: #d1d5db !important; }
+        
+        /* ── Pink Theme ── */
+        body[data-theme="pink"] { background-color: #fdf2f8; }
+        body[data-theme="pink"] .bg-gray-900 { background-color: #fce7f3 !important; }
+        body[data-theme="pink"] .bg-gray-800 { background-color: #fff0f7 !important; }
+        body[data-theme="pink"] .bg-gray-700 { background-color: #fbcfe8 !important; }
+        body[data-theme="pink"] .hover\:bg-gray-600:hover { background-color: #f9a8d4 !important; }
+        body[data-theme="pink"] .text-white { color: #500724 !important; }
+        body[data-theme="pink"] .text-gray-200 { color: #881337 !important; }
+        body[data-theme="pink"] .text-gray-300 { color: #9d174d !important; }
+        body[data-theme="pink"] .text-gray-400 { color: #be185d !important; }
+        body[data-theme="pink"] .text-gray-500 { color: #db2777 !important; }
+        body[data-theme="pink"] .text-gray-600 { color: #ec4899 !important; }
+        body[data-theme="pink"] .text-gray-700 { color: #f9a8d4 !important; }
+        body[data-theme="pink"] .border-gray-700 { border-color: #f9a8d4 !important; }
+        body[data-theme="pink"] .border-gray-600 { border-color: #fbcfe8 !important; }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans antialiased pb-20">
@@ -141,6 +173,14 @@
                 <span>▼</span>
             </button>
             <div id="settings-panel" class="hidden mt-4 space-y-2">
+                <div>
+                    <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
+                    <div class="flex gap-2">
+                        <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-2 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
+                        <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-2 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
+                        <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-100 border border-pink-300 py-2 rounded-lg text-xs font-bold text-pink-700 transition">🌸 Pink</button>
+                    </div>
+                </div>
                 <input type="password" id="gh-token" placeholder="GitHub PAT Token" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
                 <input type="text" id="gh-gist" placeholder="Gist ID" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
                 <button onclick="saveSettings()" class="w-full bg-gray-700 py-2 rounded-lg font-bold hover:bg-gray-600 transition">Save Credentials</button>
@@ -208,6 +248,7 @@
         let currentWeightMode = 'grams'; // 'grams' or 'units'
         let currentEditId = null;
         let customMode = 'grams';
+        let currentTheme = localStorage.getItem('appTheme') || 'dark';
 
         // Category Tab Switcher
         function setCategoryFilter(cat) {
@@ -719,8 +760,22 @@
             if (ghToken) syncWithGitHub(true);
         }
 
+        function applyTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('appTheme', theme);
+            document.body.setAttribute('data-theme', theme);
+            ['dark', 'light', 'pink'].forEach(t => {
+                const btn = document.getElementById(`theme-btn-${t}`);
+                if (!btn) return;
+                btn.classList.toggle('ring-2', t === theme);
+                btn.classList.toggle('ring-emerald-400', t === theme);
+                btn.classList.toggle('ring-offset-1', t === theme);
+            });
+        }
+
         // Init
         renderAll();
+        applyTheme(currentTheme);
         if(ghToken && ghGistId) syncWithGitHub();
     </script>
 </body>
