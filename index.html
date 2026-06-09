@@ -535,9 +535,8 @@
                             </div>
                             ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
                             <div class="text-xs text-gray-500 font-mono">
-                                ${food.calPer100 != null ? `${food.calPer100} kcal | ${food.protPer100 || 0}g prot <span class="text-gray-700">(per 100g)</span>` : ''}
-                                ${food.calPer100 != null && food.calPerUnit != null ? ' · ' : ''}
-                                ${food.calPerUnit != null ? `${food.calPerUnit} kcal | ${food.protPerUnit || 0}g prot <span class="text-gray-700">(per unit)</span>` : ''}
+                                ${food.calPer100 != null ? `<div>${food.calPer100} kcal | ${food.protPer100 || 0}g prot <span class="text-gray-700">(per 100g)</span></div>` : ''}
+                                ${food.calPerUnit != null ? `<div>${food.calPerUnit} kcal | ${food.protPerUnit || 0}g prot <span class="text-gray-700">(per unit)</span></div>` : ''}
                             </div>
                         </div>
                         <button onclick="deleteFromDb(${food.id})" class="text-gray-600 hover:text-red-400 px-3 py-2">✕</button>
