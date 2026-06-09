@@ -49,34 +49,34 @@
         <!-- Product Database -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('db-content')">Food Database <span class="text-gray-400 text-sm">▼</span></h3>
-                <div id="db-content">
+                <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-gray-300">Food Database</h3>
                     <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
                         <span id="sync-status">Sync</span>
                     </button>
                 </div>
+                <button onclick="toggleBlock('db-content')" class="text-gray-400 text-sm px-2">▼</button>
             </div>
-
-            <!-- Top-Level Category Filter Tabs -->
-            <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
-                <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
-                <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
-                <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
-                <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
-                <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
-                <!-- ADD NEW CATEGORIES HERE (Buttons): Just copy the line above and change 'Snacks' to your new category name -->
+            <div id="db-content">
+                <!-- Top-Level Category Filter Tabs -->
+                <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
+                    <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
+                    <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
+                    <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
+                    <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
+                    <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
+                    <!-- ADD NEW CATEGORIES HERE: Just copy the line above and change the text -->
+                </div>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
+                    <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
+                        <option value="recent">Recent</option>
+                        <option value="name">A-Z Name</option>
+                        <option value="brand">A-Z Brand</option>
+                    </select>
+                </div>
+                <div id="db-list" class="space-y-2 max-h-72 overflow-y-auto pr-2"></div>
             </div>
-            
-            <div class="flex gap-2 mb-4">
-                <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
-                <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
-                    <option value="recent">Recent</option>
-                    <option value="name">A-Z Name</option>
-                    <option value="brand">A-Z Brand</option>
-                </select>
-            </div>
-            
-            <div id="db-list" class="space-y-2 max-h-72 overflow-y-auto pr-2"></div>
         </div>
 
         <!-- Add Custom Value -->
