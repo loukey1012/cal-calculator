@@ -114,6 +114,10 @@
                         <input type="number" id="new-cal" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-emerald-900">
                         <input type="number" id="new-prot" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-blue-900">
                     </div>
+                    <div class="flex gap-2">
+                        <input type="number" id="new-cal-unit" inputmode="decimal" placeholder="Kcal/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-emerald-900">
+                        <input type="number" id="new-prot-unit" inputmode="decimal" placeholder="Protein/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-blue-900">
+                    </div>
                     <button onclick="addToDb()" class="w-full bg-blue-600 py-2 rounded-lg font-bold hover:bg-blue-500 transition mt-2">Save & Sync</button>
                 </div>
             </div>
@@ -137,8 +141,12 @@
     <!-- Weight Entry Modal -->
     <div id="weight-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-gray-800 rounded-xl p-6 w-full max-w-xs border border-gray-700 shadow-2xl transform transition-all">
-            <h3 id="weight-modal-title" class="text-xl font-bold text-emerald-400 mb-4 text-center">Enter Weight</h3>
-            <input type="number" id="weight-input" inputmode="numeric" pattern="[0-9]*" placeholder="Grams" class="w-full bg-gray-900 text-white text-3xl px-4 py-4 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none mb-6 text-center font-bold placeholder-gray-600">
+            <h3 id="weight-modal-title" class="text-xl font-bold text-emerald-400 mb-3 text-center">Enter Weight</h3>
+            <div id="weight-mode-toggle" class="hidden flex gap-2 mb-3">
+                <button id="mode-btn-grams" onclick="setWeightMode('grams')" class="flex-1 bg-emerald-600 py-2 rounded-lg font-bold text-sm transition">By Weight (g)</button>
+                <button id="mode-btn-units" onclick="setWeightMode('units')" class="flex-1 bg-gray-700 py-2 rounded-lg font-bold text-sm transition">By Unit</button>
+            </div>
+            <input type="number" id="weight-input" inputmode="decimal" placeholder="Grams" class="w-full bg-gray-900 text-white text-3xl px-4 py-4 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none mb-6 text-center font-bold placeholder-gray-600">
             <div class="flex gap-3">
                 <button onclick="closeWeightModal()" class="flex-1 bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition text-gray-300">Cancel</button>
                 <button onclick="confirmWeight()" class="flex-1 bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 transition text-white">Add to Plate</button>
@@ -154,6 +162,7 @@
         let ghGistId = localStorage.getItem('ghGistId') || '';
         let currentWeightDbId = null;
         let activeCategoryFilter = 'All'; // New State for Category Tracking
+        let currentWeightMode = 'grams'; // 'grams' or 'units'
 
         // Category Tab Switcher
         function setCategoryFilter(cat) {
@@ -279,15 +288,20 @@
 
             if (!name || isNaN(cal)) return alert("Official Name and Calories are required.");
 
-            db.push({ 
-                id: Date.now(), 
-                category: category, 
-                brand: brand, 
-                name: name, 
-                customName: customName, 
-                calPer100: cal, 
-                protPer100: prot,
-                lastUsed: Date.now() 
+            const calUnit = parseFloat(document.getElementById('new-cal-unit').value) || null;
+            const protUnit = parseFloat(document.getElementById('new-prot-unit').value) || null;
+            
+            db.push({
+                id: Date.now(),
+                category: category,
+                brand: brand,
+                name: name,
+                customName: customName,
+                calPer100: cal || null,
+                protPer100: prot || null,
+                calPerUnit: calUnit,
+                protPerUnit: protUnit,
+                lastUsed: Date.now()
             });
             
             document.getElementById('new-brand').value = '';
@@ -295,6 +309,8 @@
             document.getElementById('new-custom').value = '';
             document.getElementById('new-cal').value = '';
             document.getElementById('new-prot').value = '';
+            document.getElementById('new-cal-unit').value = '';
+            document.getElementById('new-prot-unit').value = '';
             
             saveState();
             
@@ -346,12 +362,48 @@
             currentWeightDbId = dbId;
             const food = db.find(f => f.id === dbId);
             const primaryName = food.customName ? food.customName : food.name;
-            
-            document.getElementById('weight-modal-title').innerText = `${primaryName} (g)`;
-            const input = document.getElementById('weight-input');
-            input.value = '';
+        
+            const hasGrams = food.calPer100 != null && !isNaN(food.calPer100);
+            const hasUnits = food.calPerUnit != null && !isNaN(food.calPerUnit);
+        
+            if (!hasGrams && hasUnits) currentWeightMode = 'units';
+            else currentWeightMode = 'grams';
+        
+            const toggle = document.getElementById('weight-mode-toggle');
+            if (hasGrams && hasUnits) toggle.classList.remove('hidden');
+            else toggle.classList.add('hidden');
+        
+            updateWeightModalMode();
+        
+            document.getElementById('weight-modal-title').innerText = primaryName;
+            document.getElementById('weight-input').value = '';
             document.getElementById('weight-modal').classList.remove('hidden');
-            input.focus();
+            document.getElementById('weight-input').focus();
+        }
+
+        function setWeightMode(mode) {
+            currentWeightMode = mode;
+            updateWeightModalMode();
+            document.getElementById('weight-input').value = '';
+            document.getElementById('weight-input').focus();
+        }
+        
+        function updateWeightModalMode() {
+            const input = document.getElementById('weight-input');
+            const gramsBtn = document.getElementById('mode-btn-grams');
+            const unitsBtn = document.getElementById('mode-btn-units');
+        
+            if (currentWeightMode === 'grams') {
+                input.placeholder = 'Grams';
+                input.inputMode = 'numeric';
+                gramsBtn.classList.add('bg-emerald-600'); gramsBtn.classList.remove('bg-gray-700');
+                unitsBtn.classList.add('bg-gray-700'); unitsBtn.classList.remove('bg-emerald-600');
+            } else {
+                input.placeholder = 'Units (e.g. 0.5, 1, 2)';
+                input.inputMode = 'decimal';
+                unitsBtn.classList.add('bg-emerald-600'); unitsBtn.classList.remove('bg-gray-700');
+                gramsBtn.classList.add('bg-gray-700'); gramsBtn.classList.remove('bg-emerald-600');
+            }
         }
 
         function closeWeightModal() {
@@ -362,37 +414,45 @@
 
         function confirmWeight() {
             if (!currentWeightDbId) return;
-            const weightInput = document.getElementById('weight-input').value;
-            const weight = parseFloat(weightInput);
-            
-            if (!weight || isNaN(weight)) {
-                alert("Please enter a valid weight in grams.");
+            const amount = parseFloat(document.getElementById('weight-input').value);
+            if (!amount || isNaN(amount)) {
+                alert("Please enter a valid amount.");
                 document.getElementById('weight-input').focus();
                 return;
             }
-
+        
             const foodIndex = db.findIndex(f => f.id === currentWeightDbId);
-            if(foodIndex === -1) return;
-            
+            if (foodIndex === -1) return;
+        
             const food = db[foodIndex];
             food.lastUsed = Date.now();
             db[foodIndex] = food;
-
-            const totalCal = (food.calPer100 / 100) * weight;
-            const totalProt = (food.protPer100 / 100) * weight;
+        
+            let totalCal, totalProt, entryLabel;
+        
+            if (currentWeightMode === 'grams') {
+                totalCal = (food.calPer100 / 100) * amount;
+                totalProt = ((food.protPer100 || 0) / 100) * amount;
+                entryLabel = `${amount}g`;
+            } else {
+                totalCal = food.calPerUnit * amount;
+                totalProt = (food.protPerUnit || 0) * amount;
+                entryLabel = amount === 1 ? '1 unit' : `${amount} units`;
+            }
+        
             const displayName = food.customName ? food.customName : (food.brand ? `${food.brand} ${food.name}` : food.name);
-
             plate.push({
                 id: Date.now(),
-                name: `${displayName} (${weight}g)`,
+                name: `${displayName} (${entryLabel})`,
                 totalCal: totalCal,
                 totalProt: totalProt
             });
-            
+        
             closeWeightModal();
             saveState();
-            if(ghToken) syncWithGitHub(true);
+            if (ghToken) syncWithGitHub(true);
         }
+
 
         function addCustom() {
             const cal = parseFloat(document.getElementById('custom-cal').value);
@@ -474,7 +534,11 @@
                                 <span>${primaryName}</span> ${badgeHtml}
                             </div>
                             ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
-                            <div class="text-xs text-gray-500 font-mono">${food.calPer100} kcal | ${food.protPer100}g prot <span class="text-gray-700">(per 100g)</span></div>
+                            <div class="text-xs text-gray-500 font-mono">
+                                ${food.calPer100 != null ? `${food.calPer100} kcal | ${food.protPer100 || 0}g prot <span class="text-gray-700">(per 100g)</span>` : ''}
+                                ${food.calPer100 != null && food.calPerUnit != null ? ' · ' : ''}
+                                ${food.calPerUnit != null ? `${food.calPerUnit} kcal | ${food.protPerUnit || 0}g prot <span class="text-gray-700">(per unit)</span>` : ''}
+                            </div>
                         </div>
                         <button onclick="deleteFromDb(${food.id})" class="text-gray-600 hover:text-red-400 px-3 py-2">✕</button>
                     </div>
