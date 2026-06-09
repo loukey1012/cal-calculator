@@ -608,15 +608,14 @@
                 const itemCat = food.category || 'Ingredients';
                 
                 // Show a tiny category badge next to the name if we are looking at the "All" tab
-                const badgeHtml = activeCategoryFilter === 'All' ?
-                    `<span class="text-[8px] uppercase tracking-wider border border-gray-600 text-gray-400 px-1 py-0 rounded ml-1.5 align-middle">${itemCat}</span>` : '';
+                const badgeHtml = `<span class="text-[8px] uppercase tracking-wider border border-gray-600 text-gray-400 px-1 leading-tight rounded">${itemCat}</span>`;
 
                 list.innerHTML += `
                     <div id="item-${food.id}" class="bg-gray-900 rounded-lg border border-gray-700">
-                        <div class="flex justify-between items-center p-3">
+                        <div class="flex justify-between items-stretch p-3">
                             <div class="flex-1 cursor-pointer" onclick="triggerAddWeight(${food.id})">
-                                <div class="font-bold text-emerald-400 text-lg flex items-center flex-wrap gap-y-1">
-                                    <span>${primaryName}</span> ${badgeHtml}
+                                <div class="font-bold text-emerald-400 text-lg">
+                                    ${primaryName}
                                 </div>
                                 ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
                                 <div class="text-xs text-gray-500 font-mono">
@@ -624,7 +623,10 @@
                                     ${food.calPerUnit != null ? `<div>${food.calPerUnit} kcal | ${food.protPerUnit || 0}g prot <span class="text-gray-700">(per unit)</span></div>` : ''}
                                 </div>
                             </div>
-                            <button onclick="toggleItemMenu(${food.id})" class="text-gray-500 hover:text-white px-3 py-2 text-sm transition">⚙</button>
+                            <div class="flex flex-col items-end justify-between ml-2">
+                                ${badgeHtml}
+                                <button onclick="toggleItemMenu(${food.id})" class="text-gray-500 hover:text-white text-sm transition">⚙</button>
+                            </div>
                         </div>
                         <div id="menu-${food.id}" class="hidden border-t border-gray-700 flex gap-2 p-2">
                             <button onclick="editFood(${food.id})" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-lg text-sm font-bold hover:bg-blue-600/40 transition">✏ Edit</button>
