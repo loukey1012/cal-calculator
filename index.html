@@ -154,6 +154,38 @@
         </div>
     </div>
 
+    <!-- Edit Food Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-gray-800 rounded-xl p-6 w-full max-w-xs border border-gray-700 shadow-2xl">
+            <h3 class="text-xl font-bold text-emerald-400 mb-4 text-center">Edit Food</h3>
+            <div class="space-y-2">
+                <select id="edit-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none font-bold">
+                    <option value="Ingredients">Ingredient</option>
+                    <option value="Snacks">Snack</option>
+                    <option value="Drinks">Drink</option>
+                    <option value="Meals">Meal</option>
+                </select>
+                <div class="flex gap-2">
+                    <input type="text" id="edit-brand" placeholder="Brand" class="w-1/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="text" id="edit-name" placeholder="Official Name" class="w-2/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <input type="text" id="edit-custom" placeholder="Custom Name (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm text-emerald-400">
+                <div class="flex gap-2">
+                    <input type="number" id="edit-cal" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="edit-prot" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="edit-cal-unit" inputmode="decimal" placeholder="Kcal/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="edit-prot-unit" inputmode="decimal" placeholder="Protein/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-4">
+                <button onclick="closeEditModal()" class="flex-1 bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition text-gray-300">Cancel</button>
+                <button onclick="saveEdit()" class="flex-1 bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 transition">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // State
         let db = JSON.parse(localStorage.getItem('foodDb')) || [];
@@ -163,6 +195,7 @@
         let currentWeightDbId = null;
         let activeCategoryFilter = 'All'; // New State for Category Tracking
         let currentWeightMode = 'grams'; // 'grams' or 'units'
+        let currentEditId = null;
 
         // Category Tab Switcher
         function setCategoryFilter(cat) {
@@ -528,18 +561,25 @@
                     `<span class="text-[9px] uppercase tracking-wider border border-gray-600 text-gray-400 px-1.5 py-0.5 rounded ml-2 align-middle">${itemCat}</span>` : '';
 
                 list.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700">
-                        <div class="flex-1 cursor-pointer" onclick="triggerAddWeight(${food.id})">
-                            <div class="font-bold text-emerald-400 text-lg flex items-center flex-wrap gap-y-1">
-                                <span>${primaryName}</span> ${badgeHtml}
+                    <div id="item-${food.id}" class="bg-gray-900 rounded-lg border border-gray-700">
+                        <div class="flex justify-between items-center p-3">
+                            <div class="flex-1 cursor-pointer" onclick="triggerAddWeight(${food.id})">
+                                <div class="font-bold text-emerald-400 text-lg flex items-center flex-wrap gap-y-1">
+                                    <span>${primaryName}</span> ${badgeHtml}
+                                </div>
+                                ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
+                                <div class="text-xs text-gray-500 font-mono">
+                                    ${food.calPer100 != null ? `<div>${food.calPer100} kcal | ${food.protPer100 || 0}g prot <span class="text-gray-700">(per 100g)</span></div>` : ''}
+                                    ${food.calPerUnit != null ? `<div>${food.calPerUnit} kcal | ${food.protPerUnit || 0}g prot <span class="text-gray-700">(per unit)</span></div>` : ''}
+                                </div>
                             </div>
-                            ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
-                            <div class="text-xs text-gray-500 font-mono">
-                                ${food.calPer100 != null ? `<div>${food.calPer100} kcal | ${food.protPer100 || 0}g prot <span class="text-gray-700">(per 100g)</span></div>` : ''}
-                                ${food.calPerUnit != null ? `<div>${food.calPerUnit} kcal | ${food.protPerUnit || 0}g prot <span class="text-gray-700">(per unit)</span></div>` : ''}
-                            </div>
+                            <button onclick="toggleItemMenu(${food.id})" class="text-gray-500 hover:text-white px-3 py-2 text-xl transition">⚙</button>
                         </div>
-                        <button onclick="deleteFromDb(${food.id})" class="text-gray-600 hover:text-red-400 px-3 py-2">✕</button>
+                        <div id="menu-${food.id}" class="hidden border-t border-gray-700 flex gap-2 p-2">
+                            <button onclick="editFood(${food.id})" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-lg text-sm font-bold hover:bg-blue-600/40 transition">✏ Edit</button>
+                            <button onclick="deleteFromDb(${food.id})" class="flex-1 bg-red-600/20 text-red-400 py-2 rounded-lg text-sm font-bold hover:bg-red-600/40 transition">✕ Delete</button>
+                            <button onclick="toggleItemMenu(${food.id})" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm font-bold hover:bg-gray-600 transition">Cancel</button>
+                        </div>
                     </div>
                 `;
             });
@@ -569,6 +609,60 @@
 
         function toggleBlock(id) {
             document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function toggleItemMenu(id) {
+            const menu = document.getElementById(`menu-${id}`);
+            document.querySelectorAll('[id^="menu-"]').forEach(m => {
+                if (m.id !== `menu-${id}`) m.classList.add('hidden');
+            });
+            menu.classList.toggle('hidden');
+        }
+        
+        function editFood(id) {
+            currentEditId = id;
+            const food = db.find(f => f.id === id);
+            if (!food) return;
+            document.getElementById('edit-category').value = food.category || 'Ingredients';
+            document.getElementById('edit-brand').value = food.brand || '';
+            document.getElementById('edit-name').value = food.name || '';
+            document.getElementById('edit-custom').value = food.customName || '';
+            document.getElementById('edit-cal').value = food.calPer100 != null ? food.calPer100 : '';
+            document.getElementById('edit-prot').value = food.protPer100 != null ? food.protPer100 : '';
+            document.getElementById('edit-cal-unit').value = food.calPerUnit != null ? food.calPerUnit : '';
+            document.getElementById('edit-prot-unit').value = food.protPerUnit != null ? food.protPerUnit : '';
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+        
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+            currentEditId = null;
+        }
+        
+        function saveEdit() {
+            if (!currentEditId) return;
+            const idx = db.findIndex(f => f.id === currentEditId);
+            if (idx === -1) return;
+            const name = document.getElementById('edit-name').value.trim();
+            if (!name) return alert("Official Name is required.");
+            const cal = parseFloat(document.getElementById('edit-cal').value);
+            const prot = parseFloat(document.getElementById('edit-prot').value);
+            const calUnit = parseFloat(document.getElementById('edit-cal-unit').value);
+            const protUnit = parseFloat(document.getElementById('edit-prot-unit').value);
+            db[idx] = {
+                ...db[idx],
+                category: document.getElementById('edit-category').value,
+                brand: document.getElementById('edit-brand').value.trim(),
+                name: name,
+                customName: document.getElementById('edit-custom').value.trim(),
+                calPer100: !isNaN(cal) ? cal : null,
+                protPer100: !isNaN(prot) ? prot : null,
+                calPerUnit: !isNaN(calUnit) ? calUnit : null,
+                protPerUnit: !isNaN(protUnit) ? protUnit : null,
+            };
+            closeEditModal();
+            saveState();
+            if (ghToken) syncWithGitHub(true);
         }
 
         // Init
