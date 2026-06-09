@@ -82,10 +82,21 @@
         <!-- Add Custom Value -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('custom-content')">Add Custom Value <span class="text-gray-400 text-sm">▼</span></h3>
-            <div id="custom-content" class="hidden mt-3">
+            <div id="custom-content" class="hidden mt-3 space-y-2">
                 <div class="flex gap-2">
-                    <input type="number" id="custom-cal" inputmode="numeric" pattern="[0-9]*" placeholder="Kcal" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                    <input type="number" id="custom-prot" inputmode="numeric" pattern="[0-9]*" placeholder="Protein" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="custom-cal-100" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="custom-prot-100" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="custom-cal-unit" inputmode="decimal" placeholder="Kcal/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="custom-prot-unit" inputmode="decimal" placeholder="Protein/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
+                    <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="custom-amount" inputmode="decimal" placeholder="Grams" class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
                     <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
                 </div>
             </div>
@@ -196,6 +207,7 @@
         let activeCategoryFilter = 'All'; // New State for Category Tracking
         let currentWeightMode = 'grams'; // 'grams' or 'units'
         let currentEditId = null;
+        let customMode = 'grams';
 
         // Category Tab Switcher
         function setCategoryFilter(cat) {
@@ -487,16 +499,55 @@
         }
 
 
+        function setCustomMode(mode) {
+            customMode = mode;
+            const gramsBtn = document.getElementById('custom-mode-grams');
+            const unitsBtn = document.getElementById('custom-mode-units');
+            const amountInput = document.getElementById('custom-amount');
+            if (mode === 'grams') {
+                amountInput.placeholder = 'Grams';
+                gramsBtn.classList.add('bg-emerald-600', 'text-white'); gramsBtn.classList.remove('bg-gray-700', 'text-gray-300');
+                unitsBtn.classList.add('bg-gray-700', 'text-gray-300'); unitsBtn.classList.remove('bg-emerald-600', 'text-white');
+            } else {
+                amountInput.placeholder = 'Units (e.g. 0.5, 1, 2)';
+                unitsBtn.classList.add('bg-emerald-600', 'text-white'); unitsBtn.classList.remove('bg-gray-700', 'text-gray-300');
+                gramsBtn.classList.add('bg-gray-700', 'text-gray-300'); gramsBtn.classList.remove('bg-emerald-600', 'text-white');
+            }
+        }
+        
         function addCustom() {
-            const cal = parseFloat(document.getElementById('custom-cal').value);
-            const prot = parseFloat(document.getElementById('custom-prot').value) || 0;
-            if (isNaN(cal)) return;
-
-            plate.push({ id: Date.now(), name: "Custom Entry", totalCal: cal, totalProt: prot });
-            document.getElementById('custom-cal').value = '';
-            document.getElementById('custom-prot').value = '';
+            const amount = parseFloat(document.getElementById('custom-amount').value);
+            if (!amount || isNaN(amount)) return alert("Please enter an amount.");
+        
+            let totalCal, totalProt, entryLabel;
+        
+            if (customMode === 'grams') {
+                const cal100 = parseFloat(document.getElementById('custom-cal-100').value);
+                const prot100 = parseFloat(document.getElementById('custom-prot-100').value) || 0;
+                if (isNaN(cal100)) return alert("Please enter Kcal/100g.");
+                totalCal = (cal100 / 100) * amount;
+                totalProt = (prot100 / 100) * amount;
+                entryLabel = `${amount}g`;
+            } else {
+                const calUnit = parseFloat(document.getElementById('custom-cal-unit').value);
+                const protUnit = parseFloat(document.getElementById('custom-prot-unit').value) || 0;
+                if (isNaN(calUnit)) return alert("Please enter Kcal/unit.");
+                totalCal = calUnit * amount;
+                totalProt = protUnit * amount;
+                entryLabel = amount === 1 ? '1 unit' : `${amount} units`;
+            }
+        
+            plate.push({ id: Date.now(), name: `Custom Entry (${entryLabel})`, totalCal, totalProt });
+        
+            document.getElementById('custom-cal-100').value = '';
+            document.getElementById('custom-prot-100').value = '';
+            document.getElementById('custom-cal-unit').value = '';
+            document.getElementById('custom-prot-unit').value = '';
+            document.getElementById('custom-amount').value = '';
+        
             saveState();
         }
+
 
         function removeFromPlate(plateId) {
             plate = plate.filter(item => item.id !== plateId);
