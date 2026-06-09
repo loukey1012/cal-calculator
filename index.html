@@ -49,10 +49,12 @@
         <!-- Product Database -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-gray-300">Food Database</h3>
-                <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
-                    <span id="sync-status">Sync</span>
-                </button>
+                <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('db-content')">Food Database <span class="text-gray-400 text-sm">▼</span></h3>
+                <div id="db-content">
+                    <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
+                        <span id="sync-status">Sync</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Top-Level Category Filter Tabs -->
@@ -79,37 +81,41 @@
 
         <!-- Add Custom Value -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 class="font-bold text-gray-300 mb-3">Add Custom Value</h3>
-            <div class="flex gap-2">
-                <input type="number" id="custom-cal" inputmode="numeric" pattern="[0-9]*" placeholder="Kcal" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                <input type="number" id="custom-prot" inputmode="numeric" pattern="[0-9]*" placeholder="Protein" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
+            <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('custom-content')">Add Custom Value <span class="text-gray-400 text-sm">▼</span></h3>
+            <div id="custom-content" class="hidden mt-3">
+                <div class="flex gap-2">
+                    <input type="number" id="custom-cal" inputmode="numeric" pattern="[0-9]*" placeholder="Kcal" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="custom-prot" inputmode="numeric" pattern="[0-9]*" placeholder="Protein" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
+                </div>
             </div>
         </div>
 
         <!-- Add New Product to DB -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 class="font-bold text-gray-300 mb-3">Create New Food</h3>
-            <div class="space-y-2">
-                <!-- Category Selector -->
-                <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
-                    <option value="Ingredients">Ingredient</option>
-                    <option value="Snacks">Snack</option>
-                    <option value="Drinks">Drink</option>
-                    <option value="Meals">Meal</option>
-                    <!-- ADD NEW CATEGORIES HERE (Dropdown): Just copy the line above and change the text -->
-                </select>
-
-                <div class="flex gap-2">
-                    <input type="text" id="new-brand" placeholder="Brand" class="w-1/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                    <input type="text" id="new-name" placeholder="Official Name" class="w-2/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+            <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('create-content')">Create New Food <span class="text-gray-400 text-sm">▼</span></h3>
+            <div id="create-content" class="hidden mt-3">
+                <div class="space-y-2">
+                    <!-- Category Selector -->
+                    <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
+                        <option value="Ingredients">Ingredient</option>
+                        <option value="Snacks">Snack</option>
+                        <option value="Drinks">Drink</option>
+                        <option value="Meals">Meal</option>
+                        <!-- ADD NEW CATEGORIES HERE (Dropdown): Just copy the line above and change the text -->
+                    </select>
+    
+                    <div class="flex gap-2">
+                        <input type="text" id="new-brand" placeholder="Brand" class="w-1/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                        <input type="text" id="new-name" placeholder="Official Name" class="w-2/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    </div>
+                    <input type="text" id="new-custom" placeholder="Custom Name (optional shorthand)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm text-emerald-400">
+                    <div class="flex gap-2">
+                        <input type="number" id="new-cal" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-emerald-900">
+                        <input type="number" id="new-prot" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-blue-900">
+                    </div>
+                    <button onclick="addToDb()" class="w-full bg-blue-600 py-2 rounded-lg font-bold hover:bg-blue-500 transition mt-2">Save & Sync</button>
                 </div>
-                <input type="text" id="new-custom" placeholder="Custom Name (optional shorthand)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm text-emerald-400">
-                <div class="flex gap-2">
-                    <input type="number" id="new-cal" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-emerald-900">
-                    <input type="number" id="new-prot" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-blue-900">
-                </div>
-                <button onclick="addToDb()" class="w-full bg-blue-600 py-2 rounded-lg font-bold hover:bg-blue-500 transition mt-2">Save & Sync</button>
             </div>
         </div>
 
@@ -496,6 +502,10 @@
 
             document.getElementById('total-cal').innerText = sumCal.toFixed(0);
             document.getElementById('total-prot').innerText = sumProt.toFixed(1);
+        }
+
+        function toggleBlock(id) {
+            document.getElementById(id).classList.toggle('hidden');
         }
 
         // Init
