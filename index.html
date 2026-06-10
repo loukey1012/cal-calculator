@@ -64,119 +64,111 @@
         body[data-theme="red"] .border-gray-600 { border-color: #7a3348 !important; }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-sans antialiased pb-20">
+<body class="bg-gray-900 text-white font-sans antialiased pb-32">
 
-    <div class="max-w-md mx-auto p-4 space-y-6">
+    <div class="max-w-md mx-auto p-4 pt-4 pb-24">
         
-        <!-- App Title -->
-        <div class="text-center mt-2 mb-4">
-            <div class="relative inline-block">
-                <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">CALculator</h1>
-                <span class="absolute bottom-1 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v1.4.5</span>
-            </div>
-        </div>
-        
-        <!-- Header / Total Display -->
-        <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 sticky top-4 z-10">
-            <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl font-bold text-gray-300">Current Meal</h2>
-                <button onclick="clearPlate()" class="text-sm bg-red-600/20 text-red-400 px-3 py-1 rounded-md hover:bg-red-600/40 transition">Clear</button>
-            </div>
-            <div class="flex gap-4">
-                <div onclick="copyCalories()" class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center cursor-pointer hover:bg-gray-800 transition active:scale-95 group">
-                    <div class="text-sm text-gray-400 group-hover:text-gray-300 transition">Calories <span class="text-xs opacity-50">(tap)</span></div>
-                    <div id="total-cal" class="text-2xl font-bold text-emerald-400 transition-colors duration-200">0</div>
-                </div>
-                <div class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center">
-                    <div class="text-sm text-gray-400">Protein (g)</div>
-                    <div id="total-prot" class="text-2xl font-bold text-blue-400">0</div>
-                </div>
-            </div>
+        <div class="flex justify-center items-center mb-6 relative">
+            <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
+            <span id="app-version" class="absolute right-0 text-[10px] text-gray-500 font-bold tracking-wider">v1.4.3</span>
         </div>
 
-        <!-- Active Plate List -->
-        <div id="plate-list" class="space-y-2"></div>
-
-        <hr class="border-gray-700">
-
-        <!-- Product Database -->
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <div class="flex justify-between items-center mb-3">
-                <div class="flex items-center gap-2">
-                    <h3 class="font-bold text-gray-300">Food Database</h3>
-                    <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
-                        <span id="sync-status">Sync</span>
-                    </button>
+        <div id="screen-home" class="space-y-6 block transition-opacity">
+            
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-xl font-bold text-gray-300">Current Meal</h2>
+                    <button onclick="clearPlate()" class="text-sm bg-red-600/20 text-red-400 px-3 py-1 rounded-md hover:bg-red-600/40 transition">Clear</button>
                 </div>
-                <button onclick="toggleBlock('db-content')" class="text-gray-400 text-sm px-2">▼</button>
+                <div class="flex gap-4">
+                    <div onclick="copyCalories()" class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center cursor-pointer hover:bg-gray-800 transition active:scale-95 group">
+                        <div class="text-sm text-gray-400 group-hover:text-gray-300 transition">Calories <span class="text-xs opacity-50">(tap)</span></div>
+                        <div id="total-cal" class="text-2xl font-bold text-emerald-400 transition-colors duration-200">0</div>
+                    </div>
+                    <div class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center">
+                        <div class="text-sm text-gray-400">Protein (g)</div>
+                        <div id="total-prot" class="text-2xl font-bold text-blue-400">0</div>
+                    </div>
+                </div>
             </div>
-            <div id="db-content">
-                <!-- Top-Level Category Filter Tabs -->
-                <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
-                    <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
-                    <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
-                    <button onclick="setCategoryFilter('Vegetables')" data-cat="Vegetables" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Vegetables</button>
-                    <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
-                    <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
-                    <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
-                </div>
-                <div class="flex gap-2 mb-4">
-                    <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
-                    <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
-                        <option value="recent">Recent</option>
-                        <option value="name">A-Z Name</option>
-                        <option value="brand">A-Z Brand</option>
-                    </select>
-                </div>
-                <div id="db-list" class="space-y-2 max-h-72 overflow-y-auto pr-2"></div>
-            </div>
-        </div>
 
-        <!-- Add Custom Value -->
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('custom-content')">Add Custom Value <span class="text-gray-400 text-sm">▼</span></h3>
-            <div id="custom-content" class="hidden mt-3 space-y-2">
-                <div class="flex gap-2">
-                    <div class="relative w-1/2">
-                        <input type="number" id="custom-cal-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
-                        <label for="custom-cal-100" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
-                    </div>
-                    <div class="relative w-1/2">
-                        <input type="number" id="custom-prot-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/100g">
-                        <label for="custom-prot-100" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/100g</label>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <div class="relative w-1/2">
-                        <input type="number" id="custom-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit (optional)">
-                        <label for="custom-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit (optional)</label>
-                    </div>
-                    <div class="relative w-1/2">
-                        <input type="number" id="custom-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/unit (optional)">
-                        <label for="custom-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/unit (optional)</label>
+            <div id="plate-list" class="space-y-2"></div>
+
+            <hr class="border-gray-700">
+
+            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-gray-300">Food Database</h3>
+                        <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
+                            <span id="sync-status">Sync</span>
+                        </button>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
-                    <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
-                </div>
-                <div class="flex gap-2">
-                    <div class="relative flex-1">
-                        <input type="number" id="custom-amount" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Amount">
-                        <label id="custom-amount-label" for="custom-amount" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
+                <div id="db-content">
+                    <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
+                        <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
+                        <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
+                        <button onclick="setCategoryFilter('Vegetables')" data-cat="Vegetables" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Vegetables</button>
+                        <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
+                        <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
+                        <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
                     </div>
-                    <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
+                        <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
+                            <option value="recent">Recent</option>
+                            <option value="name">A-Z Name</option>
+                            <option value="brand">A-Z Brand</option>
+                        </select>
+                    </div>
+                    <div id="db-list" class="space-y-2"></div> 
                 </div>
             </div>
         </div>
 
-        <!-- Add New Product to DB -->
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('create-content')">Create New Food <span class="text-gray-400 text-sm">▼</span></h3>
-            <div id="create-content" class="hidden mt-3">
-                <div class="space-y-2">
-                    <!-- Category Selector -->
-                    <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
+        <div id="screen-custom" class="hidden space-y-4">
+            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                <div class="space-y-6 mt-2">
+                    <div class="flex gap-2">
+                        <div class="relative w-1/2">
+                            <input type="number" id="custom-cal-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
+                            <label for="custom-cal-100" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
+                        </div>
+                        <div class="relative w-1/2">
+                            <input type="number" id="custom-prot-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/100g">
+                            <label for="custom-prot-100" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/100g</label>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="relative w-1/2">
+                            <input type="number" id="custom-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit (optional)">
+                            <label for="custom-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit (optional)</label>
+                        </div>
+                        <div class="relative w-1/2">
+                            <input type="number" id="custom-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/unit (optional)">
+                            <label for="custom-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/unit (optional)</label>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
+                        <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <div class="relative flex-1">
+                            <input type="number" id="custom-amount" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Amount">
+                            <label id="custom-amount-label" for="custom-amount" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
+                        </div>
+                    </div>
+                    <button onclick="addCustom()" class="w-full bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 text-lg transition shadow-lg mt-4">Add to Plate</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-new" class="hidden space-y-4">
+            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                <div class="space-y-4 mt-2">
+                    <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
                         <option value="Meals">Meal</option>
                         <option value="Vegetables">Vegetable</option>
                         <option value="Ingredients">Ingredient</option>
@@ -223,40 +215,58 @@
                             <label for="new-weight-unit" class="absolute left-3 top-1 text-[10px] text-purple-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-purple-400 pointer-events-none">Weight (g)</label>
                         </div>
                     </div>
-                    <button onclick="addToDb()" class="w-full bg-blue-600 py-2 rounded-lg font-bold hover:bg-blue-500 transition mt-2">Save & Sync</button>
+                    <button onclick="addToDb()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 text-lg transition shadow-lg mt-4">Save & Return</button>
                 </div>
             </div>
         </div>
 
-        <!-- Cloud Settings -->
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700 mb-10">
-            <button onclick="toggleSettings()" class="w-full text-left font-bold text-gray-300 flex justify-between">
-                <span>GitHub Sync Settings</span>
-                <span>▼</span>
-            </button>
-            <div id="settings-panel" class="hidden mt-4 space-y-2">
-                <div>
-                    <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
-                    <div class="flex gap-2 flex-wrap">
-                        <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-2 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
-                        <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-2 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
-                        <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-2 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
-                        <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-2 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
+        <div id="screen-settings" class="hidden space-y-4">
+            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                <div class="space-y-4 mt-2">
+                    <div>
+                        <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-3 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
+                            <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-3 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
+                            <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-3 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
+                            <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-3 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
+                        </div>
                     </div>
+                    <div class="relative w-full">
+                        <input type="password" id="gh-token" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="GitHub PAT Token">
+                        <label for="gh-token" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">GitHub PAT Token</label>
+                    </div>
+                    <div class="relative w-full">
+                        <input type="text" id="gh-gist" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="Gist ID">
+                        <label for="gh-gist" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Gist ID</label>
+                    </div>
+                    <button onclick="saveSettings()" class="w-full bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition mt-2">Save Credentials</button>
                 </div>
-                <div class="relative w-full">
-                    <input type="password" id="gh-token" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="GitHub PAT Token">
-                    <label for="gh-token" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">GitHub PAT Token</label>
-                </div>
-                <div class="relative w-full">
-                    <input type="text" id="gh-gist" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="Gist ID">
-                    <label for="gh-gist" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Gist ID</label>
-                </div>
-                <button onclick="saveSettings()" class="w-full bg-gray-700 py-2 rounded-lg font-bold hover:bg-gray-600 transition mt-1">Save Credentials</button>
             </div>
         </div>
 
     </div>
+
+    <nav class="fixed bottom-0 w-full bg-gray-900 border-t border-gray-800 pb-[env(safe-area-inset-bottom)] z-40">
+        <div class="flex justify-around items-center max-w-md mx-auto h-16">
+            <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex-1 flex flex-col items-center justify-center text-emerald-400 transition-colors">
+                <span class="text-xl mb-1">🏠</span>
+                <span class="text-[10px] font-bold">Plate</span>
+            </button>
+            <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                <span class="text-xl mb-1">⚖️</span>
+                <span class="text-[10px] font-bold">Custom</span>
+            </button>
+            <button onclick="switchTab('new')" id="tab-new" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                <span class="text-xl mb-1">➕</span>
+                <span class="text-[10px] font-bold">New Food</span>
+            </button>
+            <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                <span class="text-xl mb-1">⚙️</span>
+                <span class="text-[10px] font-bold">Settings</span>
+            </button>
+        </div>
+    </nav>
 
     <!-- Weight Entry Modal -->
     <div id="weight-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
@@ -437,23 +447,13 @@
             }
         }
 
-        // Settings Logic
-        function toggleSettings() {
-            const panel = document.getElementById('settings-panel');
-            panel.classList.toggle('hidden');
-            if (!panel.classList.contains('hidden')) {
-                document.getElementById('gh-token').value = ghToken;
-                document.getElementById('gh-gist').value = ghGistId;
-            }
-        }
-
         function saveSettings() {
             ghToken = document.getElementById('gh-token').value;
             ghGistId = document.getElementById('gh-gist').value;
             localStorage.setItem('ghToken', ghToken);
             localStorage.setItem('ghGistId', ghGistId);
-            toggleSettings();
             syncWithGitHub();
+            switchTab('home');
         }
 
         function saveState() {
@@ -508,6 +508,7 @@
             }
 
             if(ghToken) syncWithGitHub(true);
+            switchTab('home');
         }
 
         async function deleteFromDb(dbId) {
@@ -695,6 +696,7 @@
             document.getElementById('custom-amount').value = '';
         
             saveState();
+            switchTab('home');
         }
 
 
@@ -953,6 +955,56 @@
                 editBrandDropdown.classList.add('hidden');
             }
         });
+
+        // --- SPA NAVIGATION LOGIC ---
+        function switchTab(tabId) {
+            // Hide all screens
+            ['home', 'custom', 'new', 'settings'].forEach(id => {
+                document.getElementById(`screen-${id}`).classList.add('hidden');
+                document.getElementById(`screen-${id}`).classList.remove('block');
+                
+                // Dim all nav buttons
+                const btn = document.getElementById(`tab-${id}`);
+                btn.classList.remove('text-emerald-400');
+                btn.classList.add('text-gray-500');
+            });
+
+            // Show active screen
+            document.getElementById(`screen-${tabId}`).classList.remove('hidden');
+            document.getElementById(`screen-${tabId}`).classList.add('block');
+            
+            // Highlight active nav button
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.remove('text-gray-500');
+            activeBtn.classList.add('text-emerald-400');
+
+            // Dynamically update the Top App Bar Title
+            const header = document.getElementById('app-header-title');
+            const version = document.getElementById('app-version');
+            
+            if (tabId === 'home') {
+                header.innerText = "CALculator";
+                version.classList.remove('hidden');
+            } else if (tabId === 'custom') {
+                header.innerText = "Custom Entry";
+                version.classList.add('hidden');
+            } else if (tabId === 'new') {
+                header.innerText = "Create Food";
+                version.classList.add('hidden');
+            } else if (tabId === 'settings') {
+                header.innerText = "Settings";
+                version.classList.add('hidden');
+            }
+            
+            // Optional: If you open settings, auto-fill the tokens
+            if (tabId === 'settings') {
+                document.getElementById('gh-token').value = ghToken;
+                document.getElementById('gh-gist').value = ghGistId;
+            }
+            
+            // Snap back to top of screen
+            window.scrollTo(0, 0);
+        }
 
         // Init
         renderAll();
