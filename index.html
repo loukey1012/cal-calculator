@@ -72,7 +72,7 @@
         <div class="text-center mt-2 mb-4">
             <div class="relative inline-block">
                 <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">CALculator</h1>
-                <span class="absolute bottom-1 -right-7 text-[10px] text-gray-500 font-bold tracking-wider">v2.5</span>
+                <span class="absolute bottom-1 -right-7 text-[10px] text-gray-500 font-bold tracking-wider">v1.4.3</span>
             </div>
         </div>
         
@@ -137,19 +137,34 @@
             <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('custom-content')">Add Custom Value <span class="text-gray-400 text-sm">▼</span></h3>
             <div id="custom-content" class="hidden mt-3 space-y-2">
                 <div class="flex gap-2">
-                    <input type="number" id="custom-cal-100" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                    <input type="number" id="custom-prot-100" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <div class="relative w-1/2">
+                        <input type="number" id="custom-cal-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
+                        <label for="custom-cal-100" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
+                    </div>
+                    <div class="relative w-1/2">
+                        <input type="number" id="custom-prot-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/100g">
+                        <label for="custom-prot-100" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/100g</label>
+                    </div>
                 </div>
                 <div class="flex gap-2">
-                    <input type="number" id="custom-cal-unit" inputmode="decimal" placeholder="Kcal/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                    <input type="number" id="custom-prot-unit" inputmode="decimal" placeholder="Protein/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <div class="relative w-1/2">
+                        <input type="number" id="custom-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit (optional)">
+                        <label for="custom-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit (optional)</label>
+                    </div>
+                    <div class="relative w-1/2">
+                        <input type="number" id="custom-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/unit (optional)">
+                        <label for="custom-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/unit (optional)</label>
+                    </div>
                 </div>
                 <div class="flex gap-2">
                     <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
                     <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
                 </div>
                 <div class="flex gap-2">
-                    <input type="number" id="custom-amount" inputmode="decimal" placeholder="Grams" class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <div class="relative flex-1">
+                        <input type="number" id="custom-amount" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Amount">
+                        <label id="custom-amount-label" for="custom-amount" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
+                    </div>
                     <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
                 </div>
             </div>
@@ -228,9 +243,15 @@
                         <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-2 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
                     </div>
                 </div>
-                <input type="password" id="gh-token" placeholder="GitHub PAT Token" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
-                <input type="text" id="gh-gist" placeholder="Gist ID" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
-                <button onclick="saveSettings()" class="w-full bg-gray-700 py-2 rounded-lg font-bold hover:bg-gray-600 transition">Save Credentials</button>
+                <div class="relative w-full">
+                    <input type="password" id="gh-token" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="GitHub PAT Token">
+                    <label for="gh-token" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">GitHub PAT Token</label>
+                </div>
+                <div class="relative w-full">
+                    <input type="text" id="gh-gist" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="Gist ID">
+                    <label for="gh-gist" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Gist ID</label>
+                </div>
+                <button onclick="saveSettings()" class="w-full bg-gray-700 py-2 rounded-lg font-bold hover:bg-gray-600 transition mt-1">Save Credentials</button>
             </div>
         </div>
 
@@ -244,7 +265,10 @@
                 <button id="mode-btn-grams" onclick="setWeightMode('grams')" class="flex-1 bg-emerald-600 py-2 rounded-lg font-bold text-sm transition">By Weight (g)</button>
                 <button id="mode-btn-units" onclick="setWeightMode('units')" class="flex-1 bg-gray-700 py-2 rounded-lg font-bold text-sm transition">By Unit</button>
             </div>
-            <input type="number" id="weight-input" inputmode="decimal" placeholder="Grams" class="w-full bg-gray-900 text-white text-3xl px-4 py-4 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none mb-6 text-center font-bold placeholder-gray-600">
+            <div class="relative w-full mb-6">
+                <input type="number" id="weight-input" inputmode="decimal" class="peer w-full bg-gray-900 text-white text-3xl px-4 pt-7 pb-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none text-center font-bold placeholder-transparent" placeholder="Amount">
+                <label id="weight-input-label" for="weight-input" class="absolute left-1/2 -translate-x-1/2 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
+            </div>
             <div class="flex gap-3">
                 <button onclick="closeWeightModal()" class="flex-1 bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition text-gray-300">Cancel</button>
                 <button onclick="confirmWeight()" class="flex-1 bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 transition text-white">Add to Plate</button>
@@ -551,16 +575,19 @@
         
         function updateWeightModalMode() {
             const input = document.getElementById('weight-input');
+            const label = document.getElementById('weight-input-label');
             const gramsBtn = document.getElementById('mode-btn-grams');
             const unitsBtn = document.getElementById('mode-btn-units');
         
             if (currentWeightMode === 'grams') {
                 input.placeholder = 'Grams';
+                if(label) label.innerText = 'Grams';
                 input.inputMode = 'numeric';
                 gramsBtn.classList.add('bg-emerald-600'); gramsBtn.classList.remove('bg-gray-700');
                 unitsBtn.classList.add('bg-gray-700'); unitsBtn.classList.remove('bg-emerald-600');
             } else {
                 input.placeholder = 'Units (e.g. 0.5, 1, 2)';
+                if(label) label.innerText = 'Units';
                 input.inputMode = 'decimal';
                 unitsBtn.classList.add('bg-emerald-600'); unitsBtn.classList.remove('bg-gray-700');
                 gramsBtn.classList.add('bg-gray-700'); gramsBtn.classList.remove('bg-emerald-600');
@@ -620,12 +647,15 @@
             const gramsBtn = document.getElementById('custom-mode-grams');
             const unitsBtn = document.getElementById('custom-mode-units');
             const amountInput = document.getElementById('custom-amount');
+            const amountLabel = document.getElementById('custom-amount-label');
             if (mode === 'grams') {
                 amountInput.placeholder = 'Grams';
+                if(amountLabel) amountLabel.innerText = 'Grams';
                 gramsBtn.classList.add('bg-emerald-600', 'text-white'); gramsBtn.classList.remove('bg-gray-700', 'text-gray-300');
                 unitsBtn.classList.add('bg-gray-700', 'text-gray-300'); unitsBtn.classList.remove('bg-emerald-600', 'text-white');
             } else {
                 amountInput.placeholder = 'Units (e.g. 0.5, 1, 2)';
+                if(amountLabel) amountLabel.innerText = 'Units';
                 unitsBtn.classList.add('bg-emerald-600', 'text-white'); unitsBtn.classList.remove('bg-gray-700', 'text-gray-300');
                 gramsBtn.classList.add('bg-gray-700', 'text-gray-300'); gramsBtn.classList.remove('bg-emerald-600', 'text-white');
             }
