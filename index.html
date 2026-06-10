@@ -72,7 +72,7 @@
         <div class="text-center mt-2 mb-4">
             <div class="relative inline-block">
                 <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">CALculator</h1>
-                <span class="absolute bottom-1 -right-7 text-[10px] text-gray-500 font-bold tracking-wider">v1.4.3</span>
+                <span class="absolute bottom-1 -right-7 text-[10px] text-gray-500 font-bold tracking-wider">v1.4.4</span>
             </div>
         </div>
         
@@ -114,11 +114,11 @@
                 <!-- Top-Level Category Filter Tabs -->
                 <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
                     <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
+                    <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
+                    <button onclick="setCategoryFilter('Vegetables')" data-cat="Vegetables" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Vegetables</button>
                     <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
                     <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
                     <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
-                    <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
-                    <!-- ADD NEW CATEGORIES HERE: Just copy the line above and change the text -->
                 </div>
                 <div class="flex gap-2 mb-4">
                     <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
@@ -177,11 +177,11 @@
                 <div class="space-y-2">
                     <!-- Category Selector -->
                     <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
+                        <option value="Meals">Meal</option>
+                        <option value="Vegetables">Vegetable</option>
                         <option value="Ingredients">Ingredient</option>
                         <option value="Snacks">Snack</option>
                         <option value="Drinks">Drink</option>
-                        <option value="Meals">Meal</option>
-                        <!-- ADD NEW CATEGORIES HERE (Dropdown): Just copy the line above and change the text -->
                     </select>
     
                     <div class="flex gap-2">
@@ -282,10 +282,11 @@
             <h3 class="text-xl font-bold text-emerald-400 mb-4 text-center">Edit Food</h3>
             <div class="space-y-2">
                 <select id="edit-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none font-bold">
+                    <option value="Meals">Meal</option>
+                    <option value="Vegetables">Vegetable</option>
                     <option value="Ingredients">Ingredient</option>
                     <option value="Snacks">Snack</option>
                     <option value="Drinks">Drink</option>
-                    <option value="Meals">Meal</option>
                 </select>
                 <div class="flex gap-2">
                     <div class="relative w-1/3">
