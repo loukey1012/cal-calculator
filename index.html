@@ -5,6 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CALculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            /* Base RGB values to allow Tailwind opacity modifiers (like /20) to work */
+            --color-primary-400: 94 234 212; /* Mint */
+            --color-primary-500: 45 212 191;
+            --color-primary-600: 20 184 166;
+            
+            --color-secondary-400: 249 168 212; /* Pink */
+            --color-secondary-500: 244 114 182;
+            --color-secondary-600: 236 72 153;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            400: 'rgb(var(--color-primary-400) / <alpha-value>)',
+                            500: 'rgb(var(--color-primary-500) / <alpha-value>)',
+                            600: 'rgb(var(--color-primary-600) / <alpha-value>)',
+                        },
+                        blue: {
+                            400: 'rgb(var(--color-secondary-400) / <alpha-value>)',
+                            500: 'rgb(var(--color-secondary-500) / <alpha-value>)',
+                            600: 'rgb(var(--color-secondary-600) / <alpha-value>)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
@@ -71,7 +103,7 @@
         <div class="text-center mb-6">
             <div class="relative inline-block">
                 <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v2.0.3</span>
+                <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v2.1.0</span>
             </div>
         </div>
 
@@ -235,6 +267,31 @@
                             <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-3 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
                             <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-3 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
                             <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-3 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
+                        </div>
+                    </div>
+                    <div class="mt-4 border-t border-gray-700 pt-4">
+                        <p class="text-xs text-gray-400 mb-2">Primary Accent</p>
+                        <div class="flex gap-2.5 mb-4 flex-wrap">
+                            <button id="btn-primary-green" onclick="setAccent('primary', 'green')" class="w-8 h-8 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-primary-mint" onclick="setAccent('primary', 'mint')" class="w-8 h-8 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-primary-blue" onclick="setAccent('primary', 'blue')" class="w-8 h-8 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-primary-indigo" onclick="setAccent('primary', 'indigo')" class="w-8 h-8 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-primary-purple" onclick="setAccent('primary', 'purple')" class="w-8 h-8 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-primary-pink" onclick="setAccent('primary', 'pink')" class="w-8 h-8 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-primary-rose" onclick="setAccent('primary', 'rose')" class="w-8 h-8 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-primary-peach" onclick="setAccent('primary', 'peach')" class="w-8 h-8 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
+                        </div>
+
+                        <p class="text-xs text-gray-400 mb-2">Secondary Accent</p>
+                        <div class="flex gap-2.5 mb-4 flex-wrap">
+                            <button id="btn-secondary-green" onclick="setAccent('secondary', 'green')" class="w-8 h-8 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-secondary-mint" onclick="setAccent('secondary', 'mint')" class="w-8 h-8 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-secondary-blue" onclick="setAccent('secondary', 'blue')" class="w-8 h-8 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-secondary-indigo" onclick="setAccent('secondary', 'indigo')" class="w-8 h-8 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-secondary-purple" onclick="setAccent('secondary', 'purple')" class="w-8 h-8 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-secondary-pink" onclick="setAccent('secondary', 'pink')" class="w-8 h-8 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-secondary-rose" onclick="setAccent('secondary', 'rose')" class="w-8 h-8 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
+                            <button id="btn-secondary-peach" onclick="setAccent('secondary', 'peach')" class="w-8 h-8 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
                         </div>
                     </div>
                     <div class="relative w-full">
@@ -1030,6 +1087,57 @@
             // Snap back to top of screen
             window.scrollTo(0, 0);
         }
+
+        // --- ACCENT COLOR ENGINE ---
+        const pastelPalettes = {
+            green:  { 400: '134 239 172', 500: '74 222 128', 600: '34 197 94' },
+            mint:   { 400: '94 234 212',  500: '45 212 191', 600: '20 184 166' },
+            blue:   { 400: '147 197 253', 500: '96 165 250', 600: '59 130 246' },
+            indigo: { 400: '165 180 252', 500: '129 140 248', 600: '99 102 241' },
+            purple: { 400: '216 180 254', 500: '192 132 252', 600: '168 85 247' },
+            pink:   { 400: '249 168 212', 500: '244 114 182', 600: '236 72 153' },
+            rose:   { 400: '253 164 175', 500: '251 113 133', 600: '244 63 94' },
+            peach:  { 400: '253 186 116', 500: '251 146 60',  600: '249 115 22' }
+        };
+
+        function setAccent(type, colorName) {
+            const shades = pastelPalettes[colorName];
+            if (!shades) return;
+            
+            // Push the new RGB values to the root CSS variables
+            document.documentElement.style.setProperty(`--color-${type}-400`, shades[400]);
+            document.documentElement.style.setProperty(`--color-${type}-500`, shades[500]);
+            document.documentElement.style.setProperty(`--color-${type}-600`, shades[600]);
+            
+            // Save preference so it remembers on refresh
+            localStorage.setItem(`${type}Accent`, colorName);
+
+            // Update the UI Rings
+            const allColors = ['green', 'mint', 'blue', 'indigo', 'purple', 'pink', 'rose', 'peach'];
+            allColors.forEach(c => {
+                const btn = document.getElementById(`btn-${type}-${c}`);
+                if (btn) {
+                    if (c === colorName) {
+                        // Add ring and pop-out effect to active button
+                        btn.classList.add('ring-2', 'ring-white', 'ring-offset-2', 'ring-offset-gray-800', 'scale-110');
+                    } else {
+                        // Remove from all others
+                        btn.classList.remove('ring-2', 'ring-white', 'ring-offset-2', 'ring-offset-gray-800', 'scale-110');
+                    }
+                }
+            });
+        }
+
+        // Load saved accents on startup
+        function loadAccents() {
+            const savedPrimary = localStorage.getItem('primaryAccent') || 'mint';
+            const savedSecondary = localStorage.getItem('secondaryAccent') || 'pink';
+            setAccent('primary', savedPrimary);
+            setAccent('secondary', savedSecondary);
+        }
+        
+        // Execute immediately to prevent flashing default colors
+        loadAccents();
 
         // Init
         renderAll();
