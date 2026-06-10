@@ -641,11 +641,6 @@
             const list = document.getElementById('db-list');
             list.innerHTML = '';
 
-            let unitLabel = '(unit)';
-            if (food.unitWeight != null) {
-                unitLabel = `(unit: ${food.unitWeight}g)`;
-            }
-
             let sortedDb = [...db];
             if (sortOrder === 'recent') {
                 sortedDb.sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0));
@@ -682,6 +677,12 @@
                 
                 // Show a tiny category badge next to the name if we are looking at the "All" tab
                 const badgeHtml = `<span class="text-[8px] uppercase tracking-wider border border-gray-600 text-gray-400 px-1 leading-tight rounded">${itemCat}</span>`;
+
+                // Clean Colon Logic for Display (Moved inside loop for backward compatibility)
+                let unitLabel = '(unit)';
+                if (food.unitWeight != null && !isNaN(food.unitWeight)) {
+                    unitLabel = `(unit: ${food.unitWeight}g)`;
+                }
 
                 list.innerHTML += `
                     <div id="item-${food.id}" class="bg-gray-900 rounded-lg border border-gray-700">
