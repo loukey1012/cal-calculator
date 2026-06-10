@@ -14,6 +14,54 @@
         /* Hide scrollbar for category tabs but allow swiping */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── Light Theme ── */
+        body[data-theme="light"] { background-color: #f3f4f6; }
+        body[data-theme="light"] .bg-gray-900 { background-color: #f3f4f6 !important; }
+        body[data-theme="light"] .bg-gray-800 { background-color: #ffffff !important; }
+        body[data-theme="light"] .bg-gray-700 { background-color: #e5e7eb !important; }
+        body[data-theme="light"] .hover\:bg-gray-600:hover { background-color: #d1d5db !important; }
+        body[data-theme="light"] .text-white { color: #111827 !important; }
+        body[data-theme="light"] .text-gray-200 { color: #1f2937 !important; }
+        body[data-theme="light"] .text-gray-300 { color: #374151 !important; }
+        body[data-theme="light"] .text-gray-400 { color: #6b7280 !important; }
+        body[data-theme="light"] .text-gray-500 { color: #9ca3af !important; }
+        body[data-theme="light"] .text-gray-600 { color: #b0b9c5 !important; }
+        body[data-theme="light"] .text-gray-700 { color: #d1d5db !important; }
+        body[data-theme="light"] .border-gray-700 { border-color: #e5e7eb !important; }
+        body[data-theme="light"] .border-gray-600 { border-color: #d1d5db !important; }
+        
+        /* ── Pink Theme ── */
+        body[data-theme="pink"] { background-color: #fdf2f8; }
+        body[data-theme="pink"] .bg-gray-900 { background-color: #fce7f3 !important; }
+        body[data-theme="pink"] .bg-gray-800 { background-color: #fff0f7 !important; }
+        body[data-theme="pink"] .bg-gray-700 { background-color: #fbcfe8 !important; }
+        body[data-theme="pink"] .hover\:bg-gray-600:hover { background-color: #f9a8d4 !important; }
+        body[data-theme="pink"] .text-white { color: #500724 !important; }
+        body[data-theme="pink"] .text-gray-200 { color: #881337 !important; }
+        body[data-theme="pink"] .text-gray-300 { color: #9d174d !important; }
+        body[data-theme="pink"] .text-gray-400 { color: #be185d !important; }
+        body[data-theme="pink"] .text-gray-500 { color: #db2777 !important; }
+        body[data-theme="pink"] .text-gray-600 { color: #ec4899 !important; }
+        body[data-theme="pink"] .text-gray-700 { color: #f9a8d4 !important; }
+        body[data-theme="pink"] .border-gray-700 { border-color: #f9a8d4 !important; }
+        body[data-theme="pink"] .border-gray-600 { border-color: #fbcfe8 !important; }
+        
+        /* ── Red Theme ── */
+        body[data-theme="red"] { background-color: #150208; }
+        body[data-theme="red"] .bg-gray-900 { background-color: #150208 !important; }
+        body[data-theme="red"] .bg-gray-800 { background-color: #280a12 !important; }
+        body[data-theme="red"] .bg-gray-700 { background-color: #3f1020 !important; }
+        body[data-theme="red"] .hover\:bg-gray-600:hover { background-color: #5a1a2e !important; }
+        body[data-theme="red"] .text-white { color: #fdf0f3 !important; }
+        body[data-theme="red"] .text-gray-200 { color: #f5c6d0 !important; }
+        body[data-theme="red"] .text-gray-300 { color: #e8a0b0 !important; }
+        body[data-theme="red"] .text-gray-400 { color: #c97a8e !important; }
+        body[data-theme="red"] .text-gray-500 { color: #a05268 !important; }
+        body[data-theme="red"] .text-gray-600 { color: #7a3348 !important; }
+        body[data-theme="red"] .text-gray-700 { color: #5a1a2e !important; }
+        body[data-theme="red"] .border-gray-700 { border-color: #5a1a2e !important; }
+        body[data-theme="red"] .border-gray-600 { border-color: #7a3348 !important; }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans antialiased pb-20">
@@ -46,68 +94,91 @@
 
         <hr class="border-gray-700">
 
-        <!-- Add Custom Value -->
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 class="font-bold text-gray-300 mb-3">Add Custom Value</h3>
-            <div class="flex gap-2">
-                <input type="number" id="custom-cal" inputmode="numeric" pattern="[0-9]*" placeholder="Kcal" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                <input type="number" id="custom-prot" inputmode="numeric" pattern="[0-9]*" placeholder="Protein" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
-            </div>
-        </div>
-
         <!-- Product Database -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-gray-300">Food Database</h3>
-                <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
-                    <span id="sync-status">Sync</span>
-                </button>
+                <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-gray-300">Food Database</h3>
+                    <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
+                        <span id="sync-status">Sync</span>
+                    </button>
+                </div>
+                <button onclick="toggleBlock('db-content')" class="text-gray-400 text-sm px-2">▼</button>
             </div>
+            <div id="db-content">
+                <!-- Top-Level Category Filter Tabs -->
+                <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
+                    <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
+                    <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
+                    <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
+                    <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
+                    <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
+                    <!-- ADD NEW CATEGORIES HERE: Just copy the line above and change the text -->
+                </div>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
+                    <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
+                        <option value="recent">Recent</option>
+                        <option value="name">A-Z Name</option>
+                        <option value="brand">A-Z Brand</option>
+                    </select>
+                </div>
+                <div id="db-list" class="space-y-2 max-h-72 overflow-y-auto pr-2"></div>
+            </div>
+        </div>
 
-            <!-- Top-Level Category Filter Tabs -->
-            <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
-                <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
-                <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
-                <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
-                <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
-                <!-- ADD NEW CATEGORIES HERE (Buttons): Just copy the line above and change 'Snacks' to your new category name -->
+        <!-- Add Custom Value -->
+        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+            <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('custom-content')">Add Custom Value <span class="text-gray-400 text-sm">▼</span></h3>
+            <div id="custom-content" class="hidden mt-3 space-y-2">
+                <div class="flex gap-2">
+                    <input type="number" id="custom-cal-100" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="custom-prot-100" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="custom-cal-unit" inputmode="decimal" placeholder="Kcal/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="custom-prot-unit" inputmode="decimal" placeholder="Protein/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
+                    <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="custom-amount" inputmode="decimal" placeholder="Grams" class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <button onclick="addCustom()" class="bg-emerald-600 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500">+</button>
+                </div>
             </div>
-            
-            <div class="flex gap-2 mb-4">
-                <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
-                <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
-                    <option value="recent">Recent</option>
-                    <option value="name">A-Z Name</option>
-                    <option value="brand">A-Z Brand</option>
-                </select>
-            </div>
-            
-            <div id="db-list" class="space-y-2 max-h-72 overflow-y-auto pr-2"></div>
         </div>
 
         <!-- Add New Product to DB -->
         <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 class="font-bold text-gray-300 mb-3">Create New Food</h3>
-            <div class="space-y-2">
-                <!-- Category Selector -->
-                <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
-                    <option value="Ingredients">Category: Ingredient</option>
-                    <option value="Snacks">Category: Snack</option>
-                    <option value="Drinks">Category: Drink</option>
-                    <!-- ADD NEW CATEGORIES HERE (Dropdown): Just copy the line above and change the text -->
-                </select>
-
-                <div class="flex gap-2">
-                    <input type="text" id="new-brand" placeholder="Brand" class="w-1/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
-                    <input type="text" id="new-name" placeholder="Official Name" class="w-2/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+            <h3 class="font-bold text-gray-300 cursor-pointer flex justify-between" onclick="toggleBlock('create-content')">Create New Food <span class="text-gray-400 text-sm">▼</span></h3>
+            <div id="create-content" class="hidden mt-3">
+                <div class="space-y-2">
+                    <!-- Category Selector -->
+                    <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
+                        <option value="Ingredients">Ingredient</option>
+                        <option value="Snacks">Snack</option>
+                        <option value="Drinks">Drink</option>
+                        <option value="Meals">Meal</option>
+                        <!-- ADD NEW CATEGORIES HERE (Dropdown): Just copy the line above and change the text -->
+                    </select>
+    
+                    <div class="flex gap-2">
+                        <input type="text" id="new-brand" placeholder="Brand" class="w-1/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                        <input type="text" id="new-name" placeholder="Official Name" class="w-2/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    </div>
+                    <input type="text" id="new-custom" placeholder="Custom Name (optional shorthand)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm text-emerald-400">
+                    <div class="flex gap-2">
+                        <input type="number" id="new-cal" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-emerald-900">
+                        <input type="number" id="new-prot" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-blue-900">
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="number" id="new-cal-unit" inputmode="decimal" placeholder="Kcal/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-emerald-900">
+                        <input type="number" id="new-prot-unit" inputmode="decimal" placeholder="Protein/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-blue-900">
+                    </div>
+                    <button onclick="addToDb()" class="w-full bg-blue-600 py-2 rounded-lg font-bold hover:bg-blue-500 transition mt-2">Save & Sync</button>
                 </div>
-                <input type="text" id="new-custom" placeholder="Custom Name (optional shorthand)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm text-emerald-400">
-                <div class="flex gap-2">
-                    <input type="number" id="new-cal" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-emerald-900">
-                    <input type="number" id="new-prot" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none border-blue-900">
-                </div>
-                <button onclick="addToDb()" class="w-full bg-blue-600 py-2 rounded-lg font-bold hover:bg-blue-500 transition mt-2">Save & Sync</button>
             </div>
         </div>
 
@@ -118,6 +189,15 @@
                 <span>▼</span>
             </button>
             <div id="settings-panel" class="hidden mt-4 space-y-2">
+                <div>
+                    <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-2 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
+                        <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-2 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
+                        <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-2 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
+                        <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-2 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
+                    </div>
+                </div>
                 <input type="password" id="gh-token" placeholder="GitHub PAT Token" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
                 <input type="text" id="gh-gist" placeholder="Gist ID" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
                 <button onclick="saveSettings()" class="w-full bg-gray-700 py-2 rounded-lg font-bold hover:bg-gray-600 transition">Save Credentials</button>
@@ -129,11 +209,47 @@
     <!-- Weight Entry Modal -->
     <div id="weight-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-gray-800 rounded-xl p-6 w-full max-w-xs border border-gray-700 shadow-2xl transform transition-all">
-            <h3 id="weight-modal-title" class="text-xl font-bold text-emerald-400 mb-4 text-center">Enter Weight</h3>
-            <input type="number" id="weight-input" inputmode="numeric" pattern="[0-9]*" placeholder="Grams" class="w-full bg-gray-900 text-white text-3xl px-4 py-4 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none mb-6 text-center font-bold placeholder-gray-600">
+            <h3 id="weight-modal-title" class="text-xl font-bold text-emerald-400 mb-3 text-center">Enter Weight</h3>
+            <div id="weight-mode-toggle" class="hidden flex gap-2 mb-3">
+                <button id="mode-btn-grams" onclick="setWeightMode('grams')" class="flex-1 bg-emerald-600 py-2 rounded-lg font-bold text-sm transition">By Weight (g)</button>
+                <button id="mode-btn-units" onclick="setWeightMode('units')" class="flex-1 bg-gray-700 py-2 rounded-lg font-bold text-sm transition">By Unit</button>
+            </div>
+            <input type="number" id="weight-input" inputmode="decimal" placeholder="Grams" class="w-full bg-gray-900 text-white text-3xl px-4 py-4 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none mb-6 text-center font-bold placeholder-gray-600">
             <div class="flex gap-3">
                 <button onclick="closeWeightModal()" class="flex-1 bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition text-gray-300">Cancel</button>
                 <button onclick="confirmWeight()" class="flex-1 bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 transition text-white">Add to Plate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Food Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-gray-800 rounded-xl p-6 w-full max-w-xs border border-gray-700 shadow-2xl">
+            <h3 class="text-xl font-bold text-emerald-400 mb-4 text-center">Edit Food</h3>
+            <div class="space-y-2">
+                <select id="edit-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none font-bold">
+                    <option value="Ingredients">Ingredient</option>
+                    <option value="Snacks">Snack</option>
+                    <option value="Drinks">Drink</option>
+                    <option value="Meals">Meal</option>
+                </select>
+                <div class="flex gap-2">
+                    <input type="text" id="edit-brand" placeholder="Brand" class="w-1/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="text" id="edit-name" placeholder="Official Name" class="w-2/3 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <input type="text" id="edit-custom" placeholder="Custom Name (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm text-emerald-400">
+                <div class="flex gap-2">
+                    <input type="number" id="edit-cal" inputmode="decimal" placeholder="Kcal/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="edit-prot" inputmode="decimal" placeholder="Protein/100g" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="edit-cal-unit" inputmode="decimal" placeholder="Kcal/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                    <input type="number" id="edit-prot-unit" inputmode="decimal" placeholder="Protein/unit (optional)" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-4">
+                <button onclick="closeEditModal()" class="flex-1 bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition text-gray-300">Cancel</button>
+                <button onclick="saveEdit()" class="flex-1 bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 transition">Save</button>
             </div>
         </div>
     </div>
@@ -146,6 +262,10 @@
         let ghGistId = localStorage.getItem('ghGistId') || '';
         let currentWeightDbId = null;
         let activeCategoryFilter = 'All'; // New State for Category Tracking
+        let currentWeightMode = 'grams'; // 'grams' or 'units'
+        let currentEditId = null;
+        let customMode = 'grams';
+        let currentTheme = localStorage.getItem('appTheme') || 'dark';
 
         // Category Tab Switcher
         function setCategoryFilter(cat) {
@@ -271,15 +391,20 @@
 
             if (!name || isNaN(cal)) return alert("Official Name and Calories are required.");
 
-            db.push({ 
-                id: Date.now(), 
-                category: category, 
-                brand: brand, 
-                name: name, 
-                customName: customName, 
-                calPer100: cal, 
-                protPer100: prot,
-                lastUsed: Date.now() 
+            const calUnit = parseFloat(document.getElementById('new-cal-unit').value) || null;
+            const protUnit = parseFloat(document.getElementById('new-prot-unit').value) || null;
+            
+            db.push({
+                id: Date.now(),
+                category: category,
+                brand: brand,
+                name: name,
+                customName: customName,
+                calPer100: cal || null,
+                protPer100: prot || null,
+                calPerUnit: calUnit,
+                protPerUnit: protUnit,
+                lastUsed: Date.now()
             });
             
             document.getElementById('new-brand').value = '';
@@ -287,6 +412,8 @@
             document.getElementById('new-custom').value = '';
             document.getElementById('new-cal').value = '';
             document.getElementById('new-prot').value = '';
+            document.getElementById('new-cal-unit').value = '';
+            document.getElementById('new-prot-unit').value = '';
             
             saveState();
             
@@ -338,12 +465,48 @@
             currentWeightDbId = dbId;
             const food = db.find(f => f.id === dbId);
             const primaryName = food.customName ? food.customName : food.name;
-            
-            document.getElementById('weight-modal-title').innerText = `${primaryName} (g)`;
-            const input = document.getElementById('weight-input');
-            input.value = '';
+        
+            const hasGrams = food.calPer100 != null && !isNaN(food.calPer100);
+            const hasUnits = food.calPerUnit != null && !isNaN(food.calPerUnit);
+        
+            if (!hasGrams && hasUnits) currentWeightMode = 'units';
+            else currentWeightMode = 'grams';
+        
+            const toggle = document.getElementById('weight-mode-toggle');
+            if (hasGrams && hasUnits) toggle.classList.remove('hidden');
+            else toggle.classList.add('hidden');
+        
+            updateWeightModalMode();
+        
+            document.getElementById('weight-modal-title').innerText = primaryName;
+            document.getElementById('weight-input').value = '';
             document.getElementById('weight-modal').classList.remove('hidden');
-            input.focus();
+            document.getElementById('weight-input').focus();
+        }
+
+        function setWeightMode(mode) {
+            currentWeightMode = mode;
+            updateWeightModalMode();
+            document.getElementById('weight-input').value = '';
+            document.getElementById('weight-input').focus();
+        }
+        
+        function updateWeightModalMode() {
+            const input = document.getElementById('weight-input');
+            const gramsBtn = document.getElementById('mode-btn-grams');
+            const unitsBtn = document.getElementById('mode-btn-units');
+        
+            if (currentWeightMode === 'grams') {
+                input.placeholder = 'Grams';
+                input.inputMode = 'numeric';
+                gramsBtn.classList.add('bg-emerald-600'); gramsBtn.classList.remove('bg-gray-700');
+                unitsBtn.classList.add('bg-gray-700'); unitsBtn.classList.remove('bg-emerald-600');
+            } else {
+                input.placeholder = 'Units (e.g. 0.5, 1, 2)';
+                input.inputMode = 'decimal';
+                unitsBtn.classList.add('bg-emerald-600'); unitsBtn.classList.remove('bg-gray-700');
+                gramsBtn.classList.add('bg-gray-700'); gramsBtn.classList.remove('bg-emerald-600');
+            }
         }
 
         function closeWeightModal() {
@@ -354,48 +517,95 @@
 
         function confirmWeight() {
             if (!currentWeightDbId) return;
-            const weightInput = document.getElementById('weight-input').value;
-            const weight = parseFloat(weightInput);
-            
-            if (!weight || isNaN(weight)) {
-                alert("Please enter a valid weight in grams.");
+            const amount = parseFloat(document.getElementById('weight-input').value);
+            if (!amount || isNaN(amount)) {
+                alert("Please enter a valid amount.");
                 document.getElementById('weight-input').focus();
                 return;
             }
-
+        
             const foodIndex = db.findIndex(f => f.id === currentWeightDbId);
-            if(foodIndex === -1) return;
-            
+            if (foodIndex === -1) return;
+        
             const food = db[foodIndex];
             food.lastUsed = Date.now();
             db[foodIndex] = food;
-
-            const totalCal = (food.calPer100 / 100) * weight;
-            const totalProt = (food.protPer100 / 100) * weight;
+        
+            let totalCal, totalProt, entryLabel;
+        
+            if (currentWeightMode === 'grams') {
+                totalCal = (food.calPer100 / 100) * amount;
+                totalProt = ((food.protPer100 || 0) / 100) * amount;
+                entryLabel = `${amount}g`;
+            } else {
+                totalCal = food.calPerUnit * amount;
+                totalProt = (food.protPerUnit || 0) * amount;
+                entryLabel = amount === 1 ? '1 unit' : `${amount} units`;
+            }
+        
             const displayName = food.customName ? food.customName : (food.brand ? `${food.brand} ${food.name}` : food.name);
-
             plate.push({
                 id: Date.now(),
-                name: `${displayName} (${weight}g)`,
+                name: `${displayName} (${entryLabel})`,
                 totalCal: totalCal,
                 totalProt: totalProt
             });
-            
+        
             closeWeightModal();
             saveState();
-            if(ghToken) syncWithGitHub(true);
+            if (ghToken) syncWithGitHub(true);
         }
 
-        function addCustom() {
-            const cal = parseFloat(document.getElementById('custom-cal').value);
-            const prot = parseFloat(document.getElementById('custom-prot').value) || 0;
-            if (isNaN(cal)) return;
 
-            plate.push({ id: Date.now(), name: "Custom Entry", totalCal: cal, totalProt: prot });
-            document.getElementById('custom-cal').value = '';
-            document.getElementById('custom-prot').value = '';
+        function setCustomMode(mode) {
+            customMode = mode;
+            const gramsBtn = document.getElementById('custom-mode-grams');
+            const unitsBtn = document.getElementById('custom-mode-units');
+            const amountInput = document.getElementById('custom-amount');
+            if (mode === 'grams') {
+                amountInput.placeholder = 'Grams';
+                gramsBtn.classList.add('bg-emerald-600', 'text-white'); gramsBtn.classList.remove('bg-gray-700', 'text-gray-300');
+                unitsBtn.classList.add('bg-gray-700', 'text-gray-300'); unitsBtn.classList.remove('bg-emerald-600', 'text-white');
+            } else {
+                amountInput.placeholder = 'Units (e.g. 0.5, 1, 2)';
+                unitsBtn.classList.add('bg-emerald-600', 'text-white'); unitsBtn.classList.remove('bg-gray-700', 'text-gray-300');
+                gramsBtn.classList.add('bg-gray-700', 'text-gray-300'); gramsBtn.classList.remove('bg-emerald-600', 'text-white');
+            }
+        }
+        
+        function addCustom() {
+            const amount = parseFloat(document.getElementById('custom-amount').value);
+            if (!amount || isNaN(amount)) return alert("Please enter an amount.");
+        
+            let totalCal, totalProt, entryLabel;
+        
+            if (customMode === 'grams') {
+                const cal100 = parseFloat(document.getElementById('custom-cal-100').value);
+                const prot100 = parseFloat(document.getElementById('custom-prot-100').value) || 0;
+                if (isNaN(cal100)) return alert("Please enter Kcal/100g.");
+                totalCal = (cal100 / 100) * amount;
+                totalProt = (prot100 / 100) * amount;
+                entryLabel = `${amount}g`;
+            } else {
+                const calUnit = parseFloat(document.getElementById('custom-cal-unit').value);
+                const protUnit = parseFloat(document.getElementById('custom-prot-unit').value) || 0;
+                if (isNaN(calUnit)) return alert("Please enter Kcal/unit.");
+                totalCal = calUnit * amount;
+                totalProt = protUnit * amount;
+                entryLabel = amount === 1 ? '1 unit' : `${amount} units`;
+            }
+        
+            plate.push({ id: Date.now(), name: `Custom Entry (${entryLabel})`, totalCal, totalProt });
+        
+            document.getElementById('custom-cal-100').value = '';
+            document.getElementById('custom-prot-100').value = '';
+            document.getElementById('custom-cal-unit').value = '';
+            document.getElementById('custom-prot-unit').value = '';
+            document.getElementById('custom-amount').value = '';
+        
             saveState();
         }
+
 
         function removeFromPlate(plateId) {
             plate = plate.filter(item => item.id !== plateId);
@@ -456,19 +666,31 @@
                 const itemCat = food.category || 'Ingredients';
                 
                 // Show a tiny category badge next to the name if we are looking at the "All" tab
-                const badgeHtml = activeCategoryFilter === 'All' ? 
-                    `<span class="text-[9px] uppercase tracking-wider border border-gray-600 text-gray-400 px-1.5 py-0.5 rounded ml-2 align-middle">${itemCat}</span>` : '';
+                const badgeHtml = `<span class="text-[8px] uppercase tracking-wider border border-gray-600 text-gray-400 px-1 leading-tight rounded">${itemCat}</span>`;
 
                 list.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700">
-                        <div class="flex-1 cursor-pointer" onclick="triggerAddWeight(${food.id})">
-                            <div class="font-bold text-emerald-400 text-lg flex items-center flex-wrap gap-y-1">
-                                <span>${primaryName}</span> ${badgeHtml}
+                    <div id="item-${food.id}" class="bg-gray-900 rounded-lg border border-gray-700">
+                        <div class="flex justify-between items-stretch p-3">
+                            <div class="flex-1 cursor-pointer" onclick="triggerAddWeight(${food.id})">
+                                <div class="font-bold text-emerald-400 text-lg">
+                                    ${primaryName}
+                                </div>
+                                ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
+                                <div class="text-xs text-gray-500 font-mono">
+                                    ${food.calPer100 != null ? `<div>${food.calPer100} kcal | ${food.protPer100 || 0}g prot <span class="text-gray-700">(per 100g)</span></div>` : ''}
+                                    ${food.calPerUnit != null ? `<div>${food.calPerUnit} kcal | ${food.protPerUnit || 0}g prot <span class="text-gray-700">(per unit)</span></div>` : ''}
+                                </div>
                             </div>
-                            ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
-                            <div class="text-xs text-gray-500 font-mono">${food.calPer100} kcal | ${food.protPer100}g prot <span class="text-gray-700">(per 100g)</span></div>
+                            <div class="flex flex-col items-end justify-between ml-2">
+                                ${badgeHtml}
+                                <button onclick="toggleItemMenu(${food.id})" class="text-gray-500 hover:text-white text-sm transition">⚙</button>
+                            </div>
                         </div>
-                        <button onclick="deleteFromDb(${food.id})" class="text-gray-600 hover:text-red-400 px-3 py-2">✕</button>
+                        <div id="menu-${food.id}" class="hidden border-t border-gray-700 flex gap-2 p-2">
+                            <button onclick="editFood(${food.id})" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-lg text-sm font-bold hover:bg-blue-600/40 transition">✏ Edit</button>
+                            <button onclick="deleteFromDb(${food.id})" class="flex-1 bg-red-600/20 text-red-400 py-2 rounded-lg text-sm font-bold hover:bg-red-600/40 transition">✕ Delete</button>
+                            <button onclick="toggleItemMenu(${food.id})" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm font-bold hover:bg-gray-600 transition">Cancel</button>
+                        </div>
                     </div>
                 `;
             });
@@ -496,8 +718,81 @@
             document.getElementById('total-prot').innerText = sumProt.toFixed(1);
         }
 
+        function toggleBlock(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function toggleItemMenu(id) {
+            const menu = document.getElementById(`menu-${id}`);
+            document.querySelectorAll('[id^="menu-"]').forEach(m => {
+                if (m.id !== `menu-${id}`) m.classList.add('hidden');
+            });
+            menu.classList.toggle('hidden');
+        }
+        
+        function editFood(id) {
+            currentEditId = id;
+            const food = db.find(f => f.id === id);
+            if (!food) return;
+            document.getElementById('edit-category').value = food.category || 'Ingredients';
+            document.getElementById('edit-brand').value = food.brand || '';
+            document.getElementById('edit-name').value = food.name || '';
+            document.getElementById('edit-custom').value = food.customName || '';
+            document.getElementById('edit-cal').value = food.calPer100 != null ? food.calPer100 : '';
+            document.getElementById('edit-prot').value = food.protPer100 != null ? food.protPer100 : '';
+            document.getElementById('edit-cal-unit').value = food.calPerUnit != null ? food.calPerUnit : '';
+            document.getElementById('edit-prot-unit').value = food.protPerUnit != null ? food.protPerUnit : '';
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+        
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+            currentEditId = null;
+        }
+        
+        function saveEdit() {
+            if (!currentEditId) return;
+            const idx = db.findIndex(f => f.id === currentEditId);
+            if (idx === -1) return;
+            const name = document.getElementById('edit-name').value.trim();
+            if (!name) return alert("Official Name is required.");
+            const cal = parseFloat(document.getElementById('edit-cal').value);
+            const prot = parseFloat(document.getElementById('edit-prot').value);
+            const calUnit = parseFloat(document.getElementById('edit-cal-unit').value);
+            const protUnit = parseFloat(document.getElementById('edit-prot-unit').value);
+            db[idx] = {
+                ...db[idx],
+                category: document.getElementById('edit-category').value,
+                brand: document.getElementById('edit-brand').value.trim(),
+                name: name,
+                customName: document.getElementById('edit-custom').value.trim(),
+                calPer100: !isNaN(cal) ? cal : null,
+                protPer100: !isNaN(prot) ? prot : null,
+                calPerUnit: !isNaN(calUnit) ? calUnit : null,
+                protPerUnit: !isNaN(protUnit) ? protUnit : null,
+                lastUsed: Date.now(),
+            };
+            closeEditModal();
+            saveState();
+            if (ghToken) syncWithGitHub(true);
+        }
+
+        function applyTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('appTheme', theme);
+            document.body.setAttribute('data-theme', theme);
+            ['dark', 'light', 'pink', 'red'].forEach(t => {
+                const btn = document.getElementById(`theme-btn-${t}`);
+                if (!btn) return;
+                btn.classList.toggle('ring-2', t === theme);
+                btn.classList.toggle('ring-emerald-400', t === theme);
+                btn.classList.toggle('ring-offset-1', t === theme);
+            });
+        }
+
         // Init
         renderAll();
+        applyTheme(currentTheme);
         if(ghToken && ghGistId) syncWithGitHub();
     </script>
 </body>
