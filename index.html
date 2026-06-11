@@ -142,7 +142,7 @@
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.3</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.4</span>
                 </div>
             </div>
             
@@ -278,22 +278,22 @@
                 <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
                     <div class="space-y-4 mt-2">
                         <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
-                            <option value="Meals">Meal</option>
-                            <option value="Vegetables">Vegetable</option>
+                            <option value="Meals">Meals</option>
+                            <option value="Vegetables">Vegetables</option>
                             <option value="Fruit">Fruit</option>
-                            <option value="Carbs">Carbs / Staples</option>
+                            <option value="Carbs">Carbs</option>
                             <option value="Bread">Bread</option>
                             <option value="Meat">Meat</option>
-                            <option value="Fish">Fish / Seafood</option>
+                            <option value="Fish">Fish</option>
                             <option value="Dairy">Dairy</option>
                             <option value="Eggs">Eggs</option>
                             <option value="Fats & Oils">Fats & Oils</option>
-                            <option value="Spreads">Spread</option>
-                            <option value="Sauces">Sauce / Condiment</option>
-                            <option value="Snacks">Snack</option>
+                            <option value="Spreads">Spreads</option>
+                            <option value="Sauces">Sauces</option>
+                            <option value="Snacks">Snacks</option>
                             <option value="Baking">Baking</option>
-                            <option value="Drinks">Drink</option>
-                            <option value="Supplements">Supplement</option>
+                            <option value="Drinks">Drinks</option>
+                            <option value="Supplements">Supplements</option>
                             <option value="Mci">Mci</option>
                         </select>
                         
@@ -405,22 +405,22 @@
             
         </div>
         
-        <nav class="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 z-50" style="padding-bottom: env(safe-area-inset-bottom);">
-            <div class="flex justify-between items-center max-w-md mx-auto h-[68px] pt-1 pb-2">
+        <nav class="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 z-50" style="padding-bottom: max(env(safe-area-inset-bottom), 12px);">
+            <div class="flex justify-between items-center max-w-md mx-auto h-[56px]">
                 <button onclick="switchTab('home')" id="tab-home" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-emerald-400 transition-colors">
-                    <span class="text-xl mb-1 leading-none">🍽️</span>
+                    <span class="text-xl mb-0.5 leading-none">🍽️</span>
                     <span class="text-[10px] font-bold leading-none">Meal</span>
                 </button>
                 <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                    <span class="text-xl mb-1 leading-none">⚖️</span>
+                    <span class="text-xl mb-0.5 leading-none">⚖️</span>
                     <span class="text-[10px] font-bold leading-none">Custom</span>
                 </button>
                 <button onclick="switchTab('new')" id="tab-new" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                    <span class="text-xl mb-1 leading-none">➕</span>
+                    <span class="text-xl mb-0.5 leading-none">➕</span>
                     <span class="text-[10px] font-bold leading-none">New Food</span>
                 </button>
                 <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                    <span class="text-xl mb-1 leading-none">⚙️</span>
+                    <span class="text-xl mb-0.5 leading-none">⚙️</span>
                     <span class="text-[10px] font-bold leading-none">Settings</span>
                 </button>
             </div>
@@ -451,22 +451,22 @@
             <div class="space-y-2">
                 <select id="edit-category" class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none font-bold">
                     <option value="Uncategorized">Uncategorized</option>
-                    <option value="Meals">Meal</option>
-                    <option value="Vegetables">Vegetable</option>
+                    <option value="Meals">Meals</option>
+                    <option value="Vegetables">Vegetables</option>
                     <option value="Fruit">Fruit</option>
-                    <option value="Carbs">Carbs / Staples</option>
+                    <option value="Carbs">Carbs</option>
                     <option value="Bread">Bread</option>
                     <option value="Meat">Meat</option>
-                    <option value="Fish">Fish / Seafood</option>
+                    <option value="Fish">Fish</option>
                     <option value="Dairy">Dairy</option>
                     <option value="Eggs">Eggs</option>
                     <option value="Fats & Oils">Fats & Oils</option>
-                    <option value="Spreads">Spread</option>
-                    <option value="Sauces">Sauce / Condiment</option>
-                    <option value="Snacks">Snack</option>
+                    <option value="Spreads">Spreads</option>
+                    <option value="Sauces">Sauces</option>
+                    <option value="Snacks">Snacks</option>
                     <option value="Baking">Baking</option>
-                    <option value="Drinks">Drink</option>
-                    <option value="Supplements">Supplement</option>
+                    <option value="Drinks">Drinks</option>
+                    <option value="Supplements">Supplements</option>
                     <option value="Mci">Mci</option>
                 </select>
                 <div class="flex gap-2">
@@ -539,12 +539,6 @@
         let activeCategory = localStorage.getItem('activeCategory') || 'Lunch';
         let activeMealId = localStorage.getItem('activeMealId') || null;
 
-        if (dailyLog && dailyLog['Breakfast']) {
-            delete dailyLog['Breakfast'];
-            if (activeCategory === 'Breakfast') activeCategory = 'Lunch';
-            localStorage.setItem('dailyLog', JSON.stringify(dailyLog));
-        }
-
         if (!dailyLog) {
             dailyLog = {};
             defaultCategories.forEach(cat => {
@@ -577,11 +571,11 @@
             activeCategoryFilter = cat;
             document.querySelectorAll('.cat-pill').forEach(btn => {
                 if (btn.dataset.cat === cat) {
-                    btn.classList.remove('bg-gray-700', 'text-gray-300');
+                    btn.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
                     btn.classList.add('bg-emerald-600', 'text-white');
                 } else {
                     btn.classList.remove('bg-emerald-600', 'text-white');
-                    btn.classList.add('bg-gray-700', 'text-gray-300');
+                    btn.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
                 }
             });
             renderDb();
