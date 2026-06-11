@@ -139,7 +139,7 @@
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.4</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.5</span>
                 </div>
             </div>
             
@@ -198,7 +198,10 @@
                             <button onclick="setCategoryFilter('Mci')" data-cat="Mci" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Mci</button>
                         </div>
                         <div class="flex gap-2 mb-4">
-                            <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
+                            <div class="relative flex-1">
+                                <input type="text" id="search-db" oninput="handleSearch()" placeholder="Search brand, name..." class="w-full bg-gray-900 text-white pl-3 pr-8 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
+                                <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-300 transition-colors">✕</button>
+                            </div>
                             <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
                                 <option value="recent">Recent</option>
                                 <option value="name">A-Z Name</option>
@@ -729,6 +732,10 @@
             });
         
             closeWeightModal();
+            
+            document.getElementById('search-db').value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            
             saveState();
         }
 
@@ -1244,6 +1251,31 @@
                 alert("Failed to join household. Please ensure the ID is valid.");
                 console.error(error);
             }
+        }
+
+        // --- SEARCH BAR LOGIC ---
+        function handleSearch() {
+            const searchInput = document.getElementById('search-db');
+            const clearBtn = document.getElementById('clear-search-btn');
+            
+            if (searchInput.value.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            
+            renderDb();
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('search-db');
+            const clearBtn = document.getElementById('clear-search-btn');
+            
+            searchInput.value = '';
+            clearBtn.classList.add('hidden');
+            renderDb();
+            
+            searchInput.focus(); 
         }
         
         loadAccents();
