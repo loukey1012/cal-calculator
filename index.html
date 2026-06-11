@@ -139,16 +139,27 @@
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.6</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.0</span>
                 </div>
             </div>
             
             <div id="screen-home" class="space-y-6 block transition-opacity">
                 
                 <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-xl font-bold text-gray-300">Current Meal</h2>
-                        <button onclick="clearPlate()" class="text-sm bg-red-600/20 text-red-400 px-3 py-1 rounded-md hover:bg-red-600/40 transition">Clear</button>
+                    <div id="category-tabs" class="flex items-center gap-2 mb-2 overflow-x-auto hide-scrollbar pb-2 border-b border-gray-800">
+                        </div>
+
+                    <div id="meal-tabs" class="flex items-center gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1 min-h-[32px]">
+                        </div>
+
+                    <div class="flex justify-between items-center mb-2 h-8">
+                        <h2 id="active-meal-title" class="text-xl font-bold text-gray-300">No Meal Selected</h2>
+                        <div id="meal-actions" class="flex gap-1.5 hidden">
+                            <button onclick="renameMeal()" class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded hover:bg-gray-600 transition" title="Rename">✏️</button>
+                            <button onclick="duplicateMeal()" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-1 rounded hover:bg-blue-900/60 transition" title="Duplicate">📋</button>
+                            <button onclick="clearPlate()" class="text-xs bg-red-900/40 text-red-400 px-2 py-1 rounded hover:bg-red-900/60 transition" title="Clear Items">🗑️</button>
+                            <button onclick="closeMeal()" class="text-xs bg-gray-700 text-gray-400 px-2 py-1 rounded hover:bg-gray-600 transition" title="Close/Delete Meal">✕</button>
+                        </div>
                     </div>
                     <div class="flex gap-4">
                         <div onclick="copyCalories()" class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center cursor-pointer hover:bg-gray-800 transition active:scale-95 group">
@@ -513,7 +524,25 @@
     <script>
         // --- DATA STATE ---
         let db = [];
-        let plate = JSON.parse(localStorage.getItem('foodPlate')) || [];
+        
+        // Two-Tier State Initialization
+        const defaultCategories = ["Breakfast", "Lunch", "Dinner", "Snacks"];
+        let dailyLog = JSON.parse(localStorage.getItem('dailyLog'));
+        let activeCategory = localStorage.getItem('activeCategory') || 'Dinner';
+        let activeMealId = localStorage.getItem('activeMealId') || null;
+
+        if (!dailyLog) {
+            dailyLog = {};
+            defaultCategories.forEach(cat => {
+                dailyLog[cat] = {};
+                const mealId = 'meal_' + Date.now() + Math.random();
+                dailyLog[cat][mealId] = { title: `My ${cat}`, items: [] };
+            });
+            
+            activeCategory = 'Lunch';
+            activeMealId = Object.keys(dailyLog['Breakfast'])[0]; 
+        }
+
         let currentUser = null;
         let currentHousehold = null;
 
@@ -596,7 +625,13 @@
         }
 
         function saveState() {
-            localStorage.setItem('foodPlate', JSON.stringify(plate));
+            localStorage.setItem('dailyLog', JSON.stringify(dailyLog));
+            localStorage.setItem('activeCategory', activeCategory);
+            if (activeMealId) {
+                localStorage.setItem('activeMealId', activeMealId);
+            } else {
+                localStorage.removeItem('activeMealId');
+            }
             renderAll();
         }
 
@@ -743,7 +778,7 @@
         
             const displayName = food.brand ? `${food.brand} ${food.name}` : food.name;
             
-            plate.push({
+            dailyLog[activeCategory][activeMealId].items.push({
                 id: Date.now(),
                 baseName: displayName,
                 mode: currentWeightMode,
@@ -808,7 +843,7 @@
                 entryLabel = amount === 1 ? '1 unit' : `${amount} units`;
             }
         
-            plate.push({ 
+            dailyLog[activeCategory][activeMealId].items.push({ 
                 id: Date.now(), 
                 baseName: "Custom Entry",
                 mode: customMode,
@@ -831,13 +866,13 @@
         }
 
         function removeFromPlate(plateId) {
-            plate = plate.filter(item => item.id !== plateId);
+            meals[activeMealId].items = meals[activeMealId].items.filter(item => item.id !== plateId);
             saveState();
         }
 
         function clearPlate() {
             if(confirm("Clear current meal?")) {
-                plate = [];
+                meals[activeMealId].items = [];
                 saveState();
             }
         }
@@ -923,7 +958,28 @@
             let sumCal = 0; let sumProt = 0;
             list.innerHTML = '';
 
-            plate.forEach(item => {
+            const actionsDiv = document.getElementById('meal-actions');
+            const titleEl = document.getElementById('active-meal-title');
+
+            if (Object.keys(dailyLog[activeCategory]).length === 0) {
+                const newId = 'meal_' + Date.now();
+                dailyLog[activeCategory][newId] = { title: `My ${activeCategory}`, items: [] };
+                activeMealId = newId;
+                saveState();
+                return;
+            }
+
+            if (!activeMealId || !dailyLog[activeCategory][activeMealId]) {
+                activeMealId = Object.keys(dailyLog[activeCategory])[0];
+                saveState();
+                return;
+            }
+
+            actionsDiv.classList.remove('hidden');
+            const currentMeal = dailyLog[activeCategory][activeMealId];
+            titleEl.innerText = currentMeal.title;
+
+            currentMeal.items.forEach(item => {
                 sumCal += item.totalCal; sumProt += item.totalProt;
                 list.innerHTML += `
                     <div class="flex justify-between items-center bg-gray-800 p-3 rounded-lg border border-gray-600 shadow-sm">
@@ -938,6 +994,38 @@
 
             document.getElementById('total-cal').innerText = sumCal.toFixed(0);
             document.getElementById('total-prot').innerText = sumProt.toFixed(1);
+            renderTabs();
+        }
+
+        function renderTabs() {
+            // Render Tier 1: Categories
+            const catContainer = document.getElementById('category-tabs');
+            catContainer.innerHTML = '';
+            
+            Object.keys(dailyLog).forEach(cat => {
+                const isActive = cat === activeCategory;
+                const btnClass = isActive ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-gray-400 hover:text-gray-200';
+                catContainer.innerHTML += `
+                    <button onclick="switchCategory('${cat}')" class="whitespace-nowrap px-2 py-1 font-bold text-sm transition ${btnClass}">
+                        ${cat}
+                    </button>
+                `;
+            });
+
+            // Render Tier 2: Meals
+            const mealContainer = document.getElementById('meal-tabs');
+            mealContainer.innerHTML = '';
+            
+            Object.keys(dailyLog[activeCategory]).forEach(id => {
+                const meal = dailyLog[activeCategory][id];
+                const isActive = id === activeMealId;
+                const btnClass = isActive ? 'bg-emerald-600 text-white shadow-md' : 'bg-gray-700 text-gray-300 hover:bg-gray-600';
+                mealContainer.innerHTML += `
+                    <button onclick="switchMeal('${id}')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold transition ${btnClass}">
+                        ${meal.title}
+                    </button>
+                `;
+            });
         }
 
         function toggleItemMenu(id) {
@@ -1350,10 +1438,10 @@
                 return;
             }
 
-            const itemIndex = plate.findIndex(p => p.id === currentPlateEditId);
+            const itemIndex = dailyLog[activeCategory][activeMealId].items.findIndex(p => p.id === currentPlateEditId);
             if (itemIndex === -1) return;
-
-            const item = plate[itemIndex];
+            
+            const item = dailyLog[activeCategory][activeMealId].items[itemIndex];
             
             item.amount = newAmount;
             item.totalCal = newAmount * item.calMultiplier;
@@ -1369,6 +1457,74 @@
         document.getElementById('plate-edit-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') savePlateEdit();
         });
+
+        // --- TWO-TIER NAVIGATION LOGIC ---
+        function switchCategory(cat) {
+            activeCategory = cat;
+            const mealsInCat = Object.keys(dailyLog[cat]);
+            activeMealId = mealsInCat.length > 0 ? mealsInCat[0] : null; // Auto-select first meal, or null if empty
+            saveState();
+        }
+
+        function addCustomCategory() {
+            const newCat = prompt("Enter new category name:");
+            if (newCat && newCat.trim() !== '' && !dailyLog[newCat.trim()]) {
+                dailyLog[newCat.trim()] = {};
+                switchCategory(newCat.trim());
+            }
+        }
+
+        function switchMeal(id) {
+            activeMealId = id;
+            saveState();
+        }
+
+        function renameMeal() {
+            const currentTitle = dailyLog[activeCategory][activeMealId].title;
+            const newTitle = prompt("Enter new meal name:", currentTitle);
+            if (newTitle && newTitle.trim() !== '') {
+                dailyLog[activeCategory][activeMealId].title = newTitle.trim();
+                saveState();
+            }
+        }
+
+        function duplicateMeal() {
+            const currentMeal = dailyLog[activeCategory][activeMealId];
+            const newId = 'meal_' + Date.now();
+            
+            // Figure out the base name without existing (2) or (3) tags
+            let baseName = currentMeal.title.replace(/\s*\(\d+\)$/, '');
+            
+            // Get all existing titles in this category to avoid collisions
+            let existingTitles = Object.values(dailyLog[activeCategory]).map(m => m.title);
+            
+            let counter = 2;
+            let newTitle = `${baseName} (${counter})`;
+            
+            // Keep incrementing until we find an available number
+            while (existingTitles.includes(newTitle)) {
+                counter++;
+                newTitle = `${baseName} (${counter})`;
+            }
+            
+            const clonedItems = JSON.parse(JSON.stringify(currentMeal.items)).map(item => {
+                item.id = Date.now() + Math.random(); 
+                return item;
+            });
+            
+            dailyLog[activeCategory][newId] = { title: newTitle, items: clonedItems };
+            activeMealId = newId;
+            saveState();
+        }
+
+        function closeMeal() {
+            if(confirm("Are you sure you want to delete this meal entirely?")) {
+                delete dailyLog[activeCategory][activeMealId];
+                const remainingMeals = Object.keys(dailyLog[activeCategory]);
+                activeMealId = remainingMeals.length > 0 ? remainingMeals[0] : null;
+                saveState();
+            }
+        }
         
         loadAccents();
         checkSession();
