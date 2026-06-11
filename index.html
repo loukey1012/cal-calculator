@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            /* Base RGB values to allow Tailwind opacity modifiers (like /20) to work */
             --color-primary-400: 94 234 212; /* Mint */
             --color-primary-500: 45 212 191;
             --color-primary-600: 20 184 166;
@@ -37,13 +36,13 @@
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         body { overscroll-behavior-y: contain; }
-        input[type="number"], input[type="text"], input[type="password"], select { font-size: 16px; }
-        .hidden { display: none; }
-        /* Hide scrollbar for category tabs but allow swiping */
+        input[type="number"], input[type="text"], input[type="password"], input[type="email"], select { font-size: 16px; }
+        .hidden { display: none !important; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -98,239 +97,288 @@
 </head>
 <body class="bg-gray-900 text-white font-sans antialiased pb-32">
 
-    <div class="max-w-md mx-auto p-4 pt-4 pb-24">
-        
-        <div class="text-center mb-6">
-            <div class="relative inline-block">
-                <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v2.1.0</span>
-            </div>
-        </div>
-
-        <div id="screen-home" class="space-y-6 block transition-opacity">
-            
-            <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-xl font-bold text-gray-300">Current Meal</h2>
-                    <button onclick="clearPlate()" class="text-sm bg-red-600/20 text-red-400 px-3 py-1 rounded-md hover:bg-red-600/40 transition">Clear</button>
-                </div>
-                <div class="flex gap-4">
-                    <div onclick="copyCalories()" class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center cursor-pointer hover:bg-gray-800 transition active:scale-95 group">
-                        <div class="text-sm text-gray-400 group-hover:text-gray-300 transition">Calories <span class="text-xs opacity-50">(tap)</span></div>
-                        <div id="total-cal" class="text-2xl font-bold text-emerald-400 transition-colors duration-200">0</div>
-                    </div>
-                    <div class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center">
-                        <div class="text-sm text-gray-400">Protein (g)</div>
-                        <div id="total-prot" class="text-2xl font-bold text-blue-400">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="plate-list" class="space-y-2"></div>
-
-            <hr class="border-gray-700">
-
-            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                <div class="flex justify-between items-center mb-3">
-                    <div class="flex items-center gap-2">
-                        <h3 class="font-bold text-gray-300">Food Database</h3>
-                        <button onclick="syncWithGitHub()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
-                            <span id="sync-status">Sync</span>
-                        </button>
-                    </div>
-                </div>
-                <div id="db-content">
-                    <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
-                        <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
-                        <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
-                        <button onclick="setCategoryFilter('Vegetables')" data-cat="Vegetables" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Vegetables</button>
-                        <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
-                        <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
-                        <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
-                    </div>
-                    <div class="flex gap-2 mb-4">
-                        <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
-                        <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
-                            <option value="recent">Recent</option>
-                            <option value="name">A-Z Name</option>
-                            <option value="brand">A-Z Brand</option>
-                        </select>
-                    </div>
-                    <div id="db-list" class="space-y-2"></div> 
-                </div>
-            </div>
-            <button id="scroll-top-btn" onclick="scrollToTop()" class="hidden fixed bottom-20 right-4 bg-emerald-600 hover:bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-2xl z-30 transition-all duration-200 active:scale-95">
-                <span class="text-sm font-bold">▲</span>
-            </button>
-        </div>
-
-        <div id="screen-custom" class="hidden space-y-4">
-            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                <div class="space-y-6 mt-2">
-                    <div class="flex gap-2">
-                        <div class="relative w-1/2">
-                            <input type="number" id="custom-cal-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
-                            <label for="custom-cal-100" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
-                        </div>
-                        <div class="relative w-1/2">
-                            <input type="number" id="custom-prot-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/100g">
-                            <label for="custom-prot-100" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/100g</label>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <div class="relative w-1/2">
-                            <input type="number" id="custom-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit (optional)">
-                            <label for="custom-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit (optional)</label>
-                        </div>
-                        <div class="relative w-1/2">
-                            <input type="number" id="custom-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/unit (optional)">
-                            <label for="custom-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/unit (optional)</label>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
-                        <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
-                    </div>
-                    <div class="flex gap-2 mt-4">
-                        <div class="relative flex-1">
-                            <input type="number" id="custom-amount" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Amount">
-                            <label id="custom-amount-label" for="custom-amount" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
-                        </div>
-                    </div>
-                    <button onclick="addCustom()" class="w-full bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 text-lg transition shadow-lg mt-4">Add to Plate</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="screen-new" class="hidden space-y-4">
-            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                <div class="space-y-4 mt-2">
-                    <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
-                        <option value="Meals">Meal</option>
-                        <option value="Vegetables">Vegetable</option>
-                        <option value="Ingredients">Ingredient</option>
-                        <option value="Snacks">Snack</option>
-                        <option value="Drinks">Drink</option>
-                    </select>
+    <div id="loading-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 transition-opacity duration-300">
+        <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[rgb(var(--color-primary-400))] to-[rgb(var(--color-secondary-400))] animate-pulse">CALculator</h1>
+    </div>
     
-                    <div class="flex gap-2">
-                        <div class="relative w-1/3">
-                            <input type="text" id="new-brand" onfocus="showBrandDropdown('new')" oninput="filterBrands('new')" autocomplete="off" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Brand">
-                            <label for="new-brand" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Brand</label>
-                            <div id="new-brand-dropdown" class="hidden absolute top-full left-0 min-w-[150px] mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl z-50 max-h-48 overflow-y-auto"></div>
-                        </div>
-                        <div class="relative w-2/3">
-                            <input type="text" id="new-name" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Official Name">
-                            <label for="new-name" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Official Name</label>
-                        </div>
-                    </div>
-                    <div class="relative w-full">
-                        <input type="text" id="new-note" class="peer w-full bg-gray-900 text-emerald-400 px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Note (optional)">
-                        <label for="new-note" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Note (optional)</label>
-                    </div>
-                    <div class="flex gap-2">
-                        <div class="relative w-1/2">
-                            <input type="number" id="new-cal" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
-                            <label for="new-cal" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
-                        </div>
-                        <div class="relative w-1/2">
-                            <input type="number" id="new-prot" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/100g">
-                            <label for="new-prot" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/100g</label>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <div class="relative w-1/3">
-                            <input type="number" id="new-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit">
-                            <label for="new-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit</label>
-                        </div>
-                        <div class="relative w-1/3">
-                            <input type="number" id="new-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/unit">
-                            <label for="new-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/unit</label>
-                        </div>
-                        <div class="relative w-1/3">
-                            <input type="number" id="new-weight-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-purple-900 focus:outline-none focus:border-purple-500 placeholder-transparent" placeholder="Weight (g)">
-                            <label for="new-weight-unit" class="absolute left-3 top-1 text-[10px] text-purple-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-purple-400 pointer-events-none">Weight (g)</label>
-                        </div>
-                    </div>
-                    <button onclick="addToDb()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 text-lg transition shadow-lg mt-4">Save & Return</button>
-                </div>
-            </div>
+    <div id="auth-container" class="max-w-md mx-auto p-6 min-h-screen flex flex-col justify-center hidden">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[rgb(var(--color-primary-400))] to-[rgb(var(--color-secondary-400))] mb-2">CALculator</h1>
+            <p class="text-gray-400 text-sm">Secure Household Login</p>
         </div>
 
-        <div id="screen-settings" class="hidden space-y-4">
-            <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                <div class="space-y-4 mt-2">
-                    <div>
-                        <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
-                        <div class="flex gap-2 flex-wrap">
-                            <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-3 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
-                            <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-3 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
-                            <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-3 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
-                            <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-3 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
-                        </div>
-                    </div>
-                    <div class="mt-4 border-t border-gray-700 pt-4">
-                        <p class="text-xs text-gray-400 mb-2">Primary Accent</p>
-                        <div class="flex gap-2.5 mb-4 flex-wrap">
-                            <button id="btn-primary-green" onclick="setAccent('primary', 'green')" class="w-8 h-8 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-primary-mint" onclick="setAccent('primary', 'mint')" class="w-8 h-8 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-primary-blue" onclick="setAccent('primary', 'blue')" class="w-8 h-8 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-primary-indigo" onclick="setAccent('primary', 'indigo')" class="w-8 h-8 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-primary-purple" onclick="setAccent('primary', 'purple')" class="w-8 h-8 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-primary-pink" onclick="setAccent('primary', 'pink')" class="w-8 h-8 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-primary-rose" onclick="setAccent('primary', 'rose')" class="w-8 h-8 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-primary-peach" onclick="setAccent('primary', 'peach')" class="w-8 h-8 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
-                        </div>
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-2xl space-y-4">
+            
+            <div class="relative w-full">
+                <input type="text" id="auth-name" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-[rgb(var(--color-primary-500))] placeholder-transparent" placeholder="Name">
+                <label for="auth-name" class="absolute left-3 top-1 text-[10px] text-[rgb(var(--color-primary-400))] transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[rgb(var(--color-primary-400))] pointer-events-none">Display Name (Sign Up Only)</label>
+            </div>
 
-                        <p class="text-xs text-gray-400 mb-2">Secondary Accent</p>
-                        <div class="flex gap-2.5 mb-4 flex-wrap">
-                            <button id="btn-secondary-green" onclick="setAccent('secondary', 'green')" class="w-8 h-8 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-secondary-mint" onclick="setAccent('secondary', 'mint')" class="w-8 h-8 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-secondary-blue" onclick="setAccent('secondary', 'blue')" class="w-8 h-8 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-secondary-indigo" onclick="setAccent('secondary', 'indigo')" class="w-8 h-8 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-secondary-purple" onclick="setAccent('secondary', 'purple')" class="w-8 h-8 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-secondary-pink" onclick="setAccent('secondary', 'pink')" class="w-8 h-8 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-secondary-rose" onclick="setAccent('secondary', 'rose')" class="w-8 h-8 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
-                            <button id="btn-secondary-peach" onclick="setAccent('secondary', 'peach')" class="w-8 h-8 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
-                        </div>
-                    </div>
-                    <div class="relative w-full">
-                        <input type="password" id="gh-token" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="GitHub PAT Token">
-                        <label for="gh-token" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">GitHub PAT Token</label>
-                    </div>
-                    <div class="relative w-full">
-                        <input type="text" id="gh-gist" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-sm" placeholder="Gist ID">
-                        <label for="gh-gist" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Gist ID</label>
-                    </div>
-                    <button onclick="saveSettings()" class="w-full bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition mt-2">Save Credentials</button>
-                </div>
+            <div class="relative w-full">
+                <input type="email" id="auth-email" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-[rgb(var(--color-primary-500))] placeholder-transparent" placeholder="Email">
+                <label for="auth-email" class="absolute left-3 top-1 text-[10px] text-[rgb(var(--color-primary-400))] transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[rgb(var(--color-primary-400))] pointer-events-none">Email Address</label>
+            </div>
+            
+            <div class="relative w-full">
+                <input type="password" id="auth-password" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-[rgb(var(--color-primary-500))] placeholder-transparent" placeholder="Password">
+                <label for="auth-password" class="absolute left-3 top-1 text-[10px] text-[rgb(var(--color-primary-400))] transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[rgb(var(--color-primary-400))] pointer-events-none">Password</label>
+            </div>
+
+            <div id="auth-error" class="hidden text-rose-400 text-xs font-bold text-center bg-rose-900/20 py-2 rounded"></div>
+
+            <div class="pt-2 space-y-3">
+                <button onclick="handleLogin()" class="w-full bg-[rgb(var(--color-primary-600))] hover:bg-[rgb(var(--color-primary-500))] text-white py-3 rounded-lg font-bold transition shadow-lg">Log In</button>
+                <button onclick="handleSignUp()" class="w-full bg-gray-700 hover:bg-gray-600 text-gray-300 py-3 rounded-lg font-bold transition">Create Account</button>
             </div>
         </div>
-
     </div>
 
-    <nav class="fixed bottom-0 w-full bg-gray-900 border-t border-gray-800 pb-[env(safe-area-inset-bottom)] z-40">
-        <div class="flex justify-around items-center max-w-md mx-auto h-16">
-            <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex-1 flex flex-col items-center justify-center text-emerald-400 transition-colors">
-                <span class="text-xl mb-1">🍽️</span>
-                <span class="text-[10px] font-bold">Meal</span>
-            </button>
-            <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                <span class="text-xl mb-1">⚖️</span>
-                <span class="text-[10px] font-bold">Custom</span>
-            </button>
-            <button onclick="switchTab('new')" id="tab-new" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                <span class="text-xl mb-1">➕</span>
-                <span class="text-[10px] font-bold">New Food</span>
-            </button>
-            <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                <span class="text-xl mb-1">⚙️</span>
-                <span class="text-[10px] font-bold">Settings</span>
-            </button>
-        </div>
-    </nav>
+    <div id="app-container" class="hidden">
+        <div class="max-w-md mx-auto p-4 pt-4 pb-24">
+            
+            <div class="text-center mb-6">
+                <div class="relative inline-block">
+                    <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.0</span>
+                </div>
+            </div>
+            
+            <div id="screen-home" class="space-y-6 block transition-opacity">
+                
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-xl font-bold text-gray-300">Current Meal</h2>
+                        <button onclick="clearPlate()" class="text-sm bg-red-600/20 text-red-400 px-3 py-1 rounded-md hover:bg-red-600/40 transition">Clear</button>
+                    </div>
+                    <div class="flex gap-4">
+                        <div onclick="copyCalories()" class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center cursor-pointer hover:bg-gray-800 transition active:scale-95 group">
+                            <div class="text-sm text-gray-400 group-hover:text-gray-300 transition">Calories <span class="text-xs opacity-50">(tap)</span></div>
+                            <div id="total-cal" class="text-2xl font-bold text-emerald-400 transition-colors duration-200">0</div>
+                        </div>
+                        <div class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center">
+                            <div class="text-sm text-gray-400">Protein (g)</div>
+                            <div id="total-prot" class="text-2xl font-bold text-blue-400">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="plate-list" class="space-y-2"></div>
+                
+                <hr class="border-gray-700">
+                
+                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-gray-300">Food Database</h3>
+                            <button onclick="fetchFoods()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
+                                <span id="sync-status">Synced</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="db-content">
+                        <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
+                            <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill whitespace-nowrap bg-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">All</button>
+                            <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Meals</button>
+                            <button onclick="setCategoryFilter('Vegetables')" data-cat="Vegetables" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Vegetables</button>
+                            <button onclick="setCategoryFilter('Ingredients')" data-cat="Ingredients" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Ingredients</button>
+                            <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Snacks</button>
+                            <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill whitespace-nowrap bg-gray-700 text-gray-300 px-4 py-1.5 rounded-full text-sm font-bold transition hover:bg-gray-600">Drinks</button>
+                        </div>
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="search-db" onkeyup="renderDb()" placeholder="Search brand, name..." class="flex-1 bg-gray-900 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
+                            <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
+                                <option value="recent">Recent</option>
+                                <option value="name">A-Z Name</option>
+                                <option value="brand">A-Z Brand</option>
+                            </select>
+                        </div>
+                        <div id="db-list" class="space-y-2"></div> 
+                    </div>
+                </div>
+                <button id="scroll-top-btn" onclick="scrollToTop()" class="hidden fixed bottom-20 right-4 bg-emerald-600 hover:bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-2xl z-30 transition-all duration-200 active:scale-95">
+                    <span class="text-sm font-bold">▲</span>
+                </button>
+            </div>
+            
+            <div id="screen-custom" class="hidden space-y-4">
+                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                    <div class="space-y-6 mt-2">
+                        <div class="flex gap-2">
+                            <div class="relative w-1/2">
+                                <input type="number" id="custom-cal-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
+                                <label for="custom-cal-100" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
+                            </div>
+                            <div class="relative w-1/2">
+                                <input type="number" id="custom-prot-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/100g">
+                                <label for="custom-prot-100" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/100g</label>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="relative w-1/2">
+                                <input type="number" id="custom-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit (optional)">
+                                <label for="custom-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit (optional)</label>
+                            </div>
+                            <div class="relative w-1/2">
+                                <input type="number" id="custom-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/unit (optional)">
+                                <label for="custom-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/unit (optional)</label>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
+                            <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <div class="relative flex-1">
+                                <input type="number" id="custom-amount" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Amount">
+                                <label id="custom-amount-label" for="custom-amount" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
+                            </div>
+                        </div>
+                        <button onclick="addCustom()" class="w-full bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 text-lg transition shadow-lg mt-4">Add to Plate</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="screen-new" class="hidden space-y-4">
+                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                    <div class="space-y-4 mt-2">
+                        <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
+                            <option value="Meals">Meal</option>
+                            <option value="Vegetables">Vegetable</option>
+                            <option value="Ingredients">Ingredient</option>
+                            <option value="Snacks">Snack</option>
+                            <option value="Drinks">Drink</option>
+                        </select>
+                        
+                        <div class="flex gap-2">
+                            <div class="relative w-1/3">
+                                <input type="text" id="new-brand" onfocus="showBrandDropdown('new')" oninput="filterBrands('new')" autocomplete="off" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Brand">
+                                <label for="new-brand" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Brand</label>
+                                <div id="new-brand-dropdown" class="hidden absolute top-full left-0 min-w-[150px] mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl z-50 max-h-48 overflow-y-auto"></div>
+                            </div>
+                            <div class="relative w-2/3">
+                                <input type="text" id="new-name" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Official Name">
+                                <label for="new-name" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Official Name</label>
+                            </div>
+                        </div>
+                        <div class="relative w-full">
+                            <input type="text" id="new-note" class="peer w-full bg-gray-900 text-emerald-400 px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Note (optional)">
+                            <label for="new-note" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Note (optional)</label>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="relative w-1/2">
+                                <input type="number" id="new-cal" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
+                                <label for="new-cal" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
+                            </div>
+                            <div class="relative w-1/2">
+                                <input type="number" id="new-prot" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/100g">
+                                <label for="new-prot" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/100g</label>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="relative w-1/3">
+                                <input type="number" id="new-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit">
+                                <label for="new-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit</label>
+                            </div>
+                            <div class="relative w-1/3">
+                                <input type="number" id="new-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/unit">
+                                <label for="new-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/unit</label>
+                            </div>
+                            <div class="relative w-1/3">
+                                <input type="number" id="new-weight-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-purple-900 focus:outline-none focus:border-purple-500 placeholder-transparent" placeholder="Weight (g)">
+                                <label for="new-weight-unit" class="absolute left-3 top-1 text-[10px] text-purple-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-purple-400 pointer-events-none">Weight (g)</label>
+                            </div>
+                        </div>
+                        <button onclick="addToDb()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 text-lg transition shadow-lg mt-4">Save & Return</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="screen-settings" class="hidden space-y-4">
+                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                    <div class="space-y-4 mt-2">
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
+                            <div class="flex gap-2 flex-wrap">
+                                <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-3 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
+                                <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-3 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
+                                <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-3 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
+                                <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-3 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
+                            </div>
+                        </div>
+                        <div class="mt-4 border-t border-gray-700 pt-4">
+                            <p class="text-xs text-gray-400 mb-2">Primary Accent</p>
+                            <div class="flex gap-2.5 mb-4 flex-wrap">
+                                <button id="btn-primary-green" onclick="setAccent('primary', 'green')" class="w-8 h-8 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-primary-mint" onclick="setAccent('primary', 'mint')" class="w-8 h-8 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-primary-blue" onclick="setAccent('primary', 'blue')" class="w-8 h-8 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-primary-indigo" onclick="setAccent('primary', 'indigo')" class="w-8 h-8 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-primary-purple" onclick="setAccent('primary', 'purple')" class="w-8 h-8 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-primary-pink" onclick="setAccent('primary', 'pink')" class="w-8 h-8 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-primary-rose" onclick="setAccent('primary', 'rose')" class="w-8 h-8 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-primary-peach" onclick="setAccent('primary', 'peach')" class="w-8 h-8 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
+                            </div>
+                            
+                            <p class="text-xs text-gray-400 mb-2">Secondary Accent</p>
+                            <div class="flex gap-2.5 mb-4 flex-wrap">
+                                <button id="btn-secondary-green" onclick="setAccent('secondary', 'green')" class="w-8 h-8 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-secondary-mint" onclick="setAccent('secondary', 'mint')" class="w-8 h-8 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-secondary-blue" onclick="setAccent('secondary', 'blue')" class="w-8 h-8 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-secondary-indigo" onclick="setAccent('secondary', 'indigo')" class="w-8 h-8 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-secondary-purple" onclick="setAccent('secondary', 'purple')" class="w-8 h-8 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-secondary-pink" onclick="setAccent('secondary', 'pink')" class="w-8 h-8 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-secondary-rose" onclick="setAccent('secondary', 'rose')" class="w-8 h-8 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
+                                <button id="btn-secondary-peach" onclick="setAccent('secondary', 'peach')" class="w-8 h-8 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
+                            </div>
+                        </div>
 
-    <!-- Weight Entry Modal -->
+                        <div class="mt-8 border-t border-gray-700 pt-4">
+                            <p class="text-xs text-gray-400 mb-2">Household Sharing</p>
+                            
+                            <div class="relative w-full mb-3">
+                                <input type="text" id="my-household-id" readonly class="peer w-full bg-gray-900 text-gray-400 px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none text-xs" value="Loading...">
+                                <label class="absolute left-3 top-1 text-[10px] text-gray-500 pointer-events-none">My Household ID (Share this)</label>
+                                <button onclick="copyHouseholdId()" class="absolute right-2 top-2 text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-white transition">Copy</button>
+                            </div>
+
+                            <div class="flex gap-2 mb-6">
+                                <div class="relative flex-1">
+                                    <input type="text" id="join-household-id" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-xs" placeholder="Enter Household ID">
+                                    <label for="join-household-id" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-xs peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Enter Partner's ID</label>
+                                </div>
+                                <button onclick="joinHousehold()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 rounded-lg font-bold text-sm transition">Join</button>
+                            </div>
+
+                            <p class="text-xs text-gray-400 mb-2">Account: <span id="display-name-label" class="text-white font-bold"></span></p>
+                            <button onclick="logOut()" class="w-full bg-red-900/20 text-red-400 border border-red-900/50 py-3 rounded-lg font-bold hover:bg-red-900/40 transition shadow-lg">Log Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <nav class="fixed bottom-0 w-full bg-gray-900 border-t border-gray-800 pb-[env(safe-area-inset-bottom)] z-40">
+            <div class="flex justify-around items-center max-w-md mx-auto h-16">
+                <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex-1 flex flex-col items-center justify-center text-emerald-400 transition-colors">
+                    <span class="text-xl mb-1">🍽️</span>
+                    <span class="text-[10px] font-bold">Meal</span>
+                </button>
+                <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                    <span class="text-xl mb-1">⚖️</span>
+                    <span class="text-[10px] font-bold">Custom</span>
+                </button>
+                <button onclick="switchTab('new')" id="tab-new" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                    <span class="text-xl mb-1">➕</span>
+                    <span class="text-[10px] font-bold">New Food</span>
+                </button>
+                <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                    <span class="text-xl mb-1">⚙️</span>
+                    <span class="text-[10px] font-bold">Settings</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+        
     <div id="weight-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-gray-800 rounded-xl p-6 w-full max-w-xs border border-gray-700 shadow-2xl transform transition-all">
             <h3 id="weight-modal-title" class="text-xl font-bold text-emerald-400 mb-3 text-center">Enter Weight</h3>
@@ -349,7 +397,6 @@
         </div>
     </div>
 
-    <!-- Edit Food Modal -->
     <div id="edit-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-gray-800 rounded-xl p-6 w-full max-w-xs border border-gray-700 shadow-2xl">
             <h3 class="text-xl font-bold text-emerald-400 mb-4 text-center">Edit Food</h3>
@@ -409,23 +456,27 @@
     </div>
 
     <script>
-        // State
-        let db = JSON.parse(localStorage.getItem('foodDb')) || [];
+        // --- DATA STATE ---
+        let db = [];
         let plate = JSON.parse(localStorage.getItem('foodPlate')) || [];
-        let ghToken = localStorage.getItem('ghToken') || '';
-        let ghGistId = localStorage.getItem('ghGistId') || '';
+        let currentUser = null;
+        let currentHousehold = null;
+
+        // --- SUPABASE INIT ---
+        const supabaseUrl = 'https://klyxpjhhppfjtywihwxb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtseXhwamhocHBmanR5d2lod3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwOTQ0NDQsImV4cCI6MjA5NjY3MDQ0NH0.mQmEdNU4C2MgObG_dZJS50rLxlV3P3cQBXR3OA8jVbA';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
         let currentWeightDbId = null;
-        let activeCategoryFilter = 'All'; // New State for Category Tracking
-        let currentWeightMode = 'grams'; // 'grams' or 'units'
+        let activeCategoryFilter = 'All';
+        let currentWeightMode = 'grams';
         let currentEditId = null;
         let customMode = 'grams';
         let currentTheme = localStorage.getItem('appTheme') || 'dark';
 
-        // Category Tab Switcher
+        // --- CATEGORY & UI LOGIC ---
         function setCategoryFilter(cat) {
             activeCategoryFilter = cat;
-            
-            // Visually update the pill buttons
             document.querySelectorAll('.cat-pill').forEach(btn => {
                 if (btn.dataset.cat === cat) {
                     btn.classList.remove('bg-gray-700', 'text-gray-300');
@@ -438,12 +489,10 @@
             renderDb();
         }
 
-        // Keyboard "Enter" listener for Modal
         document.getElementById('weight-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') confirmWeight();
         });
 
-        // Copy to Clipboard feature
         async function copyCalories() {
             const calText = document.getElementById('total-cal').innerText;
             if (calText === "0") return;
@@ -461,71 +510,40 @@
             }
         }
 
-        // GitHub Sync Logic
-        async function syncWithGitHub(isPushing = false) {
-            if (!ghToken || !ghGistId) return;
-            const syncBtn = document.getElementById('sync-status');
-            syncBtn.innerText = "Syncing...";
-
-            try {
-                const response = await fetch(`https://api.github.com/gists/${ghGistId}`, {
-                    headers: { 'Authorization': `token ${ghToken}` }
-                });
-                const gist = await response.json();
-                const remoteDbStr = gist.files['foodDb.json']?.content;
-                const remoteDb = remoteDbStr ? JSON.parse(remoteDbStr) : [];
-
-                const mergedMap = new Map();
-                [...remoteDb, ...db].forEach(item => {
-                    if (!item.lastUsed) item.lastUsed = 0;
-                    if (mergedMap.has(item.id)) {
-                        const existing = mergedMap.get(item.id);
-                        if (item.lastUsed > existing.lastUsed) mergedMap.set(item.id, item);
-                    } else {
-                        mergedMap.set(item.id, item);
-                    }
-                });
-                db = Array.from(mergedMap.values());
-                localStorage.setItem('foodDb', JSON.stringify(db));
-
-                if (isPushing || JSON.stringify(remoteDb) !== JSON.stringify(db)) {
-                    await fetch(`https://api.github.com/gists/${ghGistId}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Authorization': `token ${ghToken}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            files: { 'foodDb.json': { content: JSON.stringify(db, null, 2) } }
-                        })
-                    });
-                }
+        // --- DATABASE LOGIC ---
+        async function fetchFoods() {
+            const syncStatus = document.getElementById('sync-status');
+            if (syncStatus) syncStatus.innerText = "Syncing...";
+            
+            const { data, error } = await supabaseClient.from('foods').select('*').order('created_at', { ascending: false });
+            
+            if (!error && data) {
+                db = data.map(food => ({
+                    id: food.id,
+                    category: food.category,
+                    brand: food.brand,
+                    name: food.name,
+                    note: food.note,
+                    calPer100: food.cal_100 != null ? parseFloat(food.cal_100) : null,
+                    protPer100: food.prot_100 != null ? parseFloat(food.prot_100) : null,
+                    calPerUnit: food.cal_unit != null ? parseFloat(food.cal_unit) : null,
+                    protPerUnit: food.prot_unit != null ? parseFloat(food.prot_unit) : null,
+                    unitWeight: food.weight_unit != null ? parseFloat(food.weight_unit) : null
+                }));
                 renderDb();
-                syncBtn.innerText = "✓ Synced";
-                setTimeout(() => syncBtn.innerText = "Sync", 2000);
-            } catch (error) {
-                syncBtn.innerText = "✕ Error";
-                setTimeout(() => syncBtn.innerText = "Sync", 2000);
+                if (syncStatus) syncStatus.innerText = "Synced";
+            } else {
+                if (syncStatus) syncStatus.innerText = "Error";
+                console.error(error);
             }
-        }
-
-        function saveSettings() {
-            ghToken = document.getElementById('gh-token').value;
-            ghGistId = document.getElementById('gh-gist').value;
-            localStorage.setItem('ghToken', ghToken);
-            localStorage.setItem('ghGistId', ghGistId);
-            syncWithGitHub();
-            switchTab('home');
         }
 
         function saveState() {
             localStorage.setItem('foodPlate', JSON.stringify(plate));
-            localStorage.setItem('foodDb', JSON.stringify(db));
             renderAll();
         }
 
-        // ADD NEW FOOD (Updated with Category)
-        function addToDb() {
+        async function addToDb() {
             const category = document.getElementById('new-category').value;
             const brand = document.getElementById('new-brand').value.trim();
             const name = document.getElementById('new-name').value.trim();
@@ -535,85 +553,56 @@
 
             if (!name || isNaN(cal)) return alert("Official Name and Calories are required.");
 
-            const calUnit = parseFloat(document.getElementById('new-cal-unit').value) || null;
-            const protUnit = parseFloat(document.getElementById('new-prot-unit').value) || null;
+            const calUnit = parseFloat(document.getElementById('new-cal-unit').value);
+            const protUnit = parseFloat(document.getElementById('new-prot-unit').value);
             const weightUnit = parseFloat(document.getElementById('new-weight-unit').value);
             
-            db.push({
-                id: Date.now(),
+            const newEntry = {
+                household_id: currentHousehold,
                 category: category,
                 brand: brand,
                 name: name,
                 note: note,
-                calPer100: cal || null,
-                protPer100: prot || null,
-                calPerUnit: calUnit,
-                protPerUnit: protUnit,
-                unitWeight: !isNaN(weightUnit) ? weightUnit : null,
-                lastUsed: Date.now()
-            });
-            
-            document.getElementById('new-brand').value = '';
-            document.getElementById('new-name').value = '';
-            document.getElementById('new-note').value = '';
-            document.getElementById('new-cal').value = '';
-            document.getElementById('new-prot').value = '';
-            document.getElementById('new-cal-unit').value = '';
-            document.getElementById('new-prot-unit').value = '';
-            document.getElementById('new-weight-unit').value = '';
-            
-            saveState();
-            
-            // Automatically switch to the category tab where they just created the food
-            if (activeCategoryFilter !== 'All' && activeCategoryFilter !== category) {
-                setCategoryFilter(category);
-            }
+                cal_100: !isNaN(cal) ? cal : null,
+                prot_100: !isNaN(prot) ? prot : null,
+                cal_unit: !isNaN(calUnit) ? calUnit : null,
+                prot_unit: !isNaN(protUnit) ? protUnit : null,
+                weight_unit: !isNaN(weightUnit) ? weightUnit : null
+            };
 
-            if(ghToken) syncWithGitHub(true);
-            switchTab('home');
-        }
+            const { error } = await supabaseClient.from('foods').insert([newEntry]);
+            
+            if (!error) {
+                document.getElementById('new-brand').value = '';
+                document.getElementById('new-name').value = '';
+                document.getElementById('new-note').value = '';
+                document.getElementById('new-cal').value = '';
+                document.getElementById('new-prot').value = '';
+                document.getElementById('new-cal-unit').value = '';
+                document.getElementById('new-prot-unit').value = '';
+                document.getElementById('new-weight-unit').value = '';
 
-        async function deleteFromDb(dbId) {
-            if(confirm("Delete this food from database?")) {
-                db = db.filter(item => item.id !== dbId);
-                saveState();
-
-                if(ghToken && ghGistId) {
-                    const syncBtn = document.getElementById('sync-status');
-                    syncBtn.innerText = "Deleting...";
-                    try {
-                        const response = await fetch(`https://api.github.com/gists/${ghGistId}`, {
-                            headers: { 'Authorization': `token ${ghToken}` }
-                        });
-                        const gist = await response.json();
-                        let remoteDbStr = gist.files['foodDb.json']?.content;
-                        let remoteDb = remoteDbStr ? JSON.parse(remoteDbStr) : [];
-                        remoteDb = remoteDb.filter(item => item.id !== dbId);
-                        await fetch(`https://api.github.com/gists/${ghGistId}`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Authorization': `token ${ghToken}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                files: { 'foodDb.json': { content: JSON.stringify(remoteDb, null, 2) } }
-                            })
-                        });
-                        syncBtn.innerText = "✓ Deleted";
-                        setTimeout(() => syncBtn.innerText = "Sync", 2000);
-                    } catch (error) {
-                        syncBtn.innerText = "✕ Error";
-                        setTimeout(() => syncBtn.innerText = "Sync", 2000);
-                    }
-                }
+                fetchFoods();
+                switchTab('home');
+            } else {
+                alert("Error saving food: " + error.message);
             }
         }
 
+        async function deleteFromDb(id) {
+            if (!confirm("Are you sure you want to delete this food?")) return;
+            const { error } = await supabaseClient.from('foods').delete().eq('id', id);
+            if (!error) fetchFoods();
+            else alert("Error deleting food: " + error.message);
+        }
+
+        // --- PLATE LOGIC ---
         function triggerAddWeight(dbId) {
             currentWeightDbId = dbId;
             const food = db.find(f => f.id === dbId);
+            if (!food) return;
+
             const primaryName = food.name;
-        
             const hasGrams = food.calPer100 != null && !isNaN(food.calPer100);
             const hasUnits = food.calPerUnit != null && !isNaN(food.calPerUnit);
         
@@ -679,9 +668,6 @@
             if (foodIndex === -1) return;
         
             const food = db[foodIndex];
-            food.lastUsed = Date.now();
-            db[foodIndex] = food;
-        
             let totalCal, totalProt, entryLabel;
         
             if (currentWeightMode === 'grams') {
@@ -704,9 +690,7 @@
         
             closeWeightModal();
             saveState();
-            if (ghToken) syncWithGitHub(true);
         }
-
 
         function setCustomMode(mode) {
             customMode = mode;
@@ -761,7 +745,6 @@
             switchTab('home');
         }
 
-
         function removeFromPlate(plateId) {
             plate = plate.filter(item => item.id !== plateId);
             saveState();
@@ -779,7 +762,6 @@
             renderPlate();
         }
 
-        // RENDER DATABASE (Updated with Category Filtering)
         function renderDb() {
             const search = document.getElementById('search-db').value.toLowerCase();
             const sortOrder = document.getElementById('sort-order').value;
@@ -791,36 +773,33 @@
                 sortedDb.sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0));
             } else if (sortOrder === 'name') {
                 sortedDb.sort((a, b) => {
-                    const nameA = a.name.toLowerCase();
-                    const nameB = b.name.toLowerCase();
+                    const nameA = a.name ? a.name.toLowerCase() : '';
+                    const nameB = b.name ? b.name.toLowerCase() : '';
                     return nameA.localeCompare(nameB);
                 });
             } else if (sortOrder === 'brand') {
                 sortedDb.sort((a, b) => {
                     const brandA = (a.brand || '').toLowerCase();
                     const brandB = (b.brand || '').toLowerCase();
-                    return brandA.localeCompare(brandB) || a.name.localeCompare(b.name);
+                    return brandA.localeCompare(brandB) || (a.name || '').localeCompare(b.name || '');
                 });
             }
 
             const filtered = sortedDb.filter(f => {
                 const itemCat = f.category || 'Ingredients';
                 if (activeCategoryFilter !== 'All' && itemCat !== activeCategoryFilter) return false;
-                const searchStr = `${f.brand || ''} ${f.name} ${f.note || f.customName || ''}`.toLowerCase();
+                const searchStr = `${f.brand || ''} ${f.name || ''} ${f.note || ''}`.toLowerCase();
                 return searchStr.includes(search);
             });
 
             filtered.forEach(food => {
                 let primaryName = food.name;
-                
                 let secondaryParts = [];
                 if (food.brand) secondaryParts.push(food.brand);
-                let itemNote = food.note || food.customName;
-                if (itemNote) secondaryParts.push(`Note: ${itemNote}`);
+                if (food.note) secondaryParts.push(`Note: ${food.note}`);
                 let secondaryName = secondaryParts.join(' <span class="text-gray-600">|</span> ');
 
                 const itemCat = food.category || 'Ingredients';
-                
                 const badgeHtml = `<span class="text-[8px] uppercase tracking-wider border border-gray-600 text-gray-400 px-1 leading-tight rounded">${itemCat}</span>`;
 
                 let unitLabel = '(unit)';
@@ -831,10 +810,8 @@
                 list.innerHTML += `
                     <div id="item-${food.id}" class="bg-gray-900 rounded-lg border border-gray-700">
                         <div class="flex justify-between items-stretch p-3">
-                            <div class="flex-1 cursor-pointer" onclick="triggerAddWeight(${food.id})">
-                                <div class="font-bold text-emerald-400 text-lg">
-                                    ${primaryName}
-                                </div>
+                            <div class="flex-1 cursor-pointer" onclick="triggerAddWeight('${food.id}')">
+                                <div class="font-bold text-emerald-400 text-lg">${primaryName}</div>
                                 ${secondaryName ? `<div class="text-xs text-gray-400 mb-1 mt-0.5">${secondaryName}</div>` : ''}
                                 <div class="text-xs text-gray-500 font-mono">
                                     ${food.calPer100 != null ? `<div>${food.calPer100} kcal | ${food.protPer100 || 0}g prot <span class="text-gray-700">(100g)</span></div>` : ''}
@@ -843,13 +820,13 @@
                             </div>
                             <div class="flex flex-col items-end justify-between ml-2">
                                 ${badgeHtml}
-                                <button onclick="toggleItemMenu(${food.id})" class="text-gray-500 hover:text-white text-sm transition">⚙</button>
+                                <button onclick="toggleItemMenu('${food.id}')" class="text-gray-500 hover:text-white text-sm transition">⚙</button>
                             </div>
                         </div>
                         <div id="menu-${food.id}" class="hidden border-t border-gray-700 flex gap-2 p-2">
-                            <button onclick="editFood(${food.id})" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-lg text-sm font-bold hover:bg-blue-600/40 transition">✏ Edit</button>
-                            <button onclick="deleteFromDb(${food.id})" class="flex-1 bg-red-600/20 text-red-400 py-2 rounded-lg text-sm font-bold hover:bg-red-600/40 transition">✕ Delete</button>
-                            <button onclick="toggleItemMenu(${food.id})" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm font-bold hover:bg-gray-600 transition">Cancel</button>
+                            <button onclick="editFood('${food.id}')" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-lg text-sm font-bold hover:bg-blue-600/40 transition">✏ Edit</button>
+                            <button onclick="deleteFromDb('${food.id}')" class="flex-1 bg-red-600/20 text-red-400 py-2 rounded-lg text-sm font-bold hover:bg-red-600/40 transition">✕ Delete</button>
+                            <button onclick="toggleItemMenu('${food.id}')" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm font-bold hover:bg-gray-600 transition">Cancel</button>
                         </div>
                     </div>
                 `;
@@ -878,10 +855,6 @@
             document.getElementById('total-prot').innerText = sumProt.toFixed(1);
         }
 
-        function toggleBlock(id) {
-            document.getElementById(id).classList.toggle('hidden');
-        }
-
         function toggleItemMenu(id) {
             const menu = document.getElementById(`menu-${id}`);
             document.querySelectorAll('[id^="menu-"]').forEach(m => {
@@ -897,7 +870,7 @@
             document.getElementById('edit-category').value = food.category || 'Ingredients';
             document.getElementById('edit-brand').value = food.brand || '';
             document.getElementById('edit-name').value = food.name || '';
-            document.getElementById('edit-note').value = food.note || food.customName || '';
+            document.getElementById('edit-note').value = food.note || '';
             document.getElementById('edit-cal').value = food.calPer100 != null ? food.calPer100 : '';
             document.getElementById('edit-prot').value = food.protPer100 != null ? food.protPer100 : '';
             document.getElementById('edit-cal-unit').value = food.calPerUnit != null ? food.calPerUnit : '';
@@ -911,36 +884,41 @@
             currentEditId = null;
         }
         
-        function saveEdit() {
+        async function saveEdit() {
             if (!currentEditId) return;
-            const idx = db.findIndex(f => f.id === currentEditId);
-            if (idx === -1) return;
             const name = document.getElementById('edit-name').value.trim();
             if (!name) return alert("Official Name is required.");
+
             const cal = parseFloat(document.getElementById('edit-cal').value);
             const prot = parseFloat(document.getElementById('edit-prot').value);
             const calUnit = parseFloat(document.getElementById('edit-cal-unit').value);
             const protUnit = parseFloat(document.getElementById('edit-prot-unit').value);
             const weightUnit = parseFloat(document.getElementById('edit-weight-unit').value);
-            db[idx] = {
-                ...db[idx],
+
+            const updatedEntry = {
                 category: document.getElementById('edit-category').value,
                 brand: document.getElementById('edit-brand').value.trim(),
                 name: name,
                 note: document.getElementById('edit-note').value.trim(),
-                calPer100: !isNaN(cal) ? cal : null,
-                protPer100: !isNaN(prot) ? prot : null,
-                calPerUnit: !isNaN(calUnit) ? calUnit : null,
-                protPerUnit: !isNaN(protUnit) ? protUnit : null,
-                unitWeight: !isNaN(weightUnit) ? weightUnit : null,
-                lastUsed: Date.now(),
+                cal_100: !isNaN(cal) ? cal : null,
+                prot_100: !isNaN(prot) ? prot : null,
+                cal_unit: !isNaN(calUnit) ? calUnit : null,
+                prot_unit: !isNaN(protUnit) ? protUnit : null,
+                weight_unit: !isNaN(weightUnit) ? weightUnit : null
             };
-            closeEditModal();
-            saveState();
-            if (ghToken) syncWithGitHub(true);
+
+            const { error } = await supabaseClient.from('foods').update(updatedEntry).eq('id', currentEditId);
+
+            if (!error) {
+                closeEditModal();
+                fetchFoods(); 
+            } else {
+                alert("Error updating food: " + error.message);
+            }
         }
 
-        function applyTheme(theme) {
+        // --- BASE THEME ENGINE (Updated for Cloud Storage) ---
+        async function applyTheme(theme, uploadToCloud = true) {
             currentTheme = theme;
             localStorage.setItem('appTheme', theme);
             document.body.setAttribute('data-theme', theme);
@@ -951,31 +929,54 @@
                 btn.classList.toggle('ring-emerald-400', t === theme);
                 btn.classList.toggle('ring-offset-1', t === theme);
             });
+
+            if (uploadToCloud && currentUser) {
+                await supabaseClient.from('profiles').update({ theme: theme }).eq('id', currentUser.id);
+            }
         }
 
-        // --- SCROLL TO TOP LOGIC ---
+        // --- ACCENT COLOR ENGINE (Updated for Cloud Storage) ---
+        async function setAccent(type, colorName, uploadToCloud = true) {
+            const shades = pastelPalettes[colorName];
+            if (!shades) return;
+            
+            document.documentElement.style.setProperty(`--color-${type}-400`, shades[400]);
+            document.documentElement.style.setProperty(`--color-${type}-500`, shades[500]);
+            document.documentElement.style.setProperty(`--color-${type}-600`, shades[600]);
+            
+            localStorage.setItem(`${type}Accent`, colorName);
+
+            const allColors = ['green', 'mint', 'blue', 'indigo', 'purple', 'pink', 'rose', 'peach'];
+            allColors.forEach(c => {
+                const btn = document.getElementById(`btn-${type}-${c}`);
+                if (btn) {
+                    if (c === colorName) {
+                        btn.classList.add('ring-2', 'ring-white', 'ring-offset-2', 'ring-offset-gray-800', 'scale-110');
+                    } else {
+                        btn.classList.remove('ring-2', 'ring-white', 'ring-offset-2', 'ring-offset-gray-800', 'scale-110');
+                    }
+                }
+            });
+
+            if (uploadToCloud && currentUser) {
+                const payload = {};
+                payload[type === 'primary' ? 'primary_accent' : 'secondary_accent'] = colorName;
+                await supabaseClient.from('profiles').update(payload).eq('id', currentUser.id);
+            }
+        }
+
         window.addEventListener('scroll', function() {
             const btn = document.getElementById('scroll-top-btn');
             if (!btn) return;
-            
-            // Show the button only after scrolling down 350px
-            if (window.scrollY > 350) {
-                btn.classList.remove('hidden');
-            } else {
-                btn.classList.add('hidden');
-            }
+            if (window.scrollY > 350) btn.classList.remove('hidden');
+            else btn.classList.add('hidden');
         });
 
         function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- BRAND AUTOCOMPLETE LOGIC ---
         function getUniqueBrands() {
-            // Harvest every brand currently in the database, remove blanks, and sort alphabetically
             const brands = db.map(item => item.brand).filter(b => b && b.trim() !== '');
             return [...new Set(brands)].sort((a, b) => a.localeCompare(b));
         }
@@ -993,43 +994,29 @@
         function renderBrandDropdown(prefix, filterText) {
             const dropdown = document.getElementById(`${prefix}-brand-dropdown`);
             let brands = getUniqueBrands();
-            
-            // Filter by whatever the user has typed so far (case insensitive)
-            if (filterText) {
-                brands = brands.filter(b => b.toLowerCase().includes(filterText.toLowerCase()));
-            }
-            
-            // If no brands match, hide the dropdown
+            if (filterText) brands = brands.filter(b => b.toLowerCase().includes(filterText.toLowerCase()));
             if (brands.length === 0) {
                 dropdown.classList.add('hidden');
                 return;
             }
-            
-            // Build the dropdown HTML (using onmousedown so it registers before the input loses focus)
             dropdown.innerHTML = brands.map(b => {
-                const safeBrand = b.replace(/'/g, "\\'"); // Prevent errors with brands like "Kellogg's"
+                const safeBrand = b.replace(/'/g, "\\'"); 
                 return `<div class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-emerald-400 cursor-pointer transition border-b border-gray-700 last:border-0" onmousedown="selectBrand('${prefix}', '${safeBrand}')">${b}</div>`;
             }).join('');
-            
             dropdown.classList.remove('hidden');
         }
 
         function selectBrand(prefix, brandName) {
             const input = document.getElementById(`${prefix}-brand`);
             const dropdown = document.getElementById(`${prefix}-brand-dropdown`);
-            
             input.value = brandName;
             dropdown.classList.add('hidden');
-            
-            // Force the mobile keyboard to close immediately
             input.blur(); 
         }
 
-        // Global listener: If you tap anywhere else on the screen, hide any open brand dropdowns
         document.addEventListener('mousedown', function(e) {
             const newBrandDropdown = document.getElementById('new-brand-dropdown');
             const editBrandDropdown = document.getElementById('edit-brand-dropdown');
-            
             if (newBrandDropdown && !e.target.closest('#new-brand') && !e.target.closest('#new-brand-dropdown')) {
                 newBrandDropdown.classList.add('hidden');
             }
@@ -1038,29 +1025,22 @@
             }
         });
 
-        // --- SPA NAVIGATION LOGIC ---
         function switchTab(tabId) {
-            // Hide all screens
             ['home', 'custom', 'new', 'settings'].forEach(id => {
                 document.getElementById(`screen-${id}`).classList.add('hidden');
                 document.getElementById(`screen-${id}`).classList.remove('block');
-                
-                // Dim all nav buttons
                 const btn = document.getElementById(`tab-${id}`);
                 btn.classList.remove('text-emerald-400');
                 btn.classList.add('text-gray-500');
             });
 
-            // Show active screen
             document.getElementById(`screen-${tabId}`).classList.remove('hidden');
             document.getElementById(`screen-${tabId}`).classList.add('block');
             
-            // Highlight active nav button
             const activeBtn = document.getElementById(`tab-${tabId}`);
             activeBtn.classList.remove('text-gray-500');
             activeBtn.classList.add('text-emerald-400');
 
-            // Dynamically update the Top App Bar Title
             const header = document.getElementById('app-header-title');
             const version = document.getElementById('app-version');
             
@@ -1077,18 +1057,9 @@
                 header.innerText = "Settings";
                 version.classList.add('hidden');
             }
-            
-            // Optional: If you open settings, auto-fill the tokens
-            if (tabId === 'settings') {
-                document.getElementById('gh-token').value = ghToken;
-                document.getElementById('gh-gist').value = ghGistId;
-            }
-            
-            // Snap back to top of screen
             window.scrollTo(0, 0);
         }
 
-        // --- ACCENT COLOR ENGINE ---
         const pastelPalettes = {
             green:  { 400: '134 239 172', 500: '74 222 128', 600: '34 197 94' },
             mint:   { 400: '94 234 212',  500: '45 212 191', 600: '20 184 166' },
@@ -1100,49 +1071,144 @@
             peach:  { 400: '253 186 116', 500: '251 146 60',  600: '249 115 22' }
         };
 
-        function setAccent(type, colorName) {
-            const shades = pastelPalettes[colorName];
-            if (!shades) return;
+        // --- AUTHENTICATION & SESSIONS ---
+        async function handleSignUp() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const displayName = document.getElementById('auth-name').value.trim();
             
-            // Push the new RGB values to the root CSS variables
-            document.documentElement.style.setProperty(`--color-${type}-400`, shades[400]);
-            document.documentElement.style.setProperty(`--color-${type}-500`, shades[500]);
-            document.documentElement.style.setProperty(`--color-${type}-600`, shades[600]);
-            
-            // Save preference so it remembers on refresh
-            localStorage.setItem(`${type}Accent`, colorName);
+            if (!email || !password || !displayName) return showAuthError("Please enter an email, password, and display name.");
 
-            // Update the UI Rings
-            const allColors = ['green', 'mint', 'blue', 'indigo', 'purple', 'pink', 'rose', 'peach'];
-            allColors.forEach(c => {
-                const btn = document.getElementById(`btn-${type}-${c}`);
-                if (btn) {
-                    if (c === colorName) {
-                        // Add ring and pop-out effect to active button
-                        btn.classList.add('ring-2', 'ring-white', 'ring-offset-2', 'ring-offset-gray-800', 'scale-110');
-                    } else {
-                        // Remove from all others
-                        btn.classList.remove('ring-2', 'ring-white', 'ring-offset-2', 'ring-offset-gray-800', 'scale-110');
-                    }
-                }
-            });
+            const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email, password });
+            if (authError) return showAuthError(authError.message);
+
+            const newHouseholdId = crypto.randomUUID();
+
+            const { error: hhError } = await supabaseClient
+                .from('households')
+                .insert([{ id: newHouseholdId }]);
+                
+            if (hhError) {
+                console.error("Household Error:", hhError);
+                return showAuthError("DB Error (Household): " + hhError.message);
+            }
+            
+            const { error: profileError } = await supabaseClient
+                .from('profiles')
+                .insert([{ id: authData.user.id, household_id: newHouseholdId, email: email, display_name: displayName }]);
+
+            if (profileError) {
+                console.error("Profile Error:", profileError);
+                return showAuthError("DB Error (Profile): " + profileError.message);
+            }
+
+            checkSession();
         }
 
-        // Load saved accents on startup
+        async function handleLogin() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                showAuthError(error.message);
+            } else {
+                checkSession();
+            }
+        }
+
+        function showAuthError(msg) {
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.innerText = msg;
+            errorDiv.classList.remove('hidden');
+        }
+
+        async function checkSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (session) {
+                currentUser = session.user;
+                
+                const { data: profile } = await supabaseClient.from('profiles')
+                    .select('household_id, theme, primary_accent, secondary_accent, display_name')
+                    .eq('id', currentUser.id)
+                    .single();
+                    
+                currentHousehold = profile?.household_id;
+                document.getElementById('my-household-id').value = currentHousehold || 'Error loading ID';
+
+                const nameLabel = document.getElementById('display-name-label');
+                if (nameLabel) nameLabel.innerText = profile?.display_name || currentUser.email;
+
+                if (profile?.theme) applyTheme(profile.theme, false);
+                if (profile?.primary_accent) setAccent('primary', profile.primary_accent, false);
+                if (profile?.secondary_accent) setAccent('secondary', profile.secondary_accent, false);
+
+                document.getElementById('auth-container').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                
+                fetchFoods();
+            } else {
+                document.getElementById('auth-container').classList.remove('hidden');
+                document.getElementById('app-container').classList.add('hidden');
+            }
+
+            const loader = document.getElementById('loading-screen');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.classList.add('hidden'), 300);
+            }
+        }
+
+        async function logOut() {
+            await supabaseClient.auth.signOut();
+            db = [];
+            renderDb();
+            checkSession();
+        }
+
         function loadAccents() {
             const savedPrimary = localStorage.getItem('primaryAccent') || 'mint';
             const savedSecondary = localStorage.getItem('secondaryAccent') || 'pink';
             setAccent('primary', savedPrimary);
             setAccent('secondary', savedSecondary);
         }
-        
-        // Execute immediately to prevent flashing default colors
-        loadAccents();
 
-        // Init
+        // --- HOUSEHOLD SHARING LOGIC ---
+        async function copyHouseholdId() {
+            if (!currentHousehold) return;
+            try {
+                await navigator.clipboard.writeText(currentHousehold);
+                alert("Household ID copied to clipboard!");
+            } catch (err) {
+                console.error("Failed to copy", err);
+            }
+        }
+
+        async function joinHousehold() {
+            const newId = document.getElementById('join-household-id').value.trim();
+            if (!newId) return alert("Please enter a Household ID.");
+            
+            if (newId === currentHousehold) return alert("You are already in this household.");
+
+            if (!confirm("Are you sure you want to join this household? You will lose access to your current personal food database.")) return;
+
+            const { error } = await supabaseClient.rpc('join_household', { target_household_id: newId });
+
+            if (!error) {
+                alert("Successfully joined new household!");
+                document.getElementById('join-household-id').value = '';
+                checkSession(); 
+            } else {
+                alert("Failed to join household. Please ensure the ID is valid.");
+                console.error(error);
+            }
+        }
+        
+        loadAccents();
+        checkSession();
         renderAll();
         applyTheme(currentTheme);
-        if(ghToken && ghGistId) syncWithGitHub();
     </script>
 </body>
 </html>
