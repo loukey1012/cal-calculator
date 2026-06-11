@@ -139,7 +139,7 @@
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.2</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.3</span>
                 </div>
             </div>
             
@@ -515,11 +515,13 @@
             const syncStatus = document.getElementById('sync-status');
             if (syncStatus) syncStatus.innerText = "Syncing...";
             
-            const { data, error } = await supabaseClient.from('foods').select('*').order('created_at', { ascending: false });
+            // Fetch the data
+            const { data, error } = await supabaseClient.from('foods').select('*');
             
             if (!error && data) {
                 db = data.map(food => ({
                     id: food.id,
+                    created_at: new Date(food.created_at || Date.now()).getTime(),
                     category: food.category,
                     brand: food.brand,
                     name: food.name,
@@ -770,7 +772,7 @@
 
             let sortedDb = [...db];
             if (sortOrder === 'recent') {
-                sortedDb.sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0));
+                sortedDb.sort((a, b) => b.created_at - a.created_at);
             } else if (sortOrder === 'name') {
                 sortedDb.sort((a, b) => {
                     const nameA = a.name ? a.name.toLowerCase() : '';
@@ -904,7 +906,8 @@
                 prot_100: !isNaN(prot) ? prot : null,
                 cal_unit: !isNaN(calUnit) ? calUnit : null,
                 prot_unit: !isNaN(protUnit) ? protUnit : null,
-                weight_unit: !isNaN(weightUnit) ? weightUnit : null
+                weight_unit: !isNaN(weightUnit) ? weightUnit : null,
+                created_at: new Date().toISOString()
             };
 
             const { error } = await supabaseClient.from('foods').update(updatedEntry).eq('id', currentEditId);
