@@ -146,8 +146,14 @@
             <div id="screen-home" class="space-y-6 block transition-opacity">
                 
                 <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-                    <div id="category-tabs" class="flex items-center gap-2 mb-2 overflow-x-auto hide-scrollbar pb-2 border-b border-gray-800">
-                        </div>
+                    <div class="flex justify-between items-center mb-2 border-b border-gray-800 pb-2">
+                        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto hide-scrollbar flex-1 pr-2">
+                            </div>
+                        
+                        <button onclick="clearAllMeals()" class="flex-shrink-0 ml-2 text-[10px] font-bold bg-red-900/20 text-red-400 px-2.5 py-1.5 rounded-full border border-red-900/50 hover:bg-red-900/40 transition active:scale-95" title="Reset Entire Day">
+                            🗑️ Reset
+                        </button>
+                    </div>
 
                     <div id="meal-tabs" class="flex items-center gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1 min-h-[32px]">
                         </div>
@@ -1567,6 +1573,26 @@
             
             dailyLog[activeCategory][newId] = { title: newTitle, items: [] };
             activeMealId = newId;
+            saveState();
+        }
+
+        // --- CLEAR ALL LOGIC ---
+        function clearAllMeals() {
+            if(!confirm("Are you sure you want to clear all foods and reset all tabs across every category?")) return;
+
+            const currentCategories = Object.keys(dailyLog);
+            
+            dailyLog = {};
+            
+            currentCategories.forEach(cat => {
+                dailyLog[cat] = {};
+                const mealId = 'meal_' + Date.now() + Math.random();
+                dailyLog[cat][mealId] = { title: `My ${cat}`, items: [] };
+            });
+            
+            activeCategory = currentCategories[0];
+            activeMealId = Object.keys(dailyLog[activeCategory])[0]; 
+            
             saveState();
         }
         
