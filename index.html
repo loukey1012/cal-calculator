@@ -139,7 +139,7 @@
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.5</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.0.6</span>
                 </div>
             </div>
             
@@ -496,6 +496,20 @@
         </div>
     </div>
 
+    <div id="plate-edit-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-gray-800 rounded-xl p-6 w-full max-w-xs border border-gray-700 shadow-2xl transform transition-all">
+            <h3 id="plate-edit-title" class="text-xl font-bold text-emerald-400 mb-3 text-center">Edit Amount</h3>
+            <div class="relative w-full mb-6">
+                <input type="number" id="plate-edit-input" inputmode="decimal" class="peer w-full bg-gray-900 text-white text-3xl px-4 pt-7 pb-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none text-center font-bold placeholder-transparent" placeholder="Amount">
+                <label id="plate-edit-label" for="plate-edit-input" class="absolute left-1/2 -translate-x-1/2 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Amount</label>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closePlateEditModal()" class="flex-1 bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 transition text-gray-300">Cancel</button>
+                <button onclick="savePlateEdit()" class="flex-1 bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 transition text-white">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- DATA STATE ---
         let db = [];
@@ -711,31 +725,39 @@
             if (foodIndex === -1) return;
         
             const food = db[foodIndex];
-            let totalCal, totalProt, entryLabel;
+            let totalCal, totalProt, entryLabel, calMult, protMult;
         
             if (currentWeightMode === 'grams') {
-                totalCal = (food.calPer100 / 100) * amount;
-                totalProt = ((food.protPer100 || 0) / 100) * amount;
+                calMult = food.calPer100 / 100;
+                protMult = (food.protPer100 || 0) / 100;
+                totalCal = calMult * amount;
+                totalProt = protMult * amount;
                 entryLabel = `${amount}g`;
             } else {
-                totalCal = food.calPerUnit * amount;
-                totalProt = (food.protPerUnit || 0) * amount;
+                calMult = food.calPerUnit;
+                protMult = food.protPerUnit || 0;
+                totalCal = calMult * amount;
+                totalProt = protMult * amount;
                 entryLabel = amount === 1 ? '1 unit' : `${amount} units`;
             }
         
             const displayName = food.brand ? `${food.brand} ${food.name}` : food.name;
+            
             plate.push({
                 id: Date.now(),
+                baseName: displayName,
+                mode: currentWeightMode,
+                amount: amount,
+                calMultiplier: calMult,
+                protMultiplier: protMult,
                 name: `${displayName} (${entryLabel})`,
                 totalCal: totalCal,
                 totalProt: totalProt
             });
         
             closeWeightModal();
-            
             document.getElementById('search-db').value = '';
             document.getElementById('clear-search-btn').classList.add('hidden');
-            
             saveState();
         }
 
@@ -762,25 +784,41 @@
             const amount = parseFloat(document.getElementById('custom-amount').value);
             if (!amount || isNaN(amount)) return alert("Please enter an amount.");
         
-            let totalCal, totalProt, entryLabel;
+            let totalCal, totalProt, entryLabel, calMult, protMult;
         
             if (customMode === 'grams') {
                 const cal100 = parseFloat(document.getElementById('custom-cal-100').value);
                 const prot100 = parseFloat(document.getElementById('custom-prot-100').value) || 0;
                 if (isNaN(cal100)) return alert("Please enter Kcal/100g.");
-                totalCal = (cal100 / 100) * amount;
-                totalProt = (prot100 / 100) * amount;
+                
+                calMult = cal100 / 100;
+                protMult = prot100 / 100;
+                totalCal = calMult * amount;
+                totalProt = protMult * amount;
                 entryLabel = `${amount}g`;
             } else {
                 const calUnit = parseFloat(document.getElementById('custom-cal-unit').value);
                 const protUnit = parseFloat(document.getElementById('custom-prot-unit').value) || 0;
                 if (isNaN(calUnit)) return alert("Please enter Kcal/unit.");
+                
+                calMult = calUnit;
+                protMult = protUnit;
                 totalCal = calUnit * amount;
                 totalProt = protUnit * amount;
                 entryLabel = amount === 1 ? '1 unit' : `${amount} units`;
             }
         
-            plate.push({ id: Date.now(), name: `Custom Entry (${entryLabel})`, totalCal, totalProt });
+            plate.push({ 
+                id: Date.now(), 
+                baseName: "Custom Entry",
+                mode: customMode,
+                amount: amount,
+                calMultiplier: calMult,
+                protMultiplier: protMult,
+                name: `Custom Entry (${entryLabel})`, 
+                totalCal, 
+                totalProt 
+            });
         
             document.getElementById('custom-cal-100').value = '';
             document.getElementById('custom-prot-100').value = '';
@@ -889,11 +927,11 @@
                 sumCal += item.totalCal; sumProt += item.totalProt;
                 list.innerHTML += `
                     <div class="flex justify-between items-center bg-gray-800 p-3 rounded-lg border border-gray-600 shadow-sm">
-                        <div>
+                        <div class="flex-1 cursor-pointer active:opacity-70 transition-opacity" onclick="openPlateEdit(${item.id})">
                             <div class="font-bold text-gray-200">${item.name}</div>
                             <div class="text-sm text-emerald-500 font-mono">${item.totalCal.toFixed(0)} kcal | <span class="text-blue-400">${item.totalProt.toFixed(1)}g prot</span></div>
                         </div>
-                        <button onclick="removeFromPlate(${item.id})" class="bg-red-900/50 text-red-400 w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-800/80 transition">✕</button>
+                        <button onclick="removeFromPlate(${item.id})" class="ml-3 bg-red-900/50 text-red-400 w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-800/80 transition">✕</button>
                     </div>
                 `;
             });
@@ -1277,6 +1315,60 @@
             
             searchInput.focus(); 
         }
+
+        // --- PLATE EDITING LOGIC ---
+        let currentPlateEditId = null;
+
+        function openPlateEdit(plateId) {
+            const item = plate.find(p => p.id === plateId);
+            if (!item) return;
+            
+            if (item.calMultiplier == null) {
+                alert("This is an older entry format. Please remove and re-add it to edit.");
+                return;
+            }
+
+            currentPlateEditId = plateId;
+            document.getElementById('plate-edit-title').innerText = item.baseName;
+            document.getElementById('plate-edit-label').innerText = item.mode === 'grams' ? 'Grams' : 'Units';
+            document.getElementById('plate-edit-input').value = item.amount;
+            
+            document.getElementById('plate-edit-modal').classList.remove('hidden');
+            document.getElementById('plate-edit-input').focus();
+        }
+
+        function closePlateEditModal() {
+            document.getElementById('plate-edit-modal').classList.add('hidden');
+            currentPlateEditId = null;
+        }
+
+        function savePlateEdit() {
+            if (!currentPlateEditId) return;
+            const newAmount = parseFloat(document.getElementById('plate-edit-input').value);
+            if (!newAmount || isNaN(newAmount)) {
+                alert("Please enter a valid amount.");
+                return;
+            }
+
+            const itemIndex = plate.findIndex(p => p.id === currentPlateEditId);
+            if (itemIndex === -1) return;
+
+            const item = plate[itemIndex];
+            
+            item.amount = newAmount;
+            item.totalCal = newAmount * item.calMultiplier;
+            item.totalProt = newAmount * item.protMultiplier;
+            
+            const entryLabel = item.mode === 'grams' ? `${newAmount}g` : (newAmount === 1 ? '1 unit' : `${newAmount} units`);
+            item.name = `${item.baseName} (${entryLabel})`;
+
+            closePlateEditModal();
+            saveState();
+        }
+
+        document.getElementById('plate-edit-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') savePlateEdit();
+        });
         
         loadAccents();
         checkSession();
