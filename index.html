@@ -40,7 +40,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        body { overscroll-behavior-y: contain; }
+        body { 
+            overscroll-behavior-y: contain; 
+            overflow-y: scroll;
+        }
         input[type="number"], input[type="text"], input[type="password"], input[type="email"], select { font-size: 16px; }
         .hidden { display: none !important; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -134,12 +137,12 @@
     </div>
 
     <div id="app-container" class="hidden">
-        <div class="max-w-md mx-auto p-4 pt-4 pb-24">
+        <div class="max-w-md mx-auto p-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-24">
             
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.1</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.3</span>
                 </div>
             </div>
             
@@ -402,23 +405,23 @@
             
         </div>
         
-        <nav class="fixed bottom-0 w-full bg-gray-900 border-t border-gray-800 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] pt-1 z-40">
-            <div class="flex justify-around items-center max-w-md mx-auto h-16">
-                <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex-1 flex flex-col items-center justify-center text-emerald-400 transition-colors">
-                    <span class="text-xl mb-1">🍽️</span>
-                    <span class="text-[10px] font-bold">Meal</span>
+        <nav class="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 z-50" style="padding-bottom: env(safe-area-inset-bottom);">
+            <div class="flex justify-between items-center max-w-md mx-auto h-[68px] pt-1 pb-2">
+                <button onclick="switchTab('home')" id="tab-home" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-emerald-400 transition-colors">
+                    <span class="text-xl mb-1 leading-none">🍽️</span>
+                    <span class="text-[10px] font-bold leading-none">Meal</span>
                 </button>
-                <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                    <span class="text-xl mb-1">⚖️</span>
-                    <span class="text-[10px] font-bold">Custom</span>
+                <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                    <span class="text-xl mb-1 leading-none">⚖️</span>
+                    <span class="text-[10px] font-bold leading-none">Custom</span>
                 </button>
-                <button onclick="switchTab('new')" id="tab-new" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                    <span class="text-xl mb-1">➕</span>
-                    <span class="text-[10px] font-bold">New Food</span>
+                <button onclick="switchTab('new')" id="tab-new" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                    <span class="text-xl mb-1 leading-none">➕</span>
+                    <span class="text-[10px] font-bold leading-none">New Food</span>
                 </button>
-                <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
-                    <span class="text-xl mb-1">⚙️</span>
-                    <span class="text-[10px] font-bold">Settings</span>
+                <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                    <span class="text-xl mb-1 leading-none">⚙️</span>
+                    <span class="text-[10px] font-bold leading-none">Settings</span>
                 </button>
             </div>
         </nav>
@@ -531,11 +534,16 @@
         // --- DATA STATE ---
         let db = [];
         
-        // Two-Tier State Initialization
-        const defaultCategories = ["Breakfast", "Lunch", "Dinner", "Snacks"];
+        const defaultCategories = ["Lunch", "Dinner", "Snacks"];
         let dailyLog = JSON.parse(localStorage.getItem('dailyLog'));
-        let activeCategory = localStorage.getItem('activeCategory') || 'Dinner';
+        let activeCategory = localStorage.getItem('activeCategory') || 'Lunch';
         let activeMealId = localStorage.getItem('activeMealId') || null;
+
+        if (dailyLog && dailyLog['Breakfast']) {
+            delete dailyLog['Breakfast'];
+            if (activeCategory === 'Breakfast') activeCategory = 'Lunch';
+            localStorage.setItem('dailyLog', JSON.stringify(dailyLog));
+        }
 
         if (!dailyLog) {
             dailyLog = {};
@@ -546,7 +554,7 @@
             });
             
             activeCategory = 'Lunch';
-            activeMealId = Object.keys(dailyLog['Breakfast'])[0]; 
+            activeMealId = Object.keys(dailyLog['Lunch'])[0]; 
         }
 
         let currentUser = null;
