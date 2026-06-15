@@ -640,7 +640,7 @@
             } else {
                 localStorage.removeItem('activeMealId');
             }
-            renderAll();
+            renderPlate();
         }
 
         async function addToDb() {
@@ -876,13 +876,6 @@
         function removeFromPlate(plateId) {
             dailyLog[activeCategory][activeMealId].items = dailyLog[activeCategory][activeMealId].items.filter(item => item.id !== plateId);
             saveState();
-        }
-
-        function clearPlate() {
-            if(confirm("Clear current meal?")) {
-                meals[activeMealId].items = [];
-                saveState();
-            }
         }
 
         function renderAll() {
@@ -1352,8 +1345,8 @@
         function loadAccents() {
             const savedPrimary = localStorage.getItem('primaryAccent') || 'mint';
             const savedSecondary = localStorage.getItem('secondaryAccent') || 'pink';
-            setAccent('primary', savedPrimary);
-            setAccent('secondary', savedSecondary);
+            setAccent('primary', savedPrimary, false);
+            setAccent('secondary', savedSecondary, false);
         }
 
         // --- HOUSEHOLD SHARING LOGIC ---
@@ -1474,14 +1467,6 @@
             saveState();
         }
 
-        function addCustomCategory() {
-            const newCat = prompt("Enter new category name:");
-            if (newCat && newCat.trim() !== '' && !dailyLog[newCat.trim()]) {
-                dailyLog[newCat.trim()] = {};
-                switchCategory(newCat.trim());
-            }
-        }
-
         function switchMeal(id) {
             activeMealId = id;
             saveState();
@@ -1523,15 +1508,6 @@
             dailyLog[activeCategory][newId] = { title: newTitle, items: clonedItems };
             activeMealId = newId;
             saveState();
-        }
-
-        function closeMeal() {
-            if(confirm("Are you sure you want to delete this meal entirely?")) {
-                delete dailyLog[activeCategory][activeMealId];
-                const remainingMeals = Object.keys(dailyLog[activeCategory]);
-                activeMealId = remainingMeals.length > 0 ? remainingMeals[0] : null;
-                saveState();
-            }
         }
 
         function smartDeleteMeal() {
