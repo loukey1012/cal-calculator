@@ -142,7 +142,7 @@
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.6</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.7</span>
                 </div>
             </div>
             
@@ -736,7 +736,7 @@
             if (currentWeightMode === 'grams') {
                 input.placeholder = 'Grams';
                 if(label) label.innerText = 'Grams';
-                input.inputMode = 'numeric';
+                input.inputMode = 'decimal';
                 gramsBtn.classList.add('bg-emerald-600'); gramsBtn.classList.remove('bg-gray-700');
                 unitsBtn.classList.add('bg-gray-700'); unitsBtn.classList.remove('bg-emerald-600');
             } else {
