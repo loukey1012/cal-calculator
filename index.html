@@ -98,7 +98,7 @@
         body[data-theme="red"] .border-gray-600 { border-color: #7a3348 !important; }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-sans antialiased pb-32">
+<body class="bg-gray-900 text-white font-sans antialiased">
 
     <div id="loading-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 transition-opacity duration-300">
         <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[rgb(var(--color-primary-400))] to-[rgb(var(--color-secondary-400))] animate-pulse">CALculator</h1>
@@ -136,276 +136,277 @@
         </div>
     </div>
 
-    <div id="app-container" class="hidden">
-        <div class="max-w-md mx-auto p-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-24">
-            
-            <div class="text-center mb-6">
-                <div class="relative inline-block">
-                    <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.7</span>
-                </div>
-            </div>
-            
-            <div id="screen-home" class="space-y-6 block transition-opacity">
+    <div id="app-container" class="hidden" style="position: fixed; inset: 0; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+            <div class="max-w-md mx-auto p-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-24">
                 
-                <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-                    <div class="flex justify-between items-center mb-2 border-b border-gray-800 pb-2">
-                        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto hide-scrollbar flex-1 pr-2">
-                            </div>
-                        
-                        <button onclick="clearAllMeals()" class="flex-shrink-0 ml-2 text-[10px] font-bold bg-red-900/20 text-red-400 px-2.5 py-1.5 rounded-full border border-red-900/50 hover:bg-red-900/40 transition active:scale-95" title="Reset Entire Day">
-                            🗑️ Reset
-                        </button>
-                    </div>
-
-                    <div id="meal-tabs" class="flex items-center gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1 min-h-[32px]">
-                        </div>
-
-                    <div class="flex justify-between items-center mb-2 h-8">
-                        <h2 id="active-meal-title" class="text-xl font-bold text-gray-300">No Meal Selected</h2>
-                        <div id="meal-actions" class="flex gap-1.5 hidden">
-                            <button onclick="renameMeal()" class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded hover:bg-gray-600 transition" title="Rename">✏️</button>
-                            <button onclick="createNewMeal()" class="text-xs bg-emerald-900/40 text-emerald-400 px-2 py-1 rounded hover:bg-emerald-900/60 transition" title="New Empty Meal">➕</button>
-                            <button onclick="duplicateMeal()" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-1 rounded hover:bg-blue-900/60 transition" title="Duplicate">📋</button>
-                            <button onclick="smartDeleteMeal()" class="text-xs bg-red-900/40 text-red-400 px-2 py-1 rounded hover:bg-red-900/60 transition" title="Delete or Clear">🗑️</button>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div onclick="copyCalories()" class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center cursor-pointer hover:bg-gray-800 transition active:scale-95 group">
-                            <div class="text-sm text-gray-400 group-hover:text-gray-300 transition">Calories <span class="text-xs opacity-50">(tap)</span></div>
-                            <div id="total-cal" class="text-2xl font-bold text-emerald-400 transition-colors duration-200">0</div>
-                        </div>
-                        <div class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center">
-                            <div class="text-sm text-gray-400">Protein (g)</div>
-                            <div id="total-prot" class="text-2xl font-bold text-blue-400">0</div>
-                        </div>
+                <div class="text-center mb-6">
+                    <div class="relative inline-block">
+                        <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
+                        <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.8</span>
                     </div>
                 </div>
                 
-                <div id="plate-list" class="space-y-2"></div>
-                
-                <hr class="border-gray-700">
-                
-                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-gray-300">Food Database</h3>
-                            <button onclick="fetchFoods()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
-                                <span id="sync-status">Synced</span>
+                <div id="screen-home" class="space-y-6 block transition-opacity">
+                    
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+                        <div class="flex justify-between items-center mb-2 border-b border-gray-800 pb-2">
+                            <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto hide-scrollbar flex-1 pr-2">
+                                </div>
+                            
+                            <button onclick="clearAllMeals()" class="flex-shrink-0 ml-2 text-[10px] font-bold bg-red-900/20 text-red-400 px-2.5 py-1.5 rounded-full border border-red-900/50 hover:bg-red-900/40 transition active:scale-95" title="Reset Entire Day">
+                                🗑️ Reset
                             </button>
                         </div>
-                    </div>
-                    <div id="db-content">
-                        <div class="flex flex-wrap gap-1.5 mb-4">
-                            <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill bg-emerald-600 text-white px-2.5 py-1 rounded-md text-[10px] font-bold transition">All</button>
-                            <button onclick="setCategoryFilter('Uncategorized')" data-cat="Uncategorized" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Uncategorized</button>
-                            <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Meals</button>
-                            <button onclick="setCategoryFilter('Vegetables')" data-cat="Vegetables" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Vegetables</button>
-                            <button onclick="setCategoryFilter('Fruit')" data-cat="Fruit" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Fruit</button>
-                            <button onclick="setCategoryFilter('Carbs')" data-cat="Carbs" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Carbs</button>
-                            <button onclick="setCategoryFilter('Bread')" data-cat="Bread" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Bread</button>
-                            <button onclick="setCategoryFilter('Meat')" data-cat="Meat" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Meat</button>
-                            <button onclick="setCategoryFilter('Fish')" data-cat="Fish" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Fish</button>
-                            <button onclick="setCategoryFilter('Dairy')" data-cat="Dairy" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Dairy</button>
-                            <button onclick="setCategoryFilter('Eggs')" data-cat="Eggs" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Eggs</button>
-                            <button onclick="setCategoryFilter('Fats & Oils')" data-cat="Fats & Oils" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Fats & Oils</button>
-                            <button onclick="setCategoryFilter('Spreads')" data-cat="Spreads" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Spreads</button>
-                            <button onclick="setCategoryFilter('Sauces')" data-cat="Sauces" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Sauces</button>
-                            <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Snacks</button>
-                            <button onclick="setCategoryFilter('Baking')" data-cat="Baking" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Baking</button>
-                            <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Drinks</button>
-                            <button onclick="setCategoryFilter('Supplements')" data-cat="Supplements" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Supplements</button>
-                            <button onclick="setCategoryFilter('Mci')" data-cat="Mci" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Mci</button>
-                        </div>
-                        <div class="flex gap-2 mb-4">
-                            <div class="relative flex-1">
-                                <input type="text" id="search-db" oninput="handleSearch()" placeholder="Search brand, name..." class="w-full bg-gray-900 text-white pl-3 pr-8 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
-                                <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-300 transition-colors">✕</button>
-                            </div>
-                            <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
-                                <option value="recent">Recent</option>
-                                <option value="name">A-Z Name</option>
-                                <option value="brand">A-Z Brand</option>
-                            </select>
-                        </div>
-                        <div id="db-list" class="space-y-2"></div> 
-                    </div>
-                </div>
-                <button id="scroll-top-btn" onclick="scrollToTop()" class="hidden fixed bottom-[calc(env(safe-area-inset-bottom)+7rem)] right-4 bg-emerald-600 hover:bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-2xl z-30 transition-all duration-200 active:scale-95">
-                    <span class="text-sm font-bold">▲</span>
-                </button>
-            </div>
-            
-            <div id="screen-custom" class="hidden space-y-4">
-                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                    <div class="space-y-6 mt-2">
-                        <div class="flex gap-2">
-                            <div class="relative w-1/2">
-                                <input type="number" id="custom-cal-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
-                                <label for="custom-cal-100" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
-                            </div>
-                            <div class="relative w-1/2">
-                                <input type="number" id="custom-prot-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/100g">
-                                <label for="custom-prot-100" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/100g</label>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <div class="relative w-1/2">
-                                <input type="number" id="custom-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit (optional)">
-                                <label for="custom-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit (optional)</label>
-                            </div>
-                            <div class="relative w-1/2">
-                                <input type="number" id="custom-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/unit (optional)">
-                                <label for="custom-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/unit (optional)</label>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
-                            <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
-                        </div>
-                        <div class="flex gap-2 mt-4">
-                            <div class="relative flex-1">
-                                <input type="number" id="custom-amount" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Amount">
-                                <label id="custom-amount-label" for="custom-amount" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
-                            </div>
-                        </div>
-                        <button onclick="addCustom()" class="w-full bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 text-lg transition shadow-lg mt-4">Add to Plate</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="screen-new" class="hidden space-y-4">
-                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                    <div class="space-y-4 mt-2">
-                        <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
-                            <option value="Meals">Meals</option>
-                            <option value="Vegetables">Vegetables</option>
-                            <option value="Fruit">Fruit</option>
-                            <option value="Carbs">Carbs</option>
-                            <option value="Bread">Bread</option>
-                            <option value="Meat">Meat</option>
-                            <option value="Fish">Fish</option>
-                            <option value="Dairy">Dairy</option>
-                            <option value="Eggs">Eggs</option>
-                            <option value="Fats & Oils">Fats & Oils</option>
-                            <option value="Spreads">Spreads</option>
-                            <option value="Sauces">Sauces</option>
-                            <option value="Snacks">Snacks</option>
-                            <option value="Baking">Baking</option>
-                            <option value="Drinks">Drinks</option>
-                            <option value="Supplements">Supplements</option>
-                            <option value="Mci">Mci</option>
-                        </select>
-                        
-                        <div class="flex gap-2">
-                            <div class="relative w-1/3">
-                                <input type="text" id="new-brand" onfocus="showBrandDropdown('new')" oninput="filterBrands('new')" autocomplete="off" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Brand">
-                                <label for="new-brand" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Brand</label>
-                                <div id="new-brand-dropdown" class="hidden absolute top-full left-0 min-w-[150px] mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl z-50 max-h-48 overflow-y-auto"></div>
-                            </div>
-                            <div class="relative w-2/3">
-                                <input type="text" id="new-name" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Official Name">
-                                <label for="new-name" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Official Name</label>
-                            </div>
-                        </div>
-                        <div class="relative w-full">
-                            <input type="text" id="new-note" class="peer w-full bg-gray-900 text-emerald-400 px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Note (optional)">
-                            <label for="new-note" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Note (optional)</label>
-                        </div>
-                        <div class="flex gap-2">
-                            <div class="relative w-1/2">
-                                <input type="number" id="new-cal" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
-                                <label for="new-cal" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
-                            </div>
-                            <div class="relative w-1/2">
-                                <input type="number" id="new-prot" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/100g">
-                                <label for="new-prot" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/100g</label>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <div class="relative w-1/3">
-                                <input type="number" id="new-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit">
-                                <label for="new-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit</label>
-                            </div>
-                            <div class="relative w-1/3">
-                                <input type="number" id="new-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/unit">
-                                <label for="new-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/unit</label>
-                            </div>
-                            <div class="relative w-1/3">
-                                <input type="number" id="new-weight-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-purple-900 focus:outline-none focus:border-purple-500 placeholder-transparent" placeholder="Weight (g)">
-                                <label for="new-weight-unit" class="absolute left-3 top-1 text-[10px] text-purple-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-purple-400 pointer-events-none">Weight (g)</label>
-                            </div>
-                        </div>
-                        <button onclick="addToDb()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 text-lg transition shadow-lg mt-4">Save & Return</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="screen-settings" class="hidden space-y-4">
-                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                    <div class="space-y-4 mt-2">
-                        <div>
-                            <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
-                            <div class="flex gap-2 flex-wrap">
-                                <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-3 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
-                                <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-3 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
-                                <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-3 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
-                                <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-3 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
-                            </div>
-                        </div>
-                        <div class="mt-4 border-t border-gray-700 pt-4">
-                            <p class="text-xs text-gray-400 mb-2">Primary Accent</p>
-                            <div class="flex gap-2 mb-4 flex-wrap">
-                                <button id="btn-primary-green" onclick="setAccent('primary', 'green')" class="w-7 h-7 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-primary-mint" onclick="setAccent('primary', 'mint')" class="w-7 h-7 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-primary-blue" onclick="setAccent('primary', 'blue')" class="w-7 h-7 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-primary-indigo" onclick="setAccent('primary', 'indigo')" class="w-7 h-7 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-primary-purple" onclick="setAccent('primary', 'purple')" class="w-7 h-7 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-primary-pink" onclick="setAccent('primary', 'pink')" class="w-7 h-7 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-primary-rose" onclick="setAccent('primary', 'rose')" class="w-7 h-7 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-primary-peach" onclick="setAccent('primary', 'peach')" class="w-7 h-7 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
-                            </div>
-                            
-                            <p class="text-xs text-gray-400 mb-2">Secondary Accent</p>
-                            <div class="flex gap-2 mb-4 flex-wrap">
-                                <button id="btn-secondary-green" onclick="setAccent('secondary', 'green')" class="w-7 h-7 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-secondary-mint" onclick="setAccent('secondary', 'mint')" class="w-7 h-7 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-secondary-blue" onclick="setAccent('secondary', 'blue')" class="w-7 h-7 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-secondary-indigo" onclick="setAccent('secondary', 'indigo')" class="w-7 h-7 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-secondary-purple" onclick="setAccent('secondary', 'purple')" class="w-7 h-7 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-secondary-pink" onclick="setAccent('secondary', 'pink')" class="w-7 h-7 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-secondary-rose" onclick="setAccent('secondary', 'rose')" class="w-7 h-7 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
-                                <button id="btn-secondary-peach" onclick="setAccent('secondary', 'peach')" class="w-7 h-7 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
-                            </div>
-                        </div>
 
-                        <div class="mt-8 border-t border-gray-700 pt-4">
-                            <p class="text-xs text-gray-400 mb-2">Household Sharing</p>
-                            
-                            <div class="relative w-full mb-3">
-                                <input type="text" id="my-household-id" readonly class="peer w-full bg-gray-900 text-gray-400 px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none text-xs" value="Loading...">
-                                <label class="absolute left-3 top-1 text-[10px] text-gray-500 pointer-events-none">My Household ID (Share this)</label>
-                                <button onclick="copyHouseholdId()" class="absolute right-2 top-2 text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-white transition">Copy</button>
+                        <div id="meal-tabs" class="flex items-center gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1 min-h-[32px]">
                             </div>
 
-                            <div class="flex gap-2 mb-6">
+                        <div class="flex justify-between items-center mb-2 h-8">
+                            <h2 id="active-meal-title" class="text-xl font-bold text-gray-300">No Meal Selected</h2>
+                            <div id="meal-actions" class="flex gap-1.5 hidden">
+                                <button onclick="renameMeal()" class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded hover:bg-gray-600 transition" title="Rename">✏️</button>
+                                <button onclick="createNewMeal()" class="text-xs bg-emerald-900/40 text-emerald-400 px-2 py-1 rounded hover:bg-emerald-900/60 transition" title="New Empty Meal">➕</button>
+                                <button onclick="duplicateMeal()" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-1 rounded hover:bg-blue-900/60 transition" title="Duplicate">📋</button>
+                                <button onclick="smartDeleteMeal()" class="text-xs bg-red-900/40 text-red-400 px-2 py-1 rounded hover:bg-red-900/60 transition" title="Delete or Clear">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div onclick="copyCalories()" class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center cursor-pointer hover:bg-gray-800 transition active:scale-95 group">
+                                <div class="text-sm text-gray-400 group-hover:text-gray-300 transition">Calories <span class="text-xs opacity-50">(tap)</span></div>
+                                <div id="total-cal" class="text-2xl font-bold text-emerald-400 transition-colors duration-200">0</div>
+                            </div>
+                            <div class="flex-1 bg-gray-900 p-3 rounded-lg border border-gray-700 text-center">
+                                <div class="text-sm text-gray-400">Protein (g)</div>
+                                <div id="total-prot" class="text-2xl font-bold text-blue-400">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="plate-list" class="space-y-2"></div>
+                    
+                    <hr class="border-gray-700">
+                    
+                    <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-gray-300">Food Database</h3>
+                                <button onclick="fetchFoods()" id="sync-btn" class="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-md hover:bg-blue-600/40 transition flex items-center gap-2">
+                                    <span id="sync-status">Synced</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="db-content">
+                            <div class="flex flex-wrap gap-1.5 mb-4">
+                                <button onclick="setCategoryFilter('All')" data-cat="All" class="cat-pill bg-emerald-600 text-white px-2.5 py-1 rounded-md text-[10px] font-bold transition">All</button>
+                                <button onclick="setCategoryFilter('Uncategorized')" data-cat="Uncategorized" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Uncategorized</button>
+                                <button onclick="setCategoryFilter('Meals')" data-cat="Meals" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Meals</button>
+                                <button onclick="setCategoryFilter('Vegetables')" data-cat="Vegetables" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Vegetables</button>
+                                <button onclick="setCategoryFilter('Fruit')" data-cat="Fruit" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Fruit</button>
+                                <button onclick="setCategoryFilter('Carbs')" data-cat="Carbs" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Carbs</button>
+                                <button onclick="setCategoryFilter('Bread')" data-cat="Bread" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Bread</button>
+                                <button onclick="setCategoryFilter('Meat')" data-cat="Meat" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Meat</button>
+                                <button onclick="setCategoryFilter('Fish')" data-cat="Fish" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Fish</button>
+                                <button onclick="setCategoryFilter('Dairy')" data-cat="Dairy" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Dairy</button>
+                                <button onclick="setCategoryFilter('Eggs')" data-cat="Eggs" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Eggs</button>
+                                <button onclick="setCategoryFilter('Fats & Oils')" data-cat="Fats & Oils" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Fats & Oils</button>
+                                <button onclick="setCategoryFilter('Spreads')" data-cat="Spreads" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Spreads</button>
+                                <button onclick="setCategoryFilter('Sauces')" data-cat="Sauces" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Sauces</button>
+                                <button onclick="setCategoryFilter('Snacks')" data-cat="Snacks" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Snacks</button>
+                                <button onclick="setCategoryFilter('Baking')" data-cat="Baking" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Baking</button>
+                                <button onclick="setCategoryFilter('Drinks')" data-cat="Drinks" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Drinks</button>
+                                <button onclick="setCategoryFilter('Supplements')" data-cat="Supplements" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Supplements</button>
+                                <button onclick="setCategoryFilter('Mci')" data-cat="Mci" class="cat-pill bg-gray-700 text-gray-300 px-2.5 py-1 rounded-md text-[10px] font-bold transition hover:bg-gray-600">Mci</button>
+                            </div>
+                            <div class="flex gap-2 mb-4">
                                 <div class="relative flex-1">
-                                    <input type="text" id="join-household-id" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-xs" placeholder="Enter Household ID">
-                                    <label for="join-household-id" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-xs peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Enter Partner's ID</label>
+                                    <input type="text" id="search-db" oninput="handleSearch()" placeholder="Search brand, name..." class="w-full bg-gray-900 text-white pl-3 pr-8 py-2 rounded-lg border border-gray-700 focus:border-emerald-500 focus:outline-none">
+                                    <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-300 transition-colors">✕</button>
                                 </div>
-                                <button onclick="joinHousehold()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 rounded-lg font-bold text-sm transition">Join</button>
+                                <select id="sort-order" onchange="renderDb()" class="bg-gray-900 text-white px-2 py-2 rounded-lg border border-gray-700 focus:outline-none text-sm">
+                                    <option value="recent">Recent</option>
+                                    <option value="name">A-Z Name</option>
+                                    <option value="brand">A-Z Brand</option>
+                                </select>
+                            </div>
+                            <div id="db-list" class="space-y-2"></div> 
+                        </div>
+                    </div>
+                    <button id="scroll-top-btn" onclick="scrollToTop()" class="hidden fixed bottom-[calc(env(safe-area-inset-bottom)+7rem)] right-4 bg-emerald-600 hover:bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-2xl z-30 transition-all duration-200 active:scale-95">
+                        <span class="text-sm font-bold">▲</span>
+                    </button>
+                </div>
+                
+                <div id="screen-custom" class="hidden space-y-4">
+                    <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                        <div class="space-y-6 mt-2">
+                            <div class="flex gap-2">
+                                <div class="relative w-1/2">
+                                    <input type="number" id="custom-cal-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
+                                    <label for="custom-cal-100" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
+                                </div>
+                                <div class="relative w-1/2">
+                                    <input type="number" id="custom-prot-100" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/100g">
+                                    <label for="custom-prot-100" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/100g</label>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="relative w-1/2">
+                                    <input type="number" id="custom-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit (optional)">
+                                    <label for="custom-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit (optional)</label>
+                                </div>
+                                <div class="relative w-1/2">
+                                    <input type="number" id="custom-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Protein/unit (optional)">
+                                    <label for="custom-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Protein/unit (optional)</label>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="custom-mode-grams" onclick="setCustomMode('grams')" class="flex-1 bg-emerald-600 text-white py-1.5 rounded-lg font-bold text-sm transition">By Weight (g)</button>
+                                <button id="custom-mode-units" onclick="setCustomMode('units')" class="flex-1 bg-gray-700 text-gray-300 py-1.5 rounded-lg font-bold text-sm transition">By Unit</button>
+                            </div>
+                            <div class="flex gap-2 mt-4">
+                                <div class="relative flex-1">
+                                    <input type="number" id="custom-amount" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Amount">
+                                    <label id="custom-amount-label" for="custom-amount" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Grams</label>
+                                </div>
+                            </div>
+                            <button onclick="addCustom()" class="w-full bg-emerald-600 py-3 rounded-lg font-bold hover:bg-emerald-500 text-lg transition shadow-lg mt-4">Add to Plate</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="screen-new" class="hidden space-y-4">
+                    <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                        <div class="space-y-4 mt-2">
+                            <select id="new-category" class="w-full bg-gray-900 text-white px-3 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 mb-2 font-bold">
+                                <option value="Meals">Meals</option>
+                                <option value="Vegetables">Vegetables</option>
+                                <option value="Fruit">Fruit</option>
+                                <option value="Carbs">Carbs</option>
+                                <option value="Bread">Bread</option>
+                                <option value="Meat">Meat</option>
+                                <option value="Fish">Fish</option>
+                                <option value="Dairy">Dairy</option>
+                                <option value="Eggs">Eggs</option>
+                                <option value="Fats & Oils">Fats & Oils</option>
+                                <option value="Spreads">Spreads</option>
+                                <option value="Sauces">Sauces</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Baking">Baking</option>
+                                <option value="Drinks">Drinks</option>
+                                <option value="Supplements">Supplements</option>
+                                <option value="Mci">Mci</option>
+                            </select>
+                            
+                            <div class="flex gap-2">
+                                <div class="relative w-1/3">
+                                    <input type="text" id="new-brand" onfocus="showBrandDropdown('new')" oninput="filterBrands('new')" autocomplete="off" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Brand">
+                                    <label for="new-brand" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Brand</label>
+                                    <div id="new-brand-dropdown" class="hidden absolute top-full left-0 min-w-[150px] mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl z-50 max-h-48 overflow-y-auto"></div>
+                                </div>
+                                <div class="relative w-2/3">
+                                    <input type="text" id="new-name" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Official Name">
+                                    <label for="new-name" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Official Name</label>
+                                </div>
+                            </div>
+                            <div class="relative w-full">
+                                <input type="text" id="new-note" class="peer w-full bg-gray-900 text-emerald-400 px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Note (optional)">
+                                <label for="new-note" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Note (optional)</label>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="relative w-1/2">
+                                    <input type="number" id="new-cal" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/100g">
+                                    <label for="new-cal" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/100g</label>
+                                </div>
+                                <div class="relative w-1/2">
+                                    <input type="number" id="new-prot" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/100g">
+                                    <label for="new-prot" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/100g</label>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="relative w-1/3">
+                                    <input type="number" id="new-cal-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-emerald-900 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Kcal/unit">
+                                    <label for="new-cal-unit" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Kcal/unit</label>
+                                </div>
+                                <div class="relative w-1/3">
+                                    <input type="number" id="new-prot-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-blue-900 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="Prot/unit">
+                                    <label for="new-prot-unit" class="absolute left-3 top-1 text-[10px] text-blue-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-400 pointer-events-none">Prot/unit</label>
+                                </div>
+                                <div class="relative w-1/3">
+                                    <input type="number" id="new-weight-unit" inputmode="decimal" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-purple-900 focus:outline-none focus:border-purple-500 placeholder-transparent" placeholder="Weight (g)">
+                                    <label for="new-weight-unit" class="absolute left-3 top-1 text-[10px] text-purple-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-purple-400 pointer-events-none">Weight (g)</label>
+                                </div>
+                            </div>
+                            <button onclick="addToDb()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 text-lg transition shadow-lg mt-4">Save & Return</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="screen-settings" class="hidden space-y-4">
+                    <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                        <div class="space-y-4 mt-2">
+                            <div>
+                                <p class="text-xs text-gray-400 mb-1.5">Color Theme</p>
+                                <div class="flex gap-2 flex-wrap">
+                                    <button id="theme-btn-dark" onclick="applyTheme('dark')" class="flex-1 bg-gray-900 border border-gray-700 py-3 rounded-lg text-xs font-bold text-gray-300 transition">🌑 Dark</button>
+                                    <button id="theme-btn-light" onclick="applyTheme('light')" class="flex-1 bg-white border border-gray-300 py-3 rounded-lg text-xs font-bold text-gray-700 transition">☀️ Light</button>
+                                    <button id="theme-btn-pink" onclick="applyTheme('pink')" class="flex-1 bg-pink-300 border border-pink-400 py-3 rounded-lg text-xs font-bold text-pink-900 transition">🌸 Pink</button>
+                                    <button id="theme-btn-red" onclick="applyTheme('red')" class="flex-1 bg-[#280a12] border border-[#5a1a2e] py-3 rounded-lg text-xs font-bold text-[#f5c6d0] transition">🍷 Red</button>
+                                </div>
+                            </div>
+                            <div class="mt-4 border-t border-gray-700 pt-4">
+                                <p class="text-xs text-gray-400 mb-2">Primary Accent</p>
+                                <div class="flex gap-2 mb-4 flex-wrap">
+                                    <button id="btn-primary-green" onclick="setAccent('primary', 'green')" class="w-7 h-7 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-primary-mint" onclick="setAccent('primary', 'mint')" class="w-7 h-7 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-primary-blue" onclick="setAccent('primary', 'blue')" class="w-7 h-7 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-primary-indigo" onclick="setAccent('primary', 'indigo')" class="w-7 h-7 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-primary-purple" onclick="setAccent('primary', 'purple')" class="w-7 h-7 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-primary-pink" onclick="setAccent('primary', 'pink')" class="w-7 h-7 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-primary-rose" onclick="setAccent('primary', 'rose')" class="w-7 h-7 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-primary-peach" onclick="setAccent('primary', 'peach')" class="w-7 h-7 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
+                                </div>
+                                
+                                <p class="text-xs text-gray-400 mb-2">Secondary Accent</p>
+                                <div class="flex gap-2 mb-4 flex-wrap">
+                                    <button id="btn-secondary-green" onclick="setAccent('secondary', 'green')" class="w-7 h-7 rounded-full bg-[#86efac] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-secondary-mint" onclick="setAccent('secondary', 'mint')" class="w-7 h-7 rounded-full bg-[#5eead4] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-secondary-blue" onclick="setAccent('secondary', 'blue')" class="w-7 h-7 rounded-full bg-[#93c5fd] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-secondary-indigo" onclick="setAccent('secondary', 'indigo')" class="w-7 h-7 rounded-full bg-[#a5b4fc] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-secondary-purple" onclick="setAccent('secondary', 'purple')" class="w-7 h-7 rounded-full bg-[#d8b4fe] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-secondary-pink" onclick="setAccent('secondary', 'pink')" class="w-7 h-7 rounded-full bg-[#f9a8d4] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-secondary-rose" onclick="setAccent('secondary', 'rose')" class="w-7 h-7 rounded-full bg-[#fda4af] transition-all shadow-lg hover:scale-110"></button>
+                                    <button id="btn-secondary-peach" onclick="setAccent('secondary', 'peach')" class="w-7 h-7 rounded-full bg-[#fdba74] transition-all shadow-lg hover:scale-110"></button>
+                                </div>
                             </div>
 
-                            <p class="text-xs text-gray-400 mb-2">Account: <span id="display-name-label" class="text-white font-bold"></span></p>
-                            <button onclick="logOut()" class="w-full bg-red-900/20 text-red-400 border border-red-900/50 py-3 rounded-lg font-bold hover:bg-red-900/40 transition shadow-lg">Log Out</button>
+                            <div class="mt-8 border-t border-gray-700 pt-4">
+                                <p class="text-xs text-gray-400 mb-2">Household Sharing</p>
+                                
+                                <div class="relative w-full mb-3">
+                                    <input type="text" id="my-household-id" readonly class="peer w-full bg-gray-900 text-gray-400 px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none text-xs" value="Loading...">
+                                    <label class="absolute left-3 top-1 text-[10px] text-gray-500 pointer-events-none">My Household ID (Share this)</label>
+                                    <button onclick="copyHouseholdId()" class="absolute right-2 top-2 text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-white transition">Copy</button>
+                                </div>
+
+                                <div class="flex gap-2 mb-6">
+                                    <div class="relative flex-1">
+                                        <input type="text" id="join-household-id" class="peer w-full bg-gray-900 text-white px-3 pt-5 pb-1 rounded-lg border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent text-xs" placeholder="Enter Household ID">
+                                        <label for="join-household-id" class="absolute left-3 top-1 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-xs peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none">Enter Partner's ID</label>
+                                    </div>
+                                    <button onclick="joinHousehold()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 rounded-lg font-bold text-sm transition">Join</button>
+                                </div>
+
+                                <p class="text-xs text-gray-400 mb-2">Account: <span id="display-name-label" class="text-white font-bold"></span></p>
+                                <button onclick="logOut()" class="w-full bg-red-900/20 text-red-400 border border-red-900/50 py-3 rounded-lg font-bold hover:bg-red-900/40 transition shadow-lg">Log Out</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
         </div>
-        
-        <nav class="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 z-50" style="padding-bottom: max(env(safe-area-inset-bottom), 12px);">
+
+        <nav class="bg-gray-900 border-t border-gray-800 z-50" style="padding-bottom: max(env(safe-area-inset-bottom), 12px);">
             <div class="flex justify-between items-center max-w-md mx-auto h-[56px]">
                 <button onclick="switchTab('home')" id="tab-home" class="nav-btn w-1/4 h-full flex flex-col items-center justify-center text-emerald-400 transition-colors">
                     <span class="text-xl mb-0.5 leading-none">🍽️</span>
@@ -1573,27 +1574,16 @@
             saveState();
         }
 
-        function fixNavForIOS() {
-            const nav = document.querySelector('nav');
-            if (!nav || !window.visualViewport) return;
-
-            function updateNav() {
-                const vv = window.visualViewport;
-                // Difference between layout viewport and visual viewport
-                const offsetY = window.innerHeight - vv.offsetTop - vv.height;
-                // Push nav DOWN by that amount, keeping it behind keyboard
-                nav.style.transform = `translateY(${Math.max(0, offsetY)}px)`;
-            }
-
-            window.visualViewport.addEventListener('resize', updateNav);
-            window.visualViewport.addEventListener('scroll', updateNav);
+        function lockAppHeight() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.style.height = window.innerHeight + 'px';
         }
+        window.addEventListener('load', lockAppHeight);
         
         loadAccents();
         checkSession();
         renderAll();
         applyTheme(currentTheme);
-        fixNavForIOS();
     </script>
 </body>
 </html>
