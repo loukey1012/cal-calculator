@@ -138,7 +138,7 @@
 
     <div id="app-container" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; display: flex; flex-direction: column; overflow: hidden;">
         <div style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
-            <div class="max-w-md mx-auto p-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-24">
+            <div class="max-w-md mx-auto p-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-36">
                 
                 <div class="text-center mb-6">
                     <div class="relative inline-block">
@@ -399,33 +399,25 @@
             </div>
         </div>
 
-        <style>
-            .ios-safe-nav {
-                height: 50px;
-                padding-bottom: clamp(10px, env(safe-area-inset-bottom), 20px) !important; 
-                box-sizing: content-box !important; 
-            }
-        </style>
-
-        <nav class="flex-none bg-gray-900 border-t border-gray-800 z-50 ios-safe-nav w-full">
-            <div class="flex justify-between items-center max-w-md mx-auto h-full">
-                <button onclick="switchTab('home')" id="tab-home" class="nav-btn w-1/5 h-full flex flex-col items-center justify-center text-emerald-400 transition-colors">
+        <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-[100] w-full bg-gray-900 border-t border-gray-800 pb-[env(safe-area-inset-bottom)] transition-opacity duration-75">
+            <div class="flex justify-between items-center max-w-md mx-auto h-16">
+                <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex-1 h-full flex flex-col items-center justify-center text-emerald-400 transition-colors">
                     <span class="text-xl leading-none mb-1">🍽️</span>
                     <span class="text-[10px] font-bold leading-none">Meal</span>
                 </button>
-                <button onclick="switchTab('db')" id="tab-db" class="nav-btn w-1/5 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                <button onclick="switchTab('db')" id="tab-db" class="nav-btn flex-1 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
                     <span class="text-xl leading-none mb-1">🍎</span>
                     <span class="text-[10px] font-bold leading-none">Foods</span>
                 </button>
-                <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn w-1/5 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                <button onclick="switchTab('custom')" id="tab-custom" class="nav-btn flex-1 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
                     <span class="text-xl leading-none mb-1">⚖️</span>
                     <span class="text-[10px] font-bold leading-none">Custom</span>
                 </button>
-                <button onclick="switchTab('new')" id="tab-new" class="nav-btn w-1/5 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                <button onclick="switchTab('new')" id="tab-new" class="nav-btn flex-1 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
                     <span class="text-xl leading-none mb-1">➕</span>
                     <span class="text-[10px] font-bold leading-none">New Food</span>
                 </button>
-                <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn w-1/5 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
+                <button onclick="switchTab('settings')" id="tab-settings" class="nav-btn flex-1 h-full flex flex-col items-center justify-center text-gray-500 hover:text-gray-400 transition-colors">
                     <span class="text-xl leading-none mb-1">⚙️</span>
                     <span class="text-[10px] font-bold leading-none">Settings</span>
                 </button>
@@ -1593,6 +1585,25 @@
         checkSession();
         renderAll();
         applyTheme(currentTheme);
+
+        const bottomNav = document.getElementById('bottom-nav');
+
+        document.addEventListener('focusin', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                bottomNav.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('focusout', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                setTimeout(() => {
+                    const active = document.activeElement;
+                    if (active && active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA' && active.tagName !== 'SELECT') {
+                        bottomNav.classList.remove('hidden');
+                    }
+                }, 50);
+            }
+        });
     </script>
 </body>
 </html>
