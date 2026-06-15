@@ -44,7 +44,7 @@
             overscroll-behavior-y: contain; 
             overflow-y: scroll;
         }
-        input[type="number"], input[type="text"], input[type="password"], input[type="email"], select { font-size: 16px; }
+        input[type="number"], input[type="text"], input[type="password"], input[type="email"], select { font-size: 1rem; }
         .hidden { display: none !important; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -136,14 +136,14 @@
         </div>
     </div>
 
-    <div id="app-container" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; display: flex; flex-direction: column; overflow: hidden;">
-        <div style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+    <div id="app-container" class="hidden fixed inset-0 flex flex-col overflow-hidden h-[100dvh]">
+        <div id="main-scroll" class="flex-1 overflow-y-auto touch-pan-y">
             <div class="max-w-md mx-auto p-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-36">
                 
                 <div class="text-center mb-6">
                     <div class="relative inline-block">
                         <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                        <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.2.4</span>
+                        <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.2.5</span>
                     </div>
                 </div>
                 
@@ -399,7 +399,7 @@
             </div>
         </div>
 
-        <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-[100] w-full bg-gray-900 border-t border-gray-800 pb-[env(safe-area-inset-bottom)] transition-opacity duration-75">
+        <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-40 w-full bg-gray-900 border-t border-gray-800 pb-[env(safe-area-inset-bottom)]">
             <div class="flex justify-between items-center max-w-md mx-auto h-16">
                 <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex-1 h-full flex flex-col items-center justify-center text-emerald-400 transition-colors">
                     <span class="text-xl leading-none mb-1">🍽️</span>
@@ -693,6 +693,7 @@
 
         // --- PLATE LOGIC ---
         function triggerAddWeight(dbId) {
+            document.getElementById('main-scroll').classList.add('overflow-hidden');
             currentWeightDbId = dbId;
             const food = db.find(f => f.id === dbId);
             if (!food) return;
@@ -745,6 +746,7 @@
         }
 
         function closeWeightModal() {
+            document.getElementById('main-scroll').classList.remove('overflow-hidden');
             document.getElementById('weight-modal').classList.add('hidden');
             document.getElementById('weight-input').blur();
             currentWeightDbId = null;
@@ -1034,6 +1036,7 @@
         }
         
         function editFood(id) {
+            document.getElementById('main-scroll').classList.add('overflow-hidden');
             currentEditId = id;
             const food = db.find(f => f.id === id);
             if (!food) return;
@@ -1050,6 +1053,7 @@
         }
         
         function closeEditModal() {
+            document.getElementById('main-scroll').classList.remove('overflow-hidden');
             document.getElementById('edit-modal').classList.add('hidden');
             currentEditId = null;
         }
@@ -1410,6 +1414,7 @@
         let currentPlateEditId = null;
 
         function openPlateEdit(plateId) {
+            document.getElementById('main-scroll').classList.add('overflow-hidden');
             const item = dailyLog[activeCategory][activeMealId].items.find(p => p.id === plateId);
             if (!item) return;
             
@@ -1428,6 +1433,7 @@
         }
 
         function closePlateEditModal() {
+            document.getElementById('main-scroll').classList.remove('overflow-hidden');
             document.getElementById('plate-edit-modal').classList.add('hidden');
             currentPlateEditId = null;
         }
@@ -1574,12 +1580,6 @@
             
             saveState();
         }
-
-        function lockAppHeight() {
-            const appContainer = document.getElementById('app-container');
-            appContainer.style.height = window.innerHeight + 'px';
-        }
-        window.addEventListener('load', lockAppHeight);
         
         loadAccents();
         checkSession();
@@ -1601,7 +1601,7 @@
                     if (active && active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA' && active.tagName !== 'SELECT') {
                         bottomNav.classList.remove('hidden');
                     }
-                }, 50);
+                }, 300);
             }
         });
     </script>
