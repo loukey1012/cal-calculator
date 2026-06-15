@@ -142,7 +142,7 @@
             <div class="text-center mb-6">
                 <div class="relative inline-block">
                     <h1 id="app-header-title" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 transition-all duration-200">CALculator</h1>
-                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.5</span>
+                    <span id="app-version" class="absolute bottom-0.5 -right-10 text-[10px] text-gray-500 font-bold tracking-wider">v3.1.6</span>
                 </div>
             </div>
             
@@ -1572,11 +1572,28 @@
             
             saveState();
         }
+
+        function fixNavForIOS() {
+            const nav = document.querySelector('nav');
+            if (!nav || !window.visualViewport) return;
+
+            function updateNav() {
+                const vv = window.visualViewport;
+                // Difference between layout viewport and visual viewport
+                const offsetY = window.innerHeight - vv.offsetTop - vv.height;
+                // Push nav DOWN by that amount, keeping it behind keyboard
+                nav.style.transform = `translateY(${Math.max(0, offsetY)}px)`;
+            }
+
+            window.visualViewport.addEventListener('resize', updateNav);
+            window.visualViewport.addEventListener('scroll', updateNav);
+        }
         
         loadAccents();
         checkSession();
         renderAll();
         applyTheme(currentTheme);
+        fixNavForIOS();
     </script>
 </body>
 </html>
