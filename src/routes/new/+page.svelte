@@ -9,12 +9,14 @@
         brand: '',
         name: '',
         note: '',
-        calPer100: null,
-        protPer100: null,
-        calPerUnit: null,
-        protPerUnit: null,
-        unitWeight: null
+        calPer100: undefined,
+        protPer100: undefined,
+        calPerUnit: undefined,
+        protPerUnit: undefined,
+        unitWeight: undefined
     });
+
+    let existingBrands = $derived(Array.from(new Set(appState.db.map(f => f.brand).filter(Boolean))).sort());
 
     async function save() {
         if (!editData.category) {
@@ -37,7 +39,15 @@
     }
 
     function cancel() {
-        goto('/database');
+        editData.category = '';
+        editData.brand = '';
+        editData.name = '';
+        editData.note = '';
+        editData.calPer100 = undefined as any;
+        editData.protPer100 = undefined as any;
+        editData.calPerUnit = undefined as any;
+        editData.protPerUnit = undefined as any;
+        editData.unitWeight = undefined as any;
     }
 </script>
 
@@ -65,8 +75,13 @@
         
         <div class="flex gap-2">
             <div class="relative w-1/3">
-                <input type="text" bind:value={editData.brand} autocomplete="off" class="peer w-full bg-base text-content px-3 pt-6 pb-2 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Brand">
+                <input type="text" list="brand-options" bind:value={editData.brand} autocomplete="off" class="peer w-full bg-base text-content px-3 pt-6 pb-2 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Brand">
                 <label class="absolute left-3 top-2 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-3.5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none font-bold">Brand</label>
+                <datalist id="brand-options">
+                    {#each existingBrands as brand}
+                        <option value={brand}></option>
+                    {/each}
+                </datalist>
             </div>
             <div class="relative w-2/3">
                 <!-- svelte-ignore a11y_autofocus -->
@@ -107,7 +122,7 @@
         </div>
         
         <div class="flex gap-3 pt-4">
-            <button onclick={cancel} class="flex-1 bg-surface-elevated py-3 rounded-xl font-bold hover:bg-surface transition text-content">Cancel</button>
+            <button onclick={cancel} class="flex-1 bg-surface-elevated py-3 rounded-xl font-bold hover:bg-surface transition text-content">Clear</button>
             <button onclick={save} class="flex-1 bg-primary-600 py-3 rounded-xl font-bold hover:bg-primary-500 transition text-primary-content">Create Food</button>
         </div>
     </div>

@@ -2,6 +2,7 @@
     import '../app.css';
     import { onMount } from 'svelte';
     import { listenToAuth, signUp, login, signInWithGoogle } from '$lib/services/auth';
+    import { fetchFoods } from '$lib/services/database';
     import { appState } from '$lib/stores/appState.svelte';
     import BottomNav from '$lib/components/BottomNav.svelte';
     import { browser } from '$app/environment';
@@ -25,6 +26,12 @@
                 appState.primaryAccent = profile.primary_accent || 'mint';
                 appState.secondaryAccent = profile.secondary_accent || 'pink';
                 appState.saveLocalState();
+                
+                if (profile.household_id) {
+                    fetchFoods(profile.household_id).then(db => {
+                        appState.db = db;
+                    }).catch(e => console.error("Failed to fetch database", e));
+                }
             }
             authLoading = false;
         });
