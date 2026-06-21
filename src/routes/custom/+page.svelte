@@ -77,40 +77,40 @@
 </script>
 
 <div class="p-4 max-w-md mx-auto pb-24">
-    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[rgb(var(--color-primary-400))] to-[rgb(var(--color-secondary-400))] mb-6 text-center">Custom Entry</h2>
+    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400 mb-6 text-center">Custom Entry</h2>
     
-    <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl space-y-4">
+    <div class="bg-surface p-6 rounded-2xl border border-border shadow-xl space-y-4">
         <div class="relative w-full">
             <!-- svelte-ignore a11y_autofocus -->
-            <input autofocus type="text" bind:value={customName} class="peer w-full bg-gray-900 text-white px-4 pt-7 pb-2 rounded-xl border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="Name">
-            <label class="absolute left-4 top-2 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none font-bold">Entry Name (Optional)</label>
+            <input autofocus type="text" bind:value={customName} class="peer w-full bg-base text-content px-4 pt-7 pb-2 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Name">
+            <label class="absolute left-4 top-2 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-muted peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none font-bold">Entry Name (Optional)</label>
         </div>
 
-        <div class="flex bg-gray-900 rounded-xl p-1 border border-gray-700">
-            <button onclick={() => mode = 'total'} class="flex-1 py-2 text-xs font-bold rounded-lg transition-all {mode === 'total' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}">Total Macros</button>
-            <button onclick={() => mode = 'grams'} class="flex-1 py-2 text-xs font-bold rounded-lg transition-all {mode === 'grams' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}">Per 100g</button>
-            <button onclick={() => mode = 'units'} class="flex-1 py-2 text-xs font-bold rounded-lg transition-all {mode === 'units' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}">Per Unit</button>
+        <div class="flex bg-base rounded-xl p-1 border border-border">
+            <button onclick={() => mode = 'total'} class="flex-1 py-2 text-xs font-bold rounded-lg transition-all {mode === 'total' ? 'bg-surface-elevated text-content shadow-sm' : 'text-muted hover:text-content'}">Total Macros</button>
+            <button onclick={() => mode = 'grams'} class="flex-1 py-2 text-xs font-bold rounded-lg transition-all {mode === 'grams' ? 'bg-surface-elevated text-content shadow-sm' : 'text-muted hover:text-content'}">Per 100g</button>
+            <button onclick={() => mode = 'units'} class="flex-1 py-2 text-xs font-bold rounded-lg transition-all {mode === 'units' ? 'bg-surface-elevated text-content shadow-sm' : 'text-muted hover:text-content'}">Per Unit</button>
         </div>
         
         <div class="flex gap-3">
             <div class="relative w-1/2">
-                <input type="number" bind:value={calInput} inputmode="decimal" class="peer w-full bg-gray-900 text-white text-2xl font-black px-4 pt-8 pb-3 rounded-xl border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="0">
-                <label class="absolute left-4 top-2 text-[10px] text-emerald-500 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-emerald-500 pointer-events-none font-bold uppercase tracking-wider">{mode === 'grams' ? 'Cal / 100g' : mode === 'units' ? 'Cal / Unit' : 'Total Cal'}</label>
+                <input type="number" bind:value={calInput} inputmode="decimal" class="peer w-full bg-base text-content text-2xl font-black px-4 pt-8 pb-3 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="0">
+                <label class="absolute left-4 top-2 text-[10px] text-primary-500 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-primary-500 pointer-events-none font-bold uppercase tracking-wider">{mode === 'grams' ? 'Cal / 100g' : mode === 'units' ? 'Cal / Unit' : 'Total Cal'}</label>
             </div>
             <div class="relative w-1/2">
-                <input type="number" bind:value={protInput} inputmode="decimal" class="peer w-full bg-gray-900 text-white text-2xl font-black px-4 pt-8 pb-3 rounded-xl border border-gray-700 focus:outline-none focus:border-blue-500 placeholder-transparent" placeholder="0">
-                <label class="absolute left-4 top-2 text-[10px] text-blue-500 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-blue-500 pointer-events-none font-bold uppercase tracking-wider">{mode === 'grams' ? 'Prot / 100g' : mode === 'units' ? 'Prot / Unit' : 'Total Prot'}</label>
+                <input type="number" bind:value={protInput} inputmode="decimal" class="peer w-full bg-base text-content text-2xl font-black px-4 pt-8 pb-3 rounded-xl border border-border focus:outline-none focus:border-secondary-500 placeholder-transparent" placeholder="0">
+                <label class="absolute left-4 top-2 text-[10px] text-secondary-500 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-secondary-500 pointer-events-none font-bold uppercase tracking-wider">{mode === 'grams' ? 'Prot / 100g' : mode === 'units' ? 'Prot / Unit' : 'Total Prot'}</label>
             </div>
         </div>
 
         {#if mode !== 'total'}
         <div class="relative w-full">
-            <input type="number" bind:value={amount} inputmode="decimal" class="peer w-full bg-gray-900 text-white text-2xl font-black px-4 pt-8 pb-3 rounded-xl border border-gray-700 focus:outline-none focus:border-emerald-500 placeholder-transparent" placeholder="0">
-            <label class="absolute left-4 top-2 text-[10px] text-emerald-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-emerald-400 pointer-events-none font-bold uppercase tracking-wider">{mode === 'grams' ? 'Amount (grams)' : 'Number of Units'}</label>
+            <input type="number" bind:value={amount} inputmode="decimal" class="peer w-full bg-base text-content text-2xl font-black px-4 pt-8 pb-3 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="0">
+            <label class="absolute left-4 top-2 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none font-bold uppercase tracking-wider">{mode === 'grams' ? 'Amount (grams)' : 'Number of Units'}</label>
         </div>
         {/if}
 
-        <button onclick={addCustom} class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-emerald-500/20 transform transition active:scale-[0.98] mt-2">
+        <button onclick={addCustom} class="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-400 hover:to-primary-500 text-primary-content font-bold text-lg py-4 rounded-xl shadow-lg shadow-primary-500/20 transform transition active:scale-[0.98] mt-2">
             Add to Plate
         </button>
     </div>

@@ -89,14 +89,14 @@
 </script>
 
 <div class="p-4 max-w-md mx-auto">
-    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[rgb(var(--color-primary-400))] to-[rgb(var(--color-secondary-400))] mb-4 text-center">Food Database</h2>
+    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400 mb-4 text-center">Food Database</h2>
     
     <div class="flex gap-2 mb-4">
         <div class="relative flex-1">
-            <span class="absolute left-3 top-3.5 text-gray-500">🔍</span>
-            <input type="text" bind:value={search} class="w-full bg-gray-900 text-white pl-10 pr-3 py-3 rounded-xl border border-gray-700 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Search foods...">
+            <span class="absolute left-3 top-3.5 text-muted">🔍</span>
+            <input type="text" bind:value={search} class="w-full bg-base text-content pl-10 pr-3 py-3 rounded-xl border border-border focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition" placeholder="Search foods...">
         </div>
-        <select bind:value={sortOrder} class="bg-gray-900 text-gray-300 px-3 py-3 rounded-xl border border-gray-700 focus:outline-none focus:border-emerald-500 font-bold max-w-[110px]">
+        <select bind:value={sortOrder} class="bg-base text-content px-3 py-3 rounded-xl border border-border focus:outline-none focus:border-primary-500 font-bold max-w-[110px]">
             <option value="recent">Recent</option>
             <option value="name">A-Z Name</option>
             <option value="brand">A-Z Brand</option>
@@ -108,7 +108,7 @@
         {#each ['All', 'Meals', 'Veggies & Fruit', 'Carbs', 'Meat & Fish', 'Dairy', 'Snacks', 'Drinks'] as cat}
             <button 
                 onclick={() => activeCategoryFilter = cat}
-                class="whitespace-nowrap px-4 py-1.5 rounded-full font-bold text-xs transition-all {activeCategoryFilter === cat ? 'bg-emerald-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}">
+                class="whitespace-nowrap px-4 py-1.5 rounded-full font-bold text-xs transition-all {activeCategoryFilter === cat ? 'bg-primary-600 text-primary-content' : 'bg-surface text-muted hover:bg-surface-elevated'}">
                 {cat}
             </button>
         {/each}
@@ -124,8 +124,8 @@
             />
         {/each}
         {#if filteredDb.length === 0}
-            <div class="text-center py-10 bg-gray-800/50 rounded-xl border border-gray-700 border-dashed">
-                <p class="text-gray-500 font-medium">No foods found.</p>
+            <div class="text-center py-10 bg-surface/50 rounded-xl border border-border border-dashed">
+                <p class="text-muted font-medium">No foods found.</p>
             </div>
         {/if}
     </div>
