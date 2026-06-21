@@ -23,6 +23,23 @@
         activeMeal.items.reduce((sum, item) => sum + item.totalProt, 0),
     );
 
+    let showToast = $state(false);
+    let toastMessage = $state("");
+
+    function copyCal() {
+        navigator.clipboard.writeText(totalCal.toFixed(1));
+        toastMessage = "Calories copied to clipboard!";
+        showToast = true;
+        setTimeout(() => showToast = false, 2000);
+    }
+
+    function copyProt() {
+        navigator.clipboard.writeText(totalProt.toFixed(1));
+        toastMessage = "Protein copied to clipboard!";
+        showToast = true;
+        setTimeout(() => showToast = false, 2000);
+    }
+
     function switchCategory(cat: string) {
         appState.activeCategory = cat;
         const catMeals = Object.keys(appState.dailyLog[cat] || {});
@@ -67,7 +84,7 @@
             </h1>
             <span
                 class="absolute left-full ml-1 bottom-1 text-[10px] font-bold text-muted tracking-wider whitespace-nowrap"
-                >v0.4.0.3</span
+                >v0.4.0.5</span
             >
         </div>
     </div>
@@ -116,7 +133,17 @@
             {activeMeal.title}
         </h2>
         <div class="flex gap-2">
-            <button onclick={() => { if(confirm('Delete this meal?')) appState.deleteMeal(appState.activeCategory, appState.activeMealId); }} class="text-xs bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/20 transition">Delete</button>
+            <button
+                onclick={() => {
+                    if (confirm("Delete this meal?"))
+                        appState.deleteMeal(
+                            appState.activeCategory,
+                            appState.activeMealId,
+                        );
+                }}
+                class="text-xs bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/20 transition"
+                >Delete</button
+            >
         </div>
     </div>
 
@@ -197,28 +224,22 @@
                 Meal Summary
             </h3>
             <div class="flex justify-between items-end">
-                <div>
-                    <div
-                        class="text-[10px] text-primary-500 font-bold uppercase tracking-widest mb-1"
-                    >
+                <button onclick={copyCal} class="text-left cursor-pointer hover:opacity-80 transition active:scale-[0.98]">
+                    <div class="text-[10px] text-primary-500 font-bold uppercase tracking-widest mb-1">
                         Calories
                     </div>
                     <div class="text-4xl font-black text-content leading-none">
                         {totalCal.toFixed(1)}
                     </div>
-                </div>
-                <div class="text-right">
-                    <div
-                        class="text-[10px] text-secondary-500 font-bold uppercase tracking-widest mb-1"
-                    >
+                </button>
+                <button onclick={copyProt} class="text-right cursor-pointer hover:opacity-80 transition active:scale-[0.98]">
+                    <div class="text-[10px] text-secondary-500 font-bold uppercase tracking-widest mb-1">
                         Protein
                     </div>
                     <div class="text-3xl font-black text-content leading-none">
-                        {totalProt.toFixed(1)}<span
-                            class="text-lg text-muted ml-1">g</span
-                        >
+                        {totalProt.toFixed(1)}<span class="text-lg text-muted ml-1">g</span>
                     </div>
-                </div>
+                </button>
             </div>
         </div>
     {/if}
@@ -242,3 +263,9 @@
     initialAmount={editItemAmount}
     onConfirm={saveEdit}
 />
+
+{#if showToast}
+    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-surface-elevated/90 backdrop-blur-md text-content px-5 py-2.5 rounded-full shadow-2xl border border-border text-sm font-bold z-50 pointer-events-none transition-all">
+        {toastMessage}
+    </div>
+{/if}
