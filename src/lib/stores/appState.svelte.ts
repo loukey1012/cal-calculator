@@ -117,9 +117,29 @@ class AppState {
         this.saveLocalState();
     }
 
-    clearMeal(category: string, mealId: string) {
+    deleteMeal(category: string, mealId: string) {
         if (!this.dailyLog[category]?.[mealId]) return;
-        this.dailyLog[category][mealId].items = [];
+        
+        const mealsInCategory = Object.keys(this.dailyLog[category]);
+        if (mealsInCategory.length === 1) {
+            // Only 1 meal left, just clear its items
+            this.dailyLog[category][mealId].items = [];
+            this.dailyLog[category][mealId].title = `My ${category}`;
+        } else {
+            // More than 1 meal, delete it completely
+            delete this.dailyLog[category][mealId];
+            
+            // If only 1 meal is left after deletion, rename it to remove numbers
+            const remainingMeals = Object.keys(this.dailyLog[category]);
+            if (remainingMeals.length === 1) {
+                const lastMealId = remainingMeals[0];
+                this.dailyLog[category][lastMealId].title = `My ${category}`;
+            }
+            
+            if (this.activeMealId === mealId) {
+                this.activeMealId = remainingMeals[0];
+            }
+        }
         this.saveLocalState();
     }
 

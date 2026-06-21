@@ -116,17 +116,7 @@
             {activeMeal.title}
         </h2>
         <div class="flex gap-2">
-            <button
-                onclick={() => {
-                    if (confirm("Clear all items from this meal?"))
-                        appState.clearMeal(
-                            appState.activeCategory,
-                            appState.activeMealId,
-                        );
-                }}
-                class="text-xs bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/20 transition"
-                >Clear</button
-            >
+            <button onclick={() => { if(confirm('Delete this meal?')) appState.deleteMeal(appState.activeCategory, appState.activeMealId); }} class="text-xs bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/20 transition">Delete</button>
         </div>
     </div>
 
