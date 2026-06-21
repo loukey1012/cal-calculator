@@ -60,8 +60,15 @@
 <div class="p-4 max-w-md mx-auto">
     <div class="flex justify-center mb-6">
         <div class="relative inline-block">
-            <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">CALculator</h1>
-            <span class="absolute left-full ml-1 bottom-1 text-[10px] font-bold text-muted tracking-wider whitespace-nowrap">v0.4.0.1</span>
+            <h1
+                class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400"
+            >
+                CALculator
+            </h1>
+            <span
+                class="absolute left-full ml-1 bottom-1 text-[10px] font-bold text-muted tracking-wider whitespace-nowrap"
+                >v0.4.0.3</span
+            >
         </div>
     </div>
 
@@ -109,7 +116,17 @@
             {activeMeal.title}
         </h2>
         <div class="flex gap-2">
-            <button onclick={() => { if(confirm('Clear all items from this meal?')) appState.clearMeal(appState.activeCategory, appState.activeMealId); }} class="text-xs bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/20 transition">Clear</button>
+            <button
+                onclick={() => {
+                    if (confirm("Clear all items from this meal?"))
+                        appState.clearMeal(
+                            appState.activeCategory,
+                            appState.activeMealId,
+                        );
+                }}
+                class="text-xs bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/20 transition"
+                >Clear</button
+            >
         </div>
     </div>
 
@@ -148,19 +165,29 @@
                 <div class="text-right ml-3 flex flex-col items-end">
                     <div class="text-primary-400 font-bold leading-tight">
                         {item.totalCal}
-                        <span class="text-[10px] text-muted font-normal">kcal</span>
+                        <span class="text-[10px] text-muted font-normal"
+                            >kcal</span
+                        >
                     </div>
-                    <div class="text-secondary-400 font-bold leading-tight text-sm">
+                    <div
+                        class="text-secondary-400 font-bold leading-tight text-sm"
+                    >
                         {item.totalProt}
-                        <span class="text-[10px] text-muted font-normal">g</span>
+                        <span class="text-[10px] text-muted font-normal">g</span
+                        >
                     </div>
                     <button
                         onclick={() => {
-                            if (confirm('Remove this item from the meal?'))
-                                appState.removePlateItem(appState.activeCategory, appState.activeMealId, item.id);
+                            if (confirm("Remove this item from the meal?"))
+                                appState.removePlateItem(
+                                    appState.activeCategory,
+                                    appState.activeMealId,
+                                    item.id,
+                                );
                         }}
                         class="text-muted hover:text-red-400 text-xs mt-1 font-bold transition"
-                        >✕ Remove</button>
+                        >✕ Remove</button
+                    >
                 </div>
             </div>
         {/each}

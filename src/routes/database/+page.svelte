@@ -14,6 +14,11 @@
 
     let foods = $derived(appState.db);
     
+    let availableCategories = $derived([
+        'All',
+        ...Array.from(new Set(foods.map(f => f.category || 'Ingredients'))).sort()
+    ]);
+    
     let filteredDb = $derived(
         foods.filter(f => {
             const itemCat = f.category || 'Ingredients';
@@ -104,8 +109,8 @@
     </div>
 
     <!-- Category filters -->
-    <div class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-1">
-        {#each ['All', 'Meals', 'Veggies & Fruit', 'Carbs', 'Meat & Fish', 'Dairy', 'Snacks', 'Drinks'] as cat}
+    <div class="flex flex-wrap gap-2 mb-6 pb-1">
+        {#each availableCategories as cat}
             <button 
                 onclick={() => activeCategoryFilter = cat}
                 class="whitespace-nowrap px-4 py-1.5 rounded-full font-bold text-xs transition-all {activeCategoryFilter === cat ? 'bg-primary-600 text-primary-content' : 'bg-surface text-muted hover:bg-surface-elevated'}">

@@ -77,7 +77,7 @@
                 <option value="Snacks">Snacks</option>
                 <option value="Baking">Baking</option>
                 <option value="Drinks">Drinks</option>
-                <option value="Supplements">Supplements</option>
+
                 <option value="Mci">Mci</option>
             </select>
             
