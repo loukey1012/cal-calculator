@@ -149,7 +149,7 @@
         </div>
     </div>
 {:else}
-    <div class="pb-[calc(4rem+env(safe-area-inset-bottom))] min-h-screen">
+    <div class="pb-[calc(4rem+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)] min-h-screen">
         {@render children()}
     </div>
     <BottomNav />
