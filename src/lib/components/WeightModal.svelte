@@ -13,6 +13,7 @@
 
     let amount = $state<number | ''>('');
     let mode = $state<EntryMode>('grams');
+    let inputEl = $state<HTMLInputElement | null>(null);
 
     // Focus input when opened
     $effect(() => {
@@ -42,14 +43,14 @@
         
         {#if food.calPer100 != null && food.calPerUnit != null}
         <div class="flex gap-2 mb-3">
-            <button onclick={() => mode = 'grams'} class="flex-1 py-2 rounded-lg font-bold text-sm transition {mode === 'grams' ? 'bg-primary-600 text-primary-content' : 'bg-surface-elevated text-muted hover:text-content'}">By Weight (g)</button>
-            <button onclick={() => mode = 'units'} class="flex-1 py-2 rounded-lg font-bold text-sm transition {mode === 'units' ? 'bg-primary-600 text-primary-content' : 'bg-surface-elevated text-muted hover:text-content'}">By Unit</button>
+            <button onclick={() => { mode = 'grams'; inputEl?.focus(); }} class="flex-1 py-2 rounded-lg font-bold text-sm transition {mode === 'grams' ? 'bg-primary-600 text-primary-content' : 'bg-surface-elevated text-muted hover:text-content'}">By Weight (g)</button>
+            <button onclick={() => { mode = 'units'; inputEl?.focus(); }} class="flex-1 py-2 rounded-lg font-bold text-sm transition {mode === 'units' ? 'bg-primary-600 text-primary-content' : 'bg-surface-elevated text-muted hover:text-content'}">By Unit</button>
         </div>
         {/if}
 
         <div class="relative w-full mb-6">
             <!-- svelte-ignore a11y_autofocus -->
-            <input autofocus type="number" bind:value={amount} inputmode="decimal" class="peer w-full bg-base text-content text-3xl px-4 pt-7 pb-2 rounded-lg border border-border focus:border-primary-500 focus:outline-none text-center font-bold placeholder-transparent" placeholder="Amount">
+            <input bind:this={inputEl} autofocus type="number" bind:value={amount} inputmode="decimal" class="peer w-full bg-base text-content text-3xl px-4 pt-7 pb-2 rounded-lg border border-border focus:border-primary-500 focus:outline-none text-center font-bold placeholder-transparent" placeholder="Amount">
             <label class="absolute left-1/2 -translate-x-1/2 top-1 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-lg peer-placeholder-shown:text-muted peer-placeholder-shown:top-4 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none">
                 {mode === 'grams' ? 'Grams' : 'Units'}
             </label>

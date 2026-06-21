@@ -30,14 +30,14 @@
         navigator.clipboard.writeText(totalCal.toFixed(1));
         toastMessage = "Calories copied to clipboard!";
         showToast = true;
-        setTimeout(() => showToast = false, 2000);
+        setTimeout(() => (showToast = false), 2000);
     }
 
     function copyProt() {
         navigator.clipboard.writeText(totalProt.toFixed(1));
         toastMessage = "Protein copied to clipboard!";
         showToast = true;
-        setTimeout(() => showToast = false, 2000);
+        setTimeout(() => (showToast = false), 2000);
     }
 
     function switchCategory(cat: string) {
@@ -84,7 +84,7 @@
             </h1>
             <span
                 class="absolute left-full ml-1 bottom-1 text-[10px] font-bold text-muted tracking-wider whitespace-nowrap"
-                >v0.4.0.5</span
+                >v0.4.1.0</span
             >
         </div>
     </div>
@@ -128,7 +128,7 @@
     <!-- Active Meal Header -->
     <div class="flex justify-between items-center mb-4">
         <h2
-            class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600"
+            class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400"
         >
             {activeMeal.title}
         </h2>
@@ -224,20 +224,32 @@
                 Meal Summary
             </h3>
             <div class="flex justify-between items-end">
-                <button onclick={copyCal} class="text-left cursor-pointer hover:opacity-80 transition active:scale-[0.98]">
-                    <div class="text-[10px] text-primary-500 font-bold uppercase tracking-widest mb-1">
+                <button
+                    onclick={copyCal}
+                    class="text-left cursor-pointer hover:opacity-80 transition active:scale-[0.98]"
+                >
+                    <div
+                        class="text-[10px] text-primary-500 font-bold uppercase tracking-widest mb-1"
+                    >
                         Calories
                     </div>
                     <div class="text-4xl font-black text-content leading-none">
                         {totalCal.toFixed(1)}
                     </div>
                 </button>
-                <button onclick={copyProt} class="text-right cursor-pointer hover:opacity-80 transition active:scale-[0.98]">
-                    <div class="text-[10px] text-secondary-500 font-bold uppercase tracking-widest mb-1">
+                <button
+                    onclick={copyProt}
+                    class="text-right cursor-pointer hover:opacity-80 transition active:scale-[0.98]"
+                >
+                    <div
+                        class="text-[10px] text-secondary-500 font-bold uppercase tracking-widest mb-1"
+                    >
                         Protein
                     </div>
                     <div class="text-3xl font-black text-content leading-none">
-                        {totalProt.toFixed(1)}<span class="text-lg text-muted ml-1">g</span>
+                        {totalProt.toFixed(1)}<span
+                            class="text-lg text-muted ml-1">g</span
+                        >
                     </div>
                 </button>
             </div>
@@ -265,7 +277,9 @@
 />
 
 {#if showToast}
-    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-surface-elevated/90 backdrop-blur-md text-content px-5 py-2.5 rounded-full shadow-2xl border border-border text-sm font-bold z-50 pointer-events-none transition-all">
+    <div
+        class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-surface-elevated/90 backdrop-blur-md text-content px-5 py-2.5 rounded-full shadow-2xl border border-border text-sm font-bold z-50 pointer-events-none transition-all"
+    >
         {toastMessage}
     </div>
 {/if}

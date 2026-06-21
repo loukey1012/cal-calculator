@@ -11,7 +11,24 @@
     let copied = $state(false);
 
     const themes: AppTheme[] = ['dark', 'light', 'pink', 'red'];
-    const accents: AccentColor[] = ['mint', 'green', 'blue', 'indigo', 'purple', 'pink', 'rose', 'peach', 'sky', 'amber', 'violet'];
+    const accents: AccentColor[] = ['mint', 'green', 'sky', 'indigo', 'purple', 'pink', 'amber'];
+
+    const colorMap: Record<AccentColor, string> = {
+        mint: '#2dd4bf', 
+        green: '#22c55e',
+        sky: '#0ea5e9',
+        indigo: '#6366f1', 
+        purple: '#a855f7', 
+        pink: '#f472b6', 
+        amber: '#f59e0b'
+    };
+
+    const themeColors: Record<AppTheme, {bg: string, text: string, border: string}> = {
+        dark: { bg: '#111827', text: '#f9fafb', border: '#374151' },
+        light: { bg: '#f9fafb', text: '#111827', border: '#e5e7eb' },
+        pink: { bg: '#fdf2f8', text: '#831843', border: '#fbcfe8' },
+        red: { bg: '#450a0a', text: '#fecaca', border: '#7f1d1d' }
+    };
 
     async function changeTheme(t: AppTheme) {
         appState.theme = t;
@@ -106,40 +123,52 @@
     <div class="bg-surface rounded-xl p-5 border border-border shadow-sm">
         <div class="text-sm text-muted font-bold uppercase tracking-wider mb-4">Appearance</div>
         
-        <div class="mb-5">
-            <div class="text-xs text-muted mb-2 font-bold">Background Theme</div>
-            <div class="flex gap-2">
+        <div class="mb-6">
+            <div class="text-xs text-muted mb-3 font-bold">Background Theme</div>
+            <div class="grid grid-cols-4 gap-3">
                 {#each themes as t}
                     <button 
                         onclick={() => changeTheme(t)} 
-                        class="flex-1 py-2 rounded-lg font-bold text-xs capitalize transition {appState.theme === t ? 'bg-primary-600 text-primary-content' : 'bg-base text-muted hover:text-content'}">
+                        class="py-2.5 rounded-full flex items-center justify-center font-bold text-xs capitalize transition-all transform hover:scale-105 {appState.theme === t ? 'outline outline-2 outline-offset-2 outline-content scale-105 shadow-lg' : 'shadow-sm'}"
+                        style="background-color: {themeColors[t].bg}; color: {themeColors[t].text}; border: 2px solid {themeColors[t].border};"
+                    >
                         {t}
                     </button>
                 {/each}
             </div>
         </div>
 
-        <div class="mb-5">
-            <div class="text-xs text-muted mb-2 font-bold">Primary Accent</div>
-            <div class="flex flex-wrap gap-2">
+        <div class="mb-6">
+            <div class="text-xs text-muted mb-3 font-bold">Primary Accent</div>
+            <div class="flex flex-wrap gap-4 px-1">
                 {#each accents as color}
                     <button 
                         onclick={() => changeAccent('primary', color)} 
-                        class="px-3 py-1.5 rounded-lg font-bold text-xs capitalize transition {appState.primaryAccent === color ? 'bg-surface-elevated text-content border border-border-strong' : 'bg-base text-muted hover:text-content border border-transparent'}">
-                        {color}
+                        class="w-8 h-8 rounded-full shadow-md transition-all transform hover:scale-110 flex items-center justify-center {appState.primaryAccent === color ? 'scale-110 outline outline-2 outline-content border-2 border-surface' : 'border border-black/10 dark:border-white/10'}"
+                        style="background-color: {colorMap[color]};"
+                        title={color}
+                    >
+                        {#if appState.primaryAccent === color}
+                            <span class="text-white text-[10px] font-black drop-shadow-md">✓</span>
+                        {/if}
                     </button>
                 {/each}
             </div>
         </div>
 
         <div>
-            <div class="text-xs text-muted mb-2 font-bold">Secondary Accent</div>
-            <div class="flex flex-wrap gap-2">
+            <div class="text-xs text-muted mb-3 font-bold">Secondary Accent</div>
+            <div class="flex flex-wrap gap-4 px-1">
                 {#each accents as color}
                     <button 
                         onclick={() => changeAccent('secondary', color)} 
-                        class="px-3 py-1.5 rounded-lg font-bold text-xs capitalize transition {appState.secondaryAccent === color ? 'bg-surface-elevated text-content border border-border-strong' : 'bg-base text-muted hover:text-content border border-transparent'}">
-                        {color}
+                        class="w-8 h-8 rounded-full shadow-md transition-all transform hover:scale-110 flex items-center justify-center {appState.secondaryAccent === color ? 'scale-110 outline outline-2 outline-content border-2 border-surface' : 'border border-black/10 dark:border-white/10'}"
+                        style="background-color: {colorMap[color]};"
+                        title={color}
+                    >
+                        {#if appState.secondaryAccent === color}
+                            <span class="text-white text-[10px] font-black drop-shadow-md">✓</span>
+                        {/if}
                     </button>
                 {/each}
             </div>

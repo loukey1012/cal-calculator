@@ -26,7 +26,7 @@ class AppState {
     currentHouseholdId = $derived(this.currentProfile?.household_id || null);
 
     // Default categories mimicking original logic
-    readonly defaultCategories = ["Lunch", "Dinner", "Snacks"];
+    readonly defaultCategories = ["Lunch", "Dinner", "Snacks", "Breakfast"];
 
     constructor() {
         this.loadLocalState();
@@ -54,6 +54,17 @@ class AppState {
         const savedLog = localStorage.getItem('dailyLog');
         if (savedLog) {
             this.dailyLog = JSON.parse(savedLog);
+            // Ensure all default categories exist in loaded state
+            let updated = false;
+            this.defaultCategories.forEach(cat => {
+                if (!this.dailyLog[cat]) {
+                    this.dailyLog[cat] = {};
+                    const mealId = 'meal_' + Date.now() + Math.random();
+                    this.dailyLog[cat][mealId] = { title: `My ${cat}`, items: [] };
+                    updated = true;
+                }
+            });
+            if (updated) this.saveLocalState();
         } else {
             this.resetDailyLog();
         }

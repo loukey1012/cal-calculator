@@ -3,7 +3,7 @@
 // ==========================================
 
 export type AppTheme = 'dark' | 'light' | 'pink' | 'red';
-export type AccentColor = 'green' | 'mint' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'peach' | 'sky' | 'amber' | 'violet';
+export type AccentColor = 'mint' | 'green' | 'sky' | 'indigo' | 'purple' | 'pink' | 'amber';
 
 export interface UserProfile {
     id: string;
