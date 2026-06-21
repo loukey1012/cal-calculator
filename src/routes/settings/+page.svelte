@@ -8,6 +8,7 @@
     let user = $derived(appState.currentUser);
 
     let joinHouseholdId = $state('');
+    let copied = $state(false);
 
     const themes: AppTheme[] = ['dark', 'light', 'pink', 'red'];
     const accents: AccentColor[] = ['mint', 'green', 'blue', 'indigo', 'purple', 'pink', 'rose', 'peach', 'sky', 'amber', 'violet'];
@@ -28,6 +29,12 @@
             appState.saveLocalState();
             if (user) await updateProfileTheme(user.uid, { secondary_accent: color });
         }
+    }
+
+    function copyId() {
+        navigator.clipboard.writeText(profile?.household_id || '');
+        copied = true;
+        setTimeout(() => copied = false, 2000);
     }
 
     import { fetchFoods } from '$lib/services/database';
@@ -81,8 +88,8 @@
                 <div class="text-xs text-muted mb-0.5">Household ID</div>
                 <div class="text-sm font-mono text-primary-400 truncate">{profile?.household_id || 'Not joined'}</div>
             </div>
-            <button class="text-muted hover:text-content" onclick={() => navigator.clipboard.writeText(profile?.household_id || '')}>
-                📋
+            <button class="text-muted hover:text-content text-xs font-bold transition" onclick={copyId}>
+                {copied ? '✅ Copied' : '📋 Copy'}
             </button>
         </div>
         <p class="text-xs text-muted mb-4">Share this ID with others so they can join your household and share the food database.</p>
