@@ -82,7 +82,7 @@
       </h1>
       <span
         class="absolute left-full ml-1 bottom-1 text-[10px] font-bold text-muted tracking-wider whitespace-nowrap"
-        >v4.1.1</span
+        >v4.1.2</span
       >
     </div>
   </div>

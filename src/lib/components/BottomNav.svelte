@@ -2,7 +2,7 @@
     import { page } from '$app/state';
 </script>
 
-<nav class="fixed bottom-0 left-0 right-0 z-40 w-full bg-base border-t border-border pb-[env(safe-area-inset-bottom)]">
+<nav class="fixed left-0 right-0 z-40 w-full bg-base border-t border-border pb-[env(safe-area-inset-bottom)] -translate-y-full" style="top: 100vh; top: 100lvh;">
     <div class="flex justify-between items-center max-w-md mx-auto h-16">
         <!-- Home -->
         <a href="/" class="flex-1 h-full flex flex-col items-center justify-center transition-colors {page.url.pathname === '/' ? 'text-primary-400' : 'text-muted hover:text-content'}">
