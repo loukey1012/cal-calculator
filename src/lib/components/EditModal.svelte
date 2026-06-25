@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { Food } from '$lib/types';
+    import { appState } from '$lib/stores/appState.svelte';
     
     let { 
         isOpen = $bindable(false),
@@ -22,6 +23,10 @@
         protPerUnit: null,
         unitWeight: null
     });
+
+    let existingBrands = $derived(Array.from(new Set(appState.db.map(f => f.brand).filter(Boolean))).sort());
+    let showBrandDropdown = $state(false);
+    let filteredBrands = $derived(existingBrands.filter(b => b.toLowerCase().includes((editData.brand || '').toLowerCase()) && b !== editData.brand));
 
     $effect(() => {
         if (isOpen) {
@@ -49,8 +54,16 @@
             alert("Category is required.");
             return;
         }
+        if (!editData.brand) {
+            alert("Brand is required.");
+            return;
+        }
         if (!editData.name) {
             alert("Official Name is required.");
+            return;
+        }
+        if ((editData.calPer100 === null || editData.calPer100 === undefined) && (editData.calPerUnit === null || editData.calPerUnit === undefined)) {
+            alert("Either Kcal/100g or Kcal/unit is required.");
             return;
         }
         onSave(editData);
@@ -83,8 +96,31 @@
             
             <div class="flex gap-2">
                 <div class="relative w-1/3">
-                    <input type="text" bind:value={editData.brand} autocomplete="off" class="peer w-full bg-base text-content px-3 pt-5 pb-1 rounded-lg border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Brand">
+                    <input 
+                        type="text" 
+                        bind:value={editData.brand} 
+                        autocomplete="off" 
+                        onfocus={() => showBrandDropdown = true}
+                        onblur={() => setTimeout(() => showBrandDropdown = false, 150)}
+                        class="peer w-full bg-base text-content px-3 pt-5 pb-1 rounded-lg border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" 
+                        placeholder="Brand">
                     <label class="absolute left-3 top-1 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none">Brand</label>
+                    
+                    {#if showBrandDropdown && filteredBrands.length > 0}
+                        <div class="absolute z-10 w-full mt-1 bg-surface border border-border rounded-lg shadow-lg max-h-40 overflow-y-auto top-full left-0">
+                            {#each filteredBrands as brand}
+                                <button 
+                                    type="button"
+                                    class="w-full text-left px-3 py-2 text-sm text-content hover:bg-surface-elevated transition-colors first:rounded-t-lg last:rounded-b-lg"
+                                    onclick={() => {
+                                        editData.brand = brand;
+                                        showBrandDropdown = false;
+                                    }}>
+                                    {brand}
+                                </button>
+                            {/each}
+                        </div>
+                    {/if}
                 </div>
                 <div class="relative w-2/3">
                     <input type="text" bind:value={editData.name} class="peer w-full bg-base text-content px-3 pt-5 pb-1 rounded-lg border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Official Name">
@@ -93,8 +129,8 @@
             </div>
             
             <div class="relative w-full">
-                <input type="text" bind:value={editData.note} class="peer w-full bg-base text-primary-400 px-3 pt-5 pb-1 rounded-lg border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Note (optional)">
-                <label class="absolute left-3 top-1 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none">Note (optional)</label>
+                <input type="text" bind:value={editData.note} class="peer w-full bg-base text-primary-400 px-3 pt-5 pb-1 rounded-lg border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Note">
+                <label class="absolute left-3 top-1 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-2.5 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none">Note</label>
             </div>
             
             <div class="flex gap-2">

@@ -14,6 +14,7 @@ class AppState {
     dailyLog = $state<DailyLog>({});
     activeCategory = $state<string>('');
     activeMealId = $state<string>('');
+    dbCategoryFilter = $state<string>('All');
 
     // UI State
     activeTab = $state<'home' | 'db' | 'custom' | 'new' | 'settings'>('home');
@@ -41,6 +42,7 @@ class AppState {
             localStorage.setItem('theme', this.theme);
             localStorage.setItem('primaryAccent', this.primaryAccent);
             localStorage.setItem('secondaryAccent', this.secondaryAccent);
+            localStorage.setItem('dbCategoryFilter', this.dbCategoryFilter);
         }
     }
 
@@ -50,6 +52,7 @@ class AppState {
         this.theme = (localStorage.getItem('theme') as AppTheme) || 'dark';
         this.primaryAccent = (localStorage.getItem('primaryAccent') as AccentColor) || 'mint';
         this.secondaryAccent = (localStorage.getItem('secondaryAccent') as AccentColor) || 'pink';
+        this.dbCategoryFilter = localStorage.getItem('dbCategoryFilter') || 'All';
 
         const savedLog = localStorage.getItem('dailyLog');
         if (savedLog) {

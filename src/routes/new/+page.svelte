@@ -17,14 +17,24 @@
     });
 
     let existingBrands = $derived(Array.from(new Set(appState.db.map(f => f.brand).filter(Boolean))).sort());
+    let showBrandDropdown = $state(false);
+    let filteredBrands = $derived(existingBrands.filter(b => b.toLowerCase().includes((editData.brand || '').toLowerCase()) && b !== editData.brand));
 
     async function save() {
         if (!editData.category) {
             alert("Category is required.");
             return;
         }
+        if (!editData.brand) {
+            alert("Brand is required.");
+            return;
+        }
         if (!editData.name) {
             alert("Official Name is required.");
+            return;
+        }
+        if (editData.calPer100 === undefined && editData.calPerUnit === undefined) {
+            alert("Either Kcal/100g or Kcal/unit is required.");
             return;
         }
         if (!appState.currentHouseholdId) return;
@@ -75,13 +85,31 @@
         
         <div class="flex gap-2">
             <div class="relative w-1/3">
-                <input type="text" list="brand-options" bind:value={editData.brand} autocomplete="off" class="peer w-full bg-base text-content px-3 pt-6 pb-2 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Brand">
+                <input 
+                    type="text" 
+                    bind:value={editData.brand} 
+                    autocomplete="off" 
+                    onfocus={() => showBrandDropdown = true}
+                    onblur={() => setTimeout(() => showBrandDropdown = false, 150)}
+                    class="peer w-full bg-base text-content px-3 pt-6 pb-2 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" 
+                    placeholder="Brand">
                 <label class="absolute left-3 top-2 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-3.5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none font-bold">Brand</label>
-                <datalist id="brand-options">
-                    {#each existingBrands as brand}
-                        <option value={brand}></option>
-                    {/each}
-                </datalist>
+                
+                {#if showBrandDropdown && filteredBrands.length > 0}
+                    <div class="absolute z-10 w-full mt-1 bg-surface border border-border rounded-xl shadow-lg max-h-40 overflow-y-auto top-full left-0">
+                        {#each filteredBrands as brand}
+                            <button 
+                                type="button"
+                                class="w-full text-left px-3 py-2 text-sm text-content hover:bg-surface-elevated transition-colors first:rounded-t-xl last:rounded-b-xl"
+                                onclick={() => {
+                                    editData.brand = brand;
+                                    showBrandDropdown = false;
+                                }}>
+                                {brand}
+                            </button>
+                        {/each}
+                    </div>
+                {/if}
             </div>
             <div class="relative w-2/3">
                 <!-- svelte-ignore a11y_autofocus -->
@@ -91,8 +119,8 @@
         </div>
         
         <div class="relative w-full">
-            <input type="text" bind:value={editData.note} class="peer w-full bg-base text-primary-400 px-3 pt-6 pb-2 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Note (optional)">
-            <label class="absolute left-3 top-2 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-3.5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none font-bold">Note (optional)</label>
+            <input type="text" bind:value={editData.note} class="peer w-full bg-base text-primary-400 px-3 pt-6 pb-2 rounded-xl border border-border focus:outline-none focus:border-primary-500 placeholder-transparent" placeholder="Note">
+            <label class="absolute left-3 top-2 text-[10px] text-primary-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-3.5 peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-primary-400 pointer-events-none font-bold">Note</label>
         </div>
         
         <div class="flex gap-2">

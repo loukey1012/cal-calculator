@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { appState } from '$lib/stores/appState.svelte';
-    import { fetchFoods, deleteFood } from '$lib/services/database';
+    import { fetchFoods, deleteFood, updateFood } from '$lib/services/database';
     import { goto } from '$app/navigation';
     import FoodItemCard from '$lib/components/FoodItemCard.svelte';
     import WeightModal from '$lib/components/WeightModal.svelte';
@@ -10,7 +10,6 @@
     
     let search = $state('');
     let sortOrder = $state('recent');
-    let activeCategoryFilter = $state('All');
 
     let foods = $derived(appState.db);
     
@@ -22,7 +21,7 @@
     let filteredDb = $derived(
         foods.filter(f => {
             const itemCat = f.category || 'Ingredients';
-            if (activeCategoryFilter !== 'All' && itemCat !== activeCategoryFilter) return false;
+            if (appState.dbCategoryFilter !== 'All' && itemCat !== appState.dbCategoryFilter) return false;
             const searchStr = `${f.brand || ''} ${f.name || ''} ${f.note || ''}`.toLowerCase();
             return searchStr.includes(search.toLowerCase());
         }).sort((a, b) => {
@@ -112,8 +111,8 @@
     <div class="flex flex-wrap gap-2 mb-6 pb-1">
         {#each availableCategories as cat}
             <button 
-                onclick={() => activeCategoryFilter = cat}
-                class="whitespace-nowrap px-4 py-1.5 rounded-full font-bold text-xs transition-all {activeCategoryFilter === cat ? 'bg-primary-600 text-primary-content' : 'bg-surface text-muted hover:bg-surface-elevated'}">
+                onclick={() => { appState.dbCategoryFilter = cat; appState.saveLocalState(); }}
+                class="whitespace-nowrap px-4 py-1.5 rounded-full font-bold text-xs transition-all {appState.dbCategoryFilter === cat ? 'bg-primary-600 text-primary-content' : 'bg-surface text-muted hover:bg-surface-elevated'}">
                 {cat}
             </button>
         {/each}
@@ -146,7 +145,29 @@
     bind:isOpen={isEditModalOpen} 
     food={editFoodData} 
     onSave={async (data) => {
-        // Assume update logic here, simplified for display since we just route the user
-        // Usually, would call updateFood from services
+        if (!editFoodData) return;
+        try {
+            const updates = {
+                category: data.category ?? '',
+                brand: data.brand ?? '',
+                name: data.name ?? '',
+                note: data.note ?? '',
+                cal_100: data.calPer100 ?? null,
+                prot_100: data.protPer100 ?? null,
+                cal_unit: data.calPerUnit ?? null,
+                prot_unit: data.protPerUnit ?? null,
+                weight_unit: data.unitWeight ?? null,
+            };
+            await updateFood(editFoodData.id, updates);
+            
+            appState.db = appState.db.map(f => {
+                if (f.id === editFoodData!.id) {
+                    return { ...f, ...data } as Food;
+                }
+                return f;
+            });
+        } catch (e: any) {
+            alert(e.message);
+        }
     }}
 />

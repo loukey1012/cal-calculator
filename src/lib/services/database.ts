@@ -31,15 +31,15 @@ export async function addFood(householdId: string, food: Omit<Food, 'id' | 'crea
     
     const firestoreData: FoodFirestoreDoc = {
         household_id: householdId,
-        category: food.category,
-        brand: food.brand,
-        name: food.name,
-        note: food.note,
-        cal_100: food.calPer100,
-        prot_100: food.protPer100,
-        cal_unit: food.calPerUnit,
-        prot_unit: food.protPerUnit,
-        weight_unit: food.unitWeight,
+        category: food.category ?? '',
+        brand: food.brand ?? '',
+        name: food.name ?? '',
+        note: food.note ?? '',
+        cal_100: food.calPer100 ?? null,
+        prot_100: food.protPer100 ?? null,
+        cal_unit: food.calPerUnit ?? null,
+        prot_unit: food.protPerUnit ?? null,
+        weight_unit: food.unitWeight ?? null,
         created_at: new Date().toISOString()
     };
     
