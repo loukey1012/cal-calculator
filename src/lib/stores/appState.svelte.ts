@@ -23,7 +23,8 @@ class AppState {
     secondaryAccent = $state<AccentColor>('pink');
     
     // Computed Properties
-    isAuth = $derived(this.currentUser !== null);
+    cachedAuth = $state(false);
+    isAuth = $derived(this.currentUser !== null || this.cachedAuth);
     currentHouseholdId = $derived(this.currentProfile?.household_id || null);
 
     // Default categories mimicking original logic
@@ -43,6 +44,17 @@ class AppState {
             localStorage.setItem('primaryAccent', this.primaryAccent);
             localStorage.setItem('secondaryAccent', this.secondaryAccent);
             localStorage.setItem('dbCategoryFilter', this.dbCategoryFilter);
+
+            if (this.currentProfile) {
+                localStorage.setItem('cachedProfile', JSON.stringify(this.currentProfile));
+            } else {
+                localStorage.removeItem('cachedProfile');
+            }
+            if (this.db && this.db.length > 0) {
+                localStorage.setItem('cachedDb', JSON.stringify(this.db));
+            } else if (!this.currentProfile) {
+                localStorage.removeItem('cachedDb');
+            }
         }
     }
 
@@ -53,6 +65,21 @@ class AppState {
         this.primaryAccent = (localStorage.getItem('primaryAccent') as AccentColor) || 'mint';
         this.secondaryAccent = (localStorage.getItem('secondaryAccent') as AccentColor) || 'pink';
         this.dbCategoryFilter = localStorage.getItem('dbCategoryFilter') || 'All';
+
+        const savedProfile = localStorage.getItem('cachedProfile');
+        if (savedProfile) {
+            try {
+                this.currentProfile = JSON.parse(savedProfile);
+                this.cachedAuth = true;
+            } catch (e) {}
+        }
+
+        const savedDb = localStorage.getItem('cachedDb');
+        if (savedDb) {
+            try {
+                this.db = JSON.parse(savedDb);
+            } catch (e) {}
+        }
 
         const savedLog = localStorage.getItem('dailyLog');
         if (savedLog) {

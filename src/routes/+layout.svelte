@@ -1,6 +1,7 @@
 <script lang="ts">
     import '../app.css';
     import { onMount } from 'svelte';
+    import { fade, scale } from 'svelte/transition';
     import { listenToAuth, signUp, login, signInWithGoogle } from '$lib/services/auth';
     import { fetchFoods } from '$lib/services/database';
     import { appState } from '$lib/stores/appState.svelte';
@@ -15,8 +16,17 @@
     let password = $state('');
     let displayName = $state('');
     let authError = $state('');
+    let showSplash = $state(true);
 
     onMount(() => {
+        setTimeout(() => {
+            showSplash = false;
+        }, 1200);
+
+        if (appState.cachedAuth) {
+            authLoading = false;
+        }
+
         const unsubscribe = listenToAuth((user, profile) => {
             appState.currentUser = user;
             appState.currentProfile = profile;
@@ -30,8 +40,13 @@
                 if (profile.household_id) {
                     fetchFoods(profile.household_id).then(db => {
                         appState.db = db;
+                        appState.saveLocalState();
                     }).catch(e => console.error("Failed to fetch database", e));
                 }
+            } else {
+                appState.cachedAuth = false;
+                appState.db = [];
+                appState.saveLocalState();
             }
             authLoading = false;
         });
@@ -160,4 +175,13 @@
         {@render children()}
     </div>
     <BottomNav />
+{/if}
+
+{#if showSplash}
+    <div class="fixed inset-0 bg-base z-[100] flex flex-col items-center justify-center" out:fade={{ duration: 400 }}>
+        <div class="relative flex flex-col items-center" in:scale={{ start: 0.8, duration: 800, opacity: 0 }}>
+            <img src="/favicon.png" alt="CALculator Icon" class="w-24 h-24 mb-6 rounded-3xl shadow-2xl shadow-primary-500/20" />
+            <h1 class="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-500 tracking-tight text-center animate-pulse">CALculator</h1>
+        </div>
+    </div>
 {/if}
